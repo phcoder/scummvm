@@ -36,7 +36,7 @@ MODULE_OBJS := \
 	stream.o \
 	streamdebug.o \
 	str-enc.o \
-	encodings/singlebyte.cpp \
+	encodings/singlebyte.o \
 	stuffit.o \
 	system.o \
 	textconsole.o \

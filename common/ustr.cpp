@@ -33,21 +33,21 @@ U32String::U32String(const char *str, Common::CodePage page) : BaseString() {
 		_storage[0] = 0;
 		_size = 0;
 	} else {
-		initWithCStr(str, strlen(str), page);
+		decodeInternal(str, strlen(str), page);
 	}
 }
 
 U32String::U32String(const char *str, uint32 len, Common::CodePage page) : BaseString() {
-	initWithCStr(str, len, page);
+	decodeInternal(str, len, page);
 }
 
 U32String::U32String(const char *beginP, const char *endP, Common::CodePage page) : BaseString() {
 	assert(endP >= beginP);
-	initWithCStr(beginP, endP - beginP, page);
+	decodeInternal(beginP, endP - beginP, page);
 }
 
 U32String::U32String(const String &str, Common::CodePage page) : BaseString() {
-	initWithCStr(str.c_str(), str.size(), page);
+	decodeInternal(str.c_str(), str.size(), page);
 }
 
 U32String::U32String(const UnicodeBiDiText &txt) : BaseString() {
@@ -65,7 +65,7 @@ U32String &U32String::operator=(const U32String &str) {
 
 U32String &U32String::operator=(const String &str) {
 	clear();
-	initWithCStr(str.c_str(), str.size(), Common::kUtf8);
+	decodeInternal(str.c_str(), str.size(), Common::kUtf8);
 	return *this;
 }
 
@@ -75,7 +75,7 @@ U32String &U32String::operator=(const value_type *str) {
 
 U32String &U32String::operator=(const char *str) {
 	clear();
-	initWithCStr(str, strlen(str), Common::kUtf8);
+	decodeInternal(str, strlen(str), Common::kUtf8);
 	return *this;
 }
 

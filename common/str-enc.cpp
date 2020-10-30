@@ -25,6 +25,8 @@
 #include "common/util.h"
 #include "common/endian.h"
 #include "common/error.h"
+#include "common/system.h"
+#include "common/enc-internal.h"
 
 namespace Common {
 
@@ -183,19 +185,6 @@ decodeUTF16Template(Native, READ_UINT16)
 // Upper bound on unicode codepoint in any single-byte encoding. Must be divisible by 0x100 and be strictly above large codepoint
 static const int kMaxCharSingleByte = 0x3000;
 
-extern const uint32 kWindows1250ConversionTable[128];
-extern const uint32 kWindows1251ConversionTable[128];
-extern const uint32 kWindows1252ConversionTable[128];
-extern const uint32 kWindows1253ConversionTable[128];
-extern const uint32 kWindows1254ConversionTable[128];
-extern const uint32 kWindows1255ConversionTable[128];
-extern const uint32 kWindows1256ConversionTable[128];
-extern const uint32 kWindows1257ConversionTable[128];
-extern const uint32 kMacCentralEuropeConversionTable[128];
-extern const uint32 kLatin1ConversionTable[128];
-extern const uint32 kLatin2ConversionTable[128];
-extern const uint32 kDos850ConversionTable[128];
-
 
 static const uint32 *
 getConversionTable(CodePage page) {
@@ -353,17 +342,6 @@ String convertUtf32ToUtf8(const U32String &u32str) {
 	return u32str.encode(kUtf8);
 }
 
-U32String String::decode(CodePage page) const {
-	if (page == kCodePageInvalid ||
-			page > kLastEncoding) {
-		error("Invalid codepage");
-	}
-
-	U32String unicodeString;
-	unicodeString.decodeInternal(_str, _size, page);
-	return unicodeString;
-}
-
 void U32String::decodeInternal(const char *str, uint32 len, CodePage page) {
 	assert(str);
 
@@ -375,6 +353,28 @@ void U32String::decodeInternal(const char *str, uint32 len, CodePage page) {
 	} else {
 		decodeOneByte(str, len, page);
 	}
+}
+
+U32String String::decode(CodePage page) const {
+	if (page == kCodePageInvalid ||
+			page > kLastEncoding) {
+		error("Invalid codepage");
+	}
+
+	U32String unicodeString;
+	unicodeString.decodeInternal(_str, _size, page);
+	return unicodeString;
+}
+
+String U32String::encode(CodePage page) const {
+	if (page == kCodePageInvalid ||
+			page > kLastEncoding) {
+		error("Invalid codepage");
+	}
+
+	String string;
+	string.encodeInternal(*this, page);
+	return string;
 }
 
 } // End of namespace Common
