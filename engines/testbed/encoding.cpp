@@ -58,59 +58,21 @@ TestExitStatus Encodingtests::testConversionUnicodeMachineEndian() {
 #endif
 
 	// UTF16 to UTF8
-	Common::Encoding converter("UTF-8", "UTF-16");
-
-	char *result = converter.convert((char *) utf16, 6);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-16 to UTF-8 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf8, 7)) {
+	Common::String resultstr8 = Common::U32String::decodeUTF16Native((uint16 *) utf16, 6).encode(Common::kUtf8);
+	if (resultstr8.c_str() == NULL || memcmp(resultstr8.c_str(), utf8, 7)) {
 		Testsuite::logPrintf("UTF-16 to UTF-8 conversion differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
-
-	result = Common::Encoding::convert("UTF-8", "UTF-16", (char *) utf16, 6);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-16 to UTF-8 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf8, 7)) {
-		Testsuite::logPrintf("UTF-16 to UTF-8 conversion differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
 
 	// UTF32 to UTF8
-	converter.setFrom("UTF-32");
 
-	result = converter.convert((char *) utf32, 12);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-32 to UTF-8 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf8, 7)) {
+	resultstr8 = Common::U32String((const char *) utf32, 12).encode(Common::kUtf8);
+	if (resultstr8.c_str() == NULL || memcmp(resultstr8.c_str(), utf8, 7)) {
 		Testsuite::logPrintf("UTF-32 to UTF-8 conversion differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
 
-	result = Common::Encoding::convert("UTF-8", "UTF-32", (char *) utf32, 12);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-32 to UTF-8 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf8, 7)) {
-		Testsuite::logPrintf("UTF-32 to UTF-8 conversion differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
-
+#if 0
 	// UTF32 to UTF16
 	converter.setTo("UTF-16");
 
@@ -164,60 +126,21 @@ TestExitStatus Encodingtests::testConversionUnicodeMachineEndian() {
 		return kTestFailed;
 	}
 	free(result);
+#endif
 
 	// UTF8 to UTF32
-	converter.setTo("UTF-32");
-
-	result = converter.convert((char *) utf8, 6);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-8 to UTF-32 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf32, 16)) {
+	Common::U32String resultustr = Common::String((const char *) utf8, 6).decode(Common::kUtf8);
+	if (resultustr.c_str() == NULL || memcmp(resultustr.c_str(), utf32, 16)) {
 		Testsuite::logPrintf("UTF-8 to UTF-32 conversion differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
-
-	result = Common::Encoding::convert("UTF-32", "UTF-8", (char *) utf8, 6);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-8 to UTF-32 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf32, 16)) {
-		Testsuite::logPrintf("UTF-8 to UTF-32 conversion differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
 
 	// UTF16 to UTF32
-	converter.setFrom("UTF-16");
-
-	result = converter.convert((char *) utf16, 6);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-16 to UTF-32 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf32, 16)) {
+	resultustr = Common::U32String::decodeUTF16Native((uint16 *) utf16, 6);
+	if (resultustr == nullptr || memcmp(resultustr.c_str(), utf32, 16)) {
 		Testsuite::logPrintf("UTF-16 to UTF-32 conversion differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
-
-	result = Common::Encoding::convert("UTF-32", "UTF-16", (char *) utf16, 6);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-16 to UTF-32 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf32, 16)) {
-		Testsuite::logPrintf("UTF-16 to UTF-32 conversion differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
 
 	return kTestPassed;
 }
@@ -252,34 +175,13 @@ TestExitStatus Encodingtests::testConversionUnicodeBigEndian() {
 #endif
 
 	// UTF16 to UTF8
-	Common::Encoding converter("UTF-8", "UTF-16BE");
-
-	char *result = converter.convert((char *) utf16be, 6);
-
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-16 to UTF-8 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf8, 7)) {
+	Common::String resultstr8 = Common::U32String::decodeUTF16BE((uint16 *) utf16be, 6).encode(Common::kUtf8);
+	if (resultstr8.c_str() == NULL || memcmp(resultstr8.c_str(), utf8, 7)) {
 		Testsuite::logPrintf("UTF-16 to UTF-8 conversion differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
 
-	result = Common::Encoding::convert("UTF-8", "UTF-16BE", (char *) utf16be, 6);
-
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-16 to UTF-8 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf8, 7)) {
-		Testsuite::logPrintf("UTF-16 to UTF-8 conversion differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
-
+#if 0
 	// UTF32 to UTF8
 	converter.setFrom("UTF-32BE");
 
@@ -476,6 +378,7 @@ TestExitStatus Encodingtests::testConversionUnicodeBigEndian() {
 		return kTestFailed;
 	}
 	free(result);
+#endif
 
 	return kTestPassed;
 }
@@ -509,34 +412,13 @@ TestExitStatus Encodingtests::testConversionUnicodeLittleEndian() {
 #endif
 
 	// UTF16 to UTF8
-	Common::Encoding converter("UTF-8", "UTF-16LE");
-
-	char *result = converter.convert((char *) utf16le, 6);
-
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-16 to UTF-8 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf8, 7)) {
+	Common::String resultstr8 = Common::U32String::decodeUTF16LE((uint16 *) utf16le, 6).encode(Common::kUtf8);
+	if (resultstr8.c_str() == NULL || memcmp(resultstr8.c_str(), utf8, 7)) {
 		Testsuite::logPrintf("UTF-16 to UTF-8 conversion differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
 
-	result = Common::Encoding::convert("UTF-8", "UTF-16LE", (char *) utf16le, 6);
-
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-16 to UTF-8 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf8, 7)) {
-		Testsuite::logPrintf("UTF-16 to UTF-8 conversion differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
-
+#if 0
 	// UTF32 to UTF8
 	converter.setFrom("UTF-32LE");
 
@@ -733,10 +615,11 @@ TestExitStatus Encodingtests::testConversionUnicodeLittleEndian() {
 		return kTestFailed;
 	}
 	free(result);
-
+#endif
 	return kTestPassed;
 }
 
+#if 0
 TestExitStatus Encodingtests::testCyrillicTransliteration() {
 	Common::String info = "Cyrillic transliteration test. Multiple conversions between unicode, iso-8859-5 and ASCII will be performed.";
 
@@ -819,6 +702,7 @@ TestExitStatus Encodingtests::testCyrillicTransliteration() {
 	free(result);
 	return kTestPassed;
 }
+#endif
 
 TestExitStatus Encodingtests::testOtherConversions() {
 	Common::String info = "Other conversions test. Some regular encoding conversions will be performed.";
@@ -836,53 +720,30 @@ TestExitStatus Encodingtests::testOtherConversions() {
 	unsigned char iso_8859_2[] = {0xA9, 0xE1, 0x6C, 0x65, 0xE8, 0x65, 0x6B, 0};
 	unsigned char utf8_2[] = {0xC5, 0xA0, 0xC3, 0xA1, 0x6C, 0x65, 0xC4, 0x8D, 0x65, 0x6B, 0};
 
-	char *result = Common::Encoding::convert("UTF-8", "CP850", (char *)cp850, 5);
-	if (result == NULL) {
-		Testsuite::logPrintf("CP850 to UTF-8 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf8_1, 9)) {
+	Common::String result = Common::U32String((const char *) cp850, 5, Common::kDos850).encode(Common::kUtf8);
+	if (result.c_str() == nullptr || memcmp(result.c_str(), utf8_1, 9)) {
 		Testsuite::logPrintf("CP850 to UTF-8 conversion isn'differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
 
-	result = Common::Encoding::convert("CP850", "UTF-8", (char *)utf8_1, 8);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-8 to CP850 conversion isn't available");
+	result = Common::U32String((const char *) utf8_1, 8, Common::kUtf8).encode(Common::kDos850);
+	if (result.c_str() == nullptr || memcmp(result.c_str(), cp850, 6)) {
+		Testsuite::logPrintf("CP850 to UTF-8 conversion isn'differs from the expected result.");
 		return kTestFailed;
 	}
-	if (memcmp(result, cp850, 6)) {
-		Testsuite::logPrintf("UTF-8 to CP850 conversion isn'differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
 
-	result = Common::Encoding::convert("UTF-8", "iso-8859-2", (char *)iso_8859_2, 7);
-	if (result == NULL) {
-		Testsuite::logPrintf("iso-8859-2 to UTF-8 conversion isn't available");
+	result = Common::U32String((const char *) iso_8859_2, 7, Common::kISO8859_2).encode(Common::kUtf8);
+	if (result.c_str() == nullptr || memcmp(result.c_str(), utf8_2, 11)) {
+		Testsuite::logPrintf("CP850 to UTF-8 conversion isn'differs from the expected result.");
 		return kTestFailed;
 	}
-	if (memcmp(result, utf8_2, 11)) {
-		Testsuite::logPrintf("iso-8859-2 to UTF-differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
 
-	result = Common::Encoding::convert("iso-8859-2", "UTF-8", (char *)utf8_2, 11);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-8 to iso-8859-2 conversion isn't available");
+	result = Common::U32String((const char *) utf8_2, 11, Common::kUtf8).encode(Common::kISO8859_2);
+	if (result.c_str() == nullptr || memcmp(result.c_str(), iso_8859_2, 8)) {
+		Testsuite::logPrintf("CP850 to UTF-8 conversion isn'differs from the expected result.");
 		return kTestFailed;
 	}
-	if (memcmp(result, iso_8859_2, 8)) {
-		Testsuite::logPrintf("UTF-8 to iso-8859-differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
+
 	return kTestPassed;
 }
 
@@ -890,7 +751,9 @@ EncodingTestSuite::EncodingTestSuite() {
 	addTest("testConversionUnicodeMachineEndian", &Encodingtests::testConversionUnicodeMachineEndian, true);
 	addTest("testConversionUnicodeBigEndian", &Encodingtests::testConversionUnicodeBigEndian, true);
 	addTest("testConversionUnicodeLittleEndian", &Encodingtests::testConversionUnicodeLittleEndian, true);
+#if 0
 	addTest("testCyrillicTransliteration", &Encodingtests::testCyrillicTransliteration, true);
+#endif
 	addTest("testOtherConversions", &Encodingtests::testOtherConversions, true);
 }
 

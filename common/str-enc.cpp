@@ -37,6 +37,8 @@ namespace Common {
 //
 // More comprehensive one lives in wintermute/utils/convert_utf.cpp
 void String::decodeUTF8(U32String &dst) const {
+	dst.ensureCapacity(size());
+
 	// The String class, and therefore the Font class as well, assume one
 	// character is one byte, but in this case it's actually an UTF-8
 	// string with up to 4 bytes per character. To work around this,
@@ -98,6 +100,7 @@ void String::decodeUTF8(U32String &dst) const {
 //
 // More comprehensive one lives in wintermute/utils/convert_utf.cpp
 void U32String::encodeUTF8(String &dst) const {
+	dst.ensureCapacity(size());
 	static const uint8 firstByteMark[5] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0 };
 	char writingBytes[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
 
@@ -146,6 +149,40 @@ void U32String::encodeUTF8(String &dst) const {
 		dst += pBytes;
 	}
 }
+
+const uint16 invalidCode = 0xFFFD;
+
+#define decodeUTF16(suffix, read)					\
+Common::U32String decodeUTF16 ## suffix (uint16 *start, uint len) {     \
+	uint16 *ptr;							\
+	Common::U32String dst;						\
+	dst.ensureCapacity(size());					\
+									\
+	while (len-- > 0) {						\
+		uint16 c = read(ptr++);					\
+		if (c >= 0xD800 && c <= 0xDBFF && len > 0) {		\
+			uint16 low = read(ptr++);			\
+			if (low >= 0xDC00 && low <= 0xDFFF)		\
+				dst += ((c & 0x3ff) << 10)              \
+					| (low & 0x3ff);                \
+			else						\
+				dst += invalidCode;			\
+			continue;					\
+                }							\
+									\
+		if (c >= 0xD800 && c <= 0xDFFF) {			\
+			dst += invalidCode;				\
+			continue;					\
+		}							\
+		dst += c;						\
+	}								\
+									\
+	return dst;							\
+}
+
+decodeUTF16(BE, READ_UINT16_BE)
+decodeUTF16(LE, READ_UINT16_LE)
+decodeUTF16(Native, READ_UINT16)
 
 static const uint32 g_windows1250ConversionTable[] = {0x20AC, 0x0081, 0x201A, 0x0083, 0x201E, 0x2026, 0x2020, 0x2021,
 										 0x0088, 0x2030, 0x0160, 0x2039, 0x015A, 0x0164, 0x017D, 0x0179,
@@ -283,115 +320,145 @@ static const uint32 g_windows1257ConversionTable[] = {0x20AC, 0x0081, 0x201A, 0x
 										 0x0161, 0x0144, 0x0146, 0x00F3, 0x014D, 0x00F5, 0x00F6, 0x00F7,
 										 0x0173, 0x0142, 0x015B, 0x016B, 0x00FC, 0x017C, 0x017E, 0x02D9};
 
-
-/* This array must match the enum defined in str-enc.h */
-static char const *const g_codePageMap[] = {
-	"UTF-8", /* kUtf8 */
-	"WINDOWS-1250", /* kWindows1250 */
-	"WINDOWS-1251", /* kWindows1251 */
-	"WINDOWS-1252", /* kWindows1252 */
-	"WINDOWS-1253", /* kWindows1253 */
-	"WINDOWS-1254", /* kWindows1254 */
-	"WINDOWS-1255", /* kWindows1255 */
-	"WINDOWS-1256", /* kWindows1256 */
-	"WINDOWS-1257", /* kWindows1257 */
-	"MS932", /* kWindows932 */
-	"MSCP949", /* kWindows949 */
-	"CP950"  /* kWindows950 */
+static const uint32 g_macCentralEuropeConversionTable[] =  {
+	0x00C4, 0x0100, 0x0101, 0x00C9, 0x0104, 0x00D6, 0x00DC, 0x00E1,
+	0x0105, 0x010C, 0x00E4, 0x010D, 0x0106, 0x0107, 0x00E9, 0x0179,
+	0x017A, 0x010E, 0x00ED, 0x010F, 0x0112, 0x0113, 0x0116, 0x00F3,
+	0x0117, 0x00F4, 0x00F6, 0x00F5, 0x00FA, 0x011A, 0x011B, 0x00FC,
+	0x2020, 0x00B0, 0x0118, 0x00A3, 0x00A7, 0x2022, 0x00B6, 0x00DF,
+	0x00AE, 0x00A9, 0x2122, 0x0119, 0x00A8, 0x2260, 0x0123, 0x012E,
+	0x012F, 0x012A, 0x2264, 0x2265, 0x012B, 0x0136, 0x2202, 0x2211,
+	0x0142, 0x013B, 0x013C, 0x013D, 0x013E, 0x0139, 0x013A, 0x0145,
+	0x0146, 0x0143, 0x00AC, 0x221A, 0x0144, 0x0147, 0x2206, 0x00AB,
+	0x00BB, 0x2026, 0x00A0, 0x0148, 0x0150, 0x00D5, 0x0151, 0x014C,
+	0x2013, 0x2014, 0x201C, 0x201D, 0x2018, 0x2019, 0x00F7, 0x25CA,
+	0x014D, 0x0154, 0x0155, 0x0158, 0x2039, 0x203A, 0x0159, 0x0156,
+	0x0157, 0x0160, 0x201A, 0x201E, 0x0161, 0x015A, 0x015B, 0x00C1,
+	0x0164, 0x0165, 0x00CD, 0x017D, 0x017E, 0x016A, 0x00D3, 0x00D4,
+	0x016B, 0x016E, 0x00DA, 0x016F, 0x0170, 0x0171, 0x0172, 0x0173,
+	0x00DD, 0x00FD, 0x0137, 0x017B, 0x0141, 0x017C, 0x0122, 0x02C7
 };
 
+static const uint32 g_latin1ConversionTable[] =  {
+	0x0080, 0x0081, 0x0082, 0x0083, 0x0084, 0x0085, 0x0086, 0x0087,
+	0x0088, 0x0089, 0x008A, 0x008B, 0x008C, 0x008D, 0x008E, 0x008F,
+	0x0090, 0x0091, 0x0092, 0x0093, 0x0094, 0x0095, 0x0096, 0x0097,
+	0x0098, 0x0099, 0x009A, 0x009B, 0x009C, 0x009D, 0x009E, 0x009F,
+	0x00A0, 0x00A1, 0x00A2, 0x00A3, 0x00A4, 0x00A5, 0x00A6, 0x00A7,
+	0x00A8, 0x00A9, 0x00AA, 0x00AB, 0x00AC, 0x00AD, 0x00AE, 0x00AF,
+	0x00B0, 0x00B1, 0x00B2, 0x00B3, 0x00B4, 0x00B5, 0x00B6, 0x00B7,
+	0x00B8, 0x00B9, 0x00BA, 0x00BB, 0x00BC, 0x00BD, 0x00BE, 0x00BF,
+	0x00C0, 0x00C1, 0x00C2, 0x00C3, 0x00C4, 0x00C5, 0x00C6, 0x00C7,
+	0x00C8, 0x00C9, 0x00CA, 0x00CB, 0x00CC, 0x00CD, 0x00CE, 0x00CF,
+	0x00D0, 0x00D1, 0x00D2, 0x00D3, 0x00D4, 0x00D5, 0x00D6, 0x00D7,
+	0x00D8, 0x00D9, 0x00DA, 0x00DB, 0x00DC, 0x00DD, 0x00DE, 0x00DF,
+	0x00E0, 0x00E1, 0x00E2, 0x00E3, 0x00E4, 0x00E5, 0x00E6, 0x00E7,
+	0x00E8, 0x00E9, 0x00EA, 0x00EB, 0x00EC, 0x00ED, 0x00EE, 0x00EF,
+	0x00F0, 0x00F1, 0x00F2, 0x00F3, 0x00F4, 0x00F5, 0x00F6, 0x00F7,
+	0x00F8, 0x00F9, 0x00FA, 0x00FB, 0x00FC, 0x00FD, 0x00FE, 0x00FF,
+};
+
+static const uint32 g_latin2ConversionTable[] =  {
+	0x0080, 0x0081, 0x0082, 0x0083, 0x0084, 0x0085, 0x0086, 0x0087,
+	0x0088, 0x0089, 0x008A, 0x008B, 0x008C, 0x008D, 0x008E, 0x008F,
+	0x0090, 0x0091, 0x0092, 0x0093, 0x0094, 0x0095, 0x0096, 0x0097,
+	0x0098, 0x0099, 0x009A, 0x009B, 0x009C, 0x009D, 0x009E, 0x009F,
+	0x00A0, 0x0104, 0x02D8, 0x0141, 0x00A4, 0x013D, 0x015A, 0x00A7,
+	0x00A8, 0x0160, 0x015E, 0x0164, 0x0179, 0x00AD, 0x017D, 0x017B,
+	0x00B0, 0x0105, 0x02DB, 0x0142, 0x00B4, 0x013E, 0x015B, 0x02C7,
+	0x00B8, 0x0161, 0x015F, 0x0165, 0x017A, 0x02DD, 0x017E, 0x017C,
+	0x0154, 0x00C1, 0x00C2, 0x0102, 0x00C4, 0x0139, 0x0106, 0x00C7,
+	0x010C, 0x00C9, 0x0118, 0x00CB, 0x011A, 0x00CD, 0x00CE, 0x010E,
+	0x0110, 0x0143, 0x0147, 0x00D3, 0x00D4, 0x0150, 0x00D6, 0x00D7,
+	0x0158, 0x016E, 0x00DA, 0x0170, 0x00DC, 0x00DD, 0x0162, 0x00DF,
+	0x0155, 0x00E1, 0x00E2, 0x0103, 0x00E4, 0x013A, 0x0107, 0x00E7,
+	0x010D, 0x00E9, 0x0119, 0x00EB, 0x011B, 0x00ED, 0x00EE, 0x010F,
+	0x0111, 0x0144, 0x0148, 0x00F3, 0x00F4, 0x0151, 0x00F6, 0x00F7,
+	0x0159, 0x016F, 0x00FA, 0x0171, 0x00FC, 0x00FD, 0x0163, 0x02D9,
+};
+
+static const uint32 g_dos850ConversionTable[] =  {
+	0x00c7, 0x00fc, 0x00e9, 0x00e2, 0x00e4, 0x00e0, 0x00e5, 0x00e7,
+	0x00ea, 0x00eb, 0x00e8, 0x00ef, 0x00ee, 0x00ec, 0x00c4, 0x00c5,
+	0x00c9, 0x00e6, 0x00c6, 0x00f4, 0x00f6, 0x00f2, 0x00fb, 0x00f9,
+	0x00ff, 0x00d6, 0x00dc, 0x00f8, 0x00a3, 0x00d8, 0x00d7, 0x0192,
+	0x00e1, 0x00ed, 0x00f3, 0x00fa, 0x00f1, 0x00d1, 0x00aa, 0x00ba,
+	0x00bf, 0x00ae, 0x00ac, 0x00bd, 0x00bc, 0x00a1, 0x00ab, 0x00bb,
+	0x2591, 0x2592, 0x2593, 0x2502, 0x2524, 0x00c1, 0x00c2, 0x00c0,
+	0x00a9, 0x2563, 0x2551, 0x2557, 0x255d, 0x00a2, 0x00a5, 0x2510,
+	0x2514, 0x2534, 0x252c, 0x251c, 0x2500, 0x253c, 0x00e3, 0x00c3,
+	0x255a, 0x2554, 0x2569, 0x2566, 0x2560, 0x2550, 0x256c, 0x00a4,
+	0x00f0, 0x00d0, 0x00ca, 0x00cb, 0x00c8, 0x0131, 0x00cd, 0x00ce,
+	0x00cf, 0x2518, 0x250c, 0x2588, 0x2584, 0x00a6, 0x00cc, 0x2580,
+	0x00d3, 0x00df, 0x00d4, 0x00d2, 0x00f5, 0x00d5, 0x00b5, 0x00fe,
+	0x00de, 0x00da, 0x00db, 0x00d9, 0x00fd, 0x00dd, 0x00af, 0x00b4,
+	0x00ad, 0x00b1, 0x2017, 0x00be, 0x00b6, 0x00a7, 0x00f7, 0x00b8,
+	0x00b0, 0x00a8, 0x00b7, 0x00b9, 0x00b3, 0x00b2, 0x25a0, 0x00a0,
+};
+
+static const uint32 *
+getConversionTable(CodePage page) {
+	switch (page) {
+	case kWindows1250:
+		return g_windows1250ConversionTable;
+	case kWindows1251:
+		return g_windows1251ConversionTable;
+	case kWindows1252:
+		return g_windows1252ConversionTable;
+	case kWindows1253:
+		return g_windows1253ConversionTable;
+	case kWindows1254:
+		return g_windows1254ConversionTable;
+	case kWindows1255:
+		return g_windows1255ConversionTable;
+	case kWindows1256:
+		return g_windows1256ConversionTable;
+	case kWindows1257:
+		return g_windows1257ConversionTable;
+	case kMacCentralEurope:
+		return g_macCentralEuropeConversionTable;
+	case kISO8859_1:
+		return g_latin1ConversionTable;
+	case kISO8859_2:
+		return g_latin2ConversionTable;
+	case kDos850:
+		return g_dos850ConversionTable;
+
+	case kCodePageInvalid:
+	// Multibyte encodings. Can't be represented in simple table way
+	case kUtf8:
+	case kWindows932:
+	case kWindows949:
+	case kWindows950:
+		return nullptr;
+	}
+	return nullptr;
+}
+
 void String::decodeOneByte(U32String &dst, CodePage page) const {
+    	const uint32 *conversionTable = getConversionTable(page);
+
+	if (conversionTable == nullptr) {
+		return;
+	}
+
+	dst.ensureCapacity(size());
+
 	for (uint i = 0; i < _size; ++i) {
-		if ((byte)_str[i] <= 0x7F) {
+	    if ((_str[i] & 0x80) == 0) {
 			dst += _str[i];
 			continue;
 		}
 
-		byte index = _str[i] - 0x80;
-
-		switch (page) {
-		case kWindows1250:
-			dst += g_windows1250ConversionTable[index];
-			break;
-		case kWindows1251:
-			dst += g_windows1251ConversionTable[index];
-			break;
-		case kWindows1252:
-			dst += g_windows1252ConversionTable[index];
-			break;
-		case kWindows1253:
-			dst += g_windows1253ConversionTable[index];
-			break;
-		case kWindows1254:
-			dst += g_windows1254ConversionTable[index];
-			break;
-		case kWindows1255:
-			dst += g_windows1255ConversionTable[index];
-			break;
-		case kWindows1256:
-			dst += g_windows1256ConversionTable[index];
-			break;
-		case kWindows1257:
-			dst += g_windows1257ConversionTable[index];
-			break;
-		default:
-			break;
-		}
+		dst += conversionTable[_str[i] & 0x7f];
 	}
 }
-
-U32String String::decode(CodePage page) const {
-	if (page == kCodePageInvalid ||
-			page >= ARRAYSIZE(g_codePageMap)) {
-		error("Invalid codepage");
-	}
-	char *result = Encoding::convert("UTF-32", g_codePageMap[page], *this);
-	if (result) {
-		U32String unicodeString((uint32 *)result);
-		free(result);
-		return unicodeString;
-	}
-
-	U32String unicodeString;
-	if (page == kUtf8) {
-		decodeUTF8(unicodeString);
-	} else {
-		decodeOneByte(unicodeString, page);
-	}
-	return unicodeString;
-}
-
-
 
 void U32String::encodeOneByte(String &dst, CodePage page) const {
-	const uint32 *conversionTable = NULL;
-	switch (page) {
-	case kWindows1250:
-		conversionTable = g_windows1250ConversionTable;
-		break;
-	case kWindows1251:
-		conversionTable = g_windows1251ConversionTable;
-		break;
-	case kWindows1252:
-		conversionTable = g_windows1252ConversionTable;
-		break;
-	case kWindows1253:
-		conversionTable = g_windows1253ConversionTable;
-		break;
-	case kWindows1254:
-		conversionTable = g_windows1254ConversionTable;
-		break;
-	case kWindows1255:
-		conversionTable = g_windows1255ConversionTable;
-		break;
-	case kWindows1256:
-		conversionTable = g_windows1256ConversionTable;
-		break;
-	case kWindows1257:
-		conversionTable = g_windows1257ConversionTable;
-		break;
-	default:
-		break;
+	const uint32 *conversionTable = getConversionTable(page);
+
+	if (conversionTable == nullptr) {
+		return;
 	}
 
 	for (uint i = 0; i < _size; ++i) {
@@ -413,31 +480,20 @@ void U32String::encodeOneByte(String &dst, CodePage page) const {
 	}
 }
 
-
 String U32String::encode(CodePage page) const {
-	if (page == kCodePageInvalid ||
-			page >= ARRAYSIZE(g_codePageMap)) {
-		error("Invalid codepage");
-	}
-	char *result = Encoding::convert(g_codePageMap[page], *this);
-	if (result) {
-		// Encodings in CodePage all use '\0' as string ending
-		// That would be problematic if CodePage has UTF-16 or UTF-32
-		String string(result);
-		free(result);
-		return string;
-	}
-
 	String string;
 	if (page == kUtf8) {
 		encodeUTF8(string);
 	} else {
 		encodeOneByte(string, page);
 	}
+	// TODO:
+	// "MS932", /* kWindows932 */
+	// "MSCP949", /* kWindows949 */
+	// "CP950"  /* kWindows950 */
+
 	return string;
 }
-
-
 
 U32String convertToU32String(const char *str, CodePage page) {
 	return String(str).decode(page);
@@ -453,6 +509,30 @@ String convertFromU32String(const U32String &string, CodePage page) {
 
 String convertUtf32ToUtf8(const U32String &u32str) {
 	return u32str.encode(kUtf8);
+}
+
+U32String String::decode(CodePage page) const {
+	if (page == kCodePageInvalid ||
+			page > kLastEncoding) {
+		error("Invalid codepage");
+	}
+
+	U32String unicodeString;
+	unicodeString.initWithCstr(_str, _size, page);
+	return unicodeString;
+}
+
+void String::initWithCStr(const char *str, size_t len, CodePage page) {
+	assert(str);
+
+	_storage[0] = 0;
+	_size = 0;
+
+	if (page == kUtf8) {
+		decodeUTF8(unicodeString);
+	} else {
+		decodeOneByte(unicodeString, page);
+	}
 }
 
 } // End of namespace Common

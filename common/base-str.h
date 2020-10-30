@@ -186,6 +186,7 @@ public:
 	/** Insert character c before position p. */
 	void insertChar(value_type c, uint32 p);
     	void insertString(const value_type *s, uint32 p);
+	void insertString(const BaseString &s, uint32 p);
 
     	/** Finds the index of a character in the string */
     	uint32 find(value_type x, uint32 pos = 0) const;
@@ -240,7 +241,6 @@ protected:
 	void incRefCount() const;
 	void decRefCount(int *oldRefCount);
 	void initWithValueTypeStr(const value_type *str, uint32 len);
-	void initWithCStr(const char *str, uint32 len);
 
 	void assignAppend(const value_type *str);
 	void assignAppend(value_type c);

@@ -76,16 +76,16 @@ public:
 	U32String(const UnicodeBiDiText &txt);
 
 	/** Construct a new string from the given NULL-terminated C string. */
-	explicit U32String(const char *str);
+	explicit U32String(const char *str, CodePage page = kUtf8);
 
 	/** Construct a new string containing exactly len characters read from address str. */
-	U32String(const char *str, uint32 len);
+	U32String(const char *str, uint32 len, CodePage page = kUtf8);
 
 	/** Construct a new string containing the characters between beginP (including) and endP (excluding). */
-	U32String(const char *beginP, const char *endP);
+	U32String(const char *beginP, const char *endP, CodePage page = kUtf8);
 
 	/** Construct a copy of the given string. */
-	U32String(const String &str);
+	U32String(const String &str, CodePage page = kUtf8);
 
 	~U32String();
 
@@ -122,12 +122,17 @@ public:
 	static char* itoa(int num, char* str, int base);
 
 	using BaseString<uint32>::insertString;
-	void insertString(const char *s, uint32 p);
-	void insertString(const String &s, uint32 p);
+	void insertString(const char *s, uint32 p, CodePage page = kUtf8);
+	void insertString(const String &s, uint32 p, CodePage page = kUtf8);
+
+	static Common::U32String decodeUTF16BE(uint16 *start, uint len);
+	static Common::U32String decodeUTF16LE(uint16 *start, uint len);
+	static Common::U32String decodeUTF16Native(uint16 *start, uint len);
 
 private:
 	void encodeUTF8(String &dst) const;
 	void encodeOneByte(String &dst, CodePage page) const;
+	void initWithCStr(const char *str, uint32 len, CodePage page);
 };
 
 U32String operator+(const U32String &x, const U32String &y);

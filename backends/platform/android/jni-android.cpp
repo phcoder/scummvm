@@ -87,7 +87,6 @@ jmethodID JNI::_MID_setWindowCaption = 0;
 jmethodID JNI::_MID_showVirtualKeyboard = 0;
 jmethodID JNI::_MID_showKeyboardControl = 0;
 jmethodID JNI::_MID_getSysArchives = 0;
-jmethodID JNI::_MID_convertEncoding = 0;
 jmethodID JNI::_MID_getAllStorageLocations = 0;
 jmethodID JNI::_MID_initSurface = 0;
 jmethodID JNI::_MID_deinitSurface = 0;
@@ -230,7 +229,7 @@ void JNI::displayMessageOnOSD(const Common::U32String &msg) {
 	// called from common/osd_message_queue, method: OSDMessageQueue::pollEvent()
 	JNIEnv *env = JNI::getEnv();
 
-	jstring java_msg = convertToJString(env, msg.encode(), "UTF-8");
+	jstring java_msg = convertToJString(env, msg.encode());
 	if (java_msg == nullptr) {
 		// Show a placeholder indicative of the translation error instead of silent failing
 		java_msg = env->NewStringUTF("?");
@@ -297,15 +296,15 @@ Common::U32String JNI::getTextFromClipboard() {
 		return Common::U32String();
 	}
 
-	Common::String text = convertFromJString(env, javaText, "UTF-8");
+	Common::U32String text = convertFromJString(env, javaText);
 	env->DeleteLocalRef(javaText);
 
-	return text.decode();
+	return text;
 }
 
 bool JNI::setTextInClipboard(const Common::U32String &text) {
 	JNIEnv *env = JNI::getEnv();
-	jstring javaText = convertToJString(env, text.encode(), "UTF-8");
+	jstring javaText = convertToJString(env, text.encode());
 
 	bool success = env->CallBooleanMethod(_jobj, _MID_setTextInClipboard, javaText);
 
@@ -338,7 +337,7 @@ bool JNI::isConnectionLimited() {
 
 void JNI::setWindowCaption(const Common::String &caption) {
 	JNIEnv *env = JNI::getEnv();
-	jstring java_caption = convertToJString(env, caption, "ISO-8859-1");
+	jstring java_caption = convertToJString(env, caption.decode(kISO8859_1).decode(kUtf8));
 
 	env->CallVoidMethod(_jobj, _MID_setWindowCaption, java_caption);
 
@@ -420,36 +419,6 @@ void JNI::addSysArchivesToSearchSet(Common::SearchSet &s, int priority) {
 	// However, we keep android APK's "assets" as a fall back, in case something went wrong with the extraction process
 	//          and since we had the code anyway
 	s.add("ASSET", _asset_archive, priority - 1, false);
-}
-
-char *JNI::convertEncoding(const char *to, const char *from, const char *string, size_t length) {
-	JNIEnv *env = JNI::getEnv();
-
-	jstring javaTo = env->NewStringUTF(to);
-	jstring javaFrom = env->NewStringUTF(from);
-	jbyteArray javaString = env->NewByteArray(length);
-	env->SetByteArrayRegion(javaString, 0, length, reinterpret_cast<const jbyte*>(string));
-
-	jbyteArray javaOut = (jbyteArray)env->CallObjectMethod(_jobj, _MID_convertEncoding, javaTo, javaFrom, javaString);
-
-	if (!javaOut || env->ExceptionCheck()) {
-		LOGE("Failed to convert text from %s to %s", from, to);
-
-		env->ExceptionDescribe();
-		env->ExceptionClear();
-
-		return nullptr;
-	}
-
-	int outLength = env->GetArrayLength(javaOut);
-	char *buf = (char *)malloc(outLength + 1);
-	if (!buf)
-		return nullptr;
-
-	env->GetByteArrayRegion(javaOut, 0, outLength, reinterpret_cast<jbyte *>(buf));
-	buf[outLength] = 0;
-
-	return buf;
 }
 
 bool JNI::initSurface() {
@@ -580,7 +549,6 @@ void JNI::create(JNIEnv *env, jobject self, jobject asset_manager,
 	FIND_METHOD(, showKeyboardControl, "(Z)V");
 	FIND_METHOD(, getSysArchives, "()[Ljava/lang/String;");
 	FIND_METHOD(, getAllStorageLocations, "()[Ljava/lang/String;");
-	FIND_METHOD(, convertEncoding, "(Ljava/lang/String;Ljava/lang/String;[B)[B");
 	FIND_METHOD(, initSurface, "()Ljavax/microedition/khronos/egl/EGLSurface;");
 	FIND_METHOD(, deinitSurface, "()V");
 
@@ -741,29 +709,18 @@ void JNI::setPause(JNIEnv *env, jobject self, jboolean value) {
 	}
 }
 
-jstring JNI::convertToJString(JNIEnv *env, const Common::String &str, const Common::String &from) {
-	Common::Encoding converter("UTF-8", from.c_str());
-	char *utf8Str = converter.convert(str.c_str(), converter.stringLength(str.c_str(), from));
-	if (utf8Str == nullptr)
-		return nullptr;
-
-	jstring jstr = env->NewStringUTF(utf8Str);
-	free(utf8Str);
-
+jstring JNI::convertToJString(JNIEnv *env, const Common::U32String &str) {
+	Common::String u8str = str.encode(Common::kUtf8);
+	jstring jstr = env->NewStringUTF(u8str.c_str());
 	return jstr;
 }
 
-Common::String JNI::convertFromJString(JNIEnv *env, const jstring &jstr, const Common::String &to) {
+Common::U32String JNI::convertFromJString(JNIEnv *env, const jstring &jstr) {
 	const char *utf8Str = env->GetStringUTFChars(jstr, 0);
 	if (!utf8Str)
 		return Common::String();
-
-	Common::Encoding converter(to.c_str(), "UTF-8");
-	char *asciiStr = converter.convert(utf8Str, env->GetStringUTFLength(jstr));
+	Common::U32String str(utf8Str, kUtf8);
 	env->ReleaseStringUTFChars(jstr, utf8Str);
-
-	Common::String str(asciiStr);
-	free(asciiStr);
 
 	return str;
 }

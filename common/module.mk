@@ -33,7 +33,6 @@ MODULE_OBJS := \
 	rendermode.o \
 	sinewindows.o \
 	str.o \
-	str-enc.o \
 	stream.o \
 	streamdebug.o \
 	stuffit.o \
@@ -57,7 +56,6 @@ MODULE_OBJS += \
 	dct.o \
 	fft.o \
 	rdft.o \
-	encoding.o \
 	sinetables.o
 
 ifdef ENABLE_EVENTRECORDER
@@ -109,11 +107,6 @@ endif
 ifdef USE_TTS
 MODULE_OBJS += \
 	text-to-speech.o
-endif
-
-ifdef USE_ICONV
-MODULE_OBJS += \
-	iconv.o
 endif
 
 # Include common rules

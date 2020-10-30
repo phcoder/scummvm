@@ -85,7 +85,7 @@ public:
 	explicit String(char c);
 
 	/** Construct a new string from the given u32 string. */
-	String(const U32String &str);
+	String(const U32String &str, CodePage page = kUtf8);
 
 	~String();
 

@@ -237,30 +237,6 @@ TEMPLATE void BASESTRING::initWithValueTypeStr(const value_type *str, uint32 len
 	_str[len] = 0;
 }
 
-TEMPLATE void BASESTRING::initWithCStr(const char *str, uint32 len) {
-	assert(str);
-
-	// Init _storage member explicitly (ie. without calling its constructor)
-	// for GCC 2.95.x compatibility (see also tracker item #1602879).
-	_storage[0] = 0;
-
-	_size = len;
-
-	if (len >= _builtinCapacity) {
-		// Not enough internal storage, so allocate more
-		_extern._capacity = computeCapacity(len + 1);
-		_extern._refCount = nullptr;
-		_str = new value_type[_extern._capacity];
-		assert(_str != nullptr);
-	}
-
-	// Copy the string into the storage area
-	for (size_t idx = 0; idx < len; ++idx, ++str)
-		_str[idx] = (byte)(*str);
-
-	_str[len] = 0;
-}
-
 TEMPLATE bool BASESTRING::equals(const BaseString &x) const {
 	if (this == &x || _str == x._str) {
 		return true;
@@ -535,6 +511,12 @@ TEMPLATE void BASESTRING::assign(value_type c) {
 TEMPLATE void BASESTRING::insertString(const value_type *s, uint32 p) {
 	while (*s != '\0') {
 		BaseString::insertChar(*s++, p++);
+	}
+}
+
+TEMPLATE void BASESTRING::insertString(const BaseString &s, uint32 p) {
+    for (uint i = 0; i < _size; i++) {
+		BaseString::insertChar(s[i], p+i);
 	}
 }
 

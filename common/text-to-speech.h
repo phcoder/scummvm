@@ -24,7 +24,7 @@
 #define BACKENDS_TEXT_TO_SPEECH_ABSTRACT_H
 
 #include "common/scummsys.h"
-#include "common/encoding.h"
+#include "common/str.h"
 
 #if defined(USE_TTS)
 
