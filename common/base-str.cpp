@@ -515,7 +515,7 @@ TEMPLATE void BASESTRING::insertString(const value_type *s, uint32 p) {
 }
 
 TEMPLATE void BASESTRING::insertString(const BaseString &s, uint32 p) {
-    for (uint i = 0; i < _size; i++) {
+    for (uint i = 0; i < s._size; i++) {
 		BaseString::insertChar(s[i], p+i);
 	}
 }

@@ -144,7 +144,7 @@ U32String U32String::format(U32String fmt, ...) {
 
 	va_list va;
 	va_start(va, fmt);
-	U32String::vformat(fmt.begin(), fmt.end(), output, va);
+	U32String::vformat(fmt.c_str(), fmt.c_str() + fmt.size(), output, va);
 	va_end(va);
 
 	return output;
@@ -156,13 +156,14 @@ U32String U32String::format(const char *fmt, ...) {
 	Common::U32String fmtU32(fmt);
 	va_list va;
 	va_start(va, fmt);
-	U32String::vformat(fmtU32.begin(), fmtU32.end(), output, va);
+	U32String::vformat(fmtU32.c_str(), fmtU32.c_str() + fmtU32.size(),
+			   output, va);
 	va_end(va);
 
 	return output;
 }
 
-int U32String::vformat(U32String::const_iterator fmt, const U32String::const_iterator inputItrEnd, U32String &output, va_list args) {
+int U32String::vformat(const value_type *fmt, const value_type *fmtEnd, U32String &output, va_list args) {
 	int int_temp;
 	char *string_temp;
 
@@ -175,7 +176,7 @@ int U32String::vformat(U32String::const_iterator fmt, const U32String::const_ite
 
 	char buffer[512];
 
-	while (fmt != inputItrEnd) {
+	while (fmt != fmtEnd) {
 		ch = *fmt++;
 		if (ch == '%') {
 			switch (ch = *fmt++) {
@@ -191,10 +192,10 @@ int U32String::vformat(U32String::const_iterator fmt, const U32String::const_ite
 				break;
 			case 's':
 				string_temp = va_arg(args, char *);
-				len = strlen(string_temp);
-				length += len;
-
+				tempPos = output.size();
 				output.insertString(string_temp, pos);
+				len = output.size() - tempPos;
+				length += len;
 				pos += len - 1;
 				break;
 			case 'i':

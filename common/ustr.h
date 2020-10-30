@@ -113,7 +113,7 @@ public:
 	 * Print formatted data into a U32String object. It takes in the
 	 * output by reference and works with iterators.
 	 */
-	static int vformat(U32String::const_iterator fmt, const U32String::const_iterator inputItrEnd, U32String &output, va_list args);
+	static int vformat(const value_type *fmt, const value_type *fmtEnd, U32String &output, va_list args);
 
 	/**
 	 * Helper function for vformat, convert an int to string

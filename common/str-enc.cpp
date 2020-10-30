@@ -45,41 +45,40 @@ void U32String::decodeUTF8(const char *src, uint32 len) {
 	// string with up to 4 bytes per character. To work around this,
 	// convert it to an U32String before drawing it, because our Font class
 	// can handle that.
-	uint i = 0;
-	while (i < _size) {
+	for (uint i = 0; i < len;) {
 		uint32 chr = 0;
 		uint num = 1;
 
-		if ((_str[i] & 0xF8) == 0xF0) {
+		if ((src[i] & 0xF8) == 0xF0) {
 			num = 4;
-		} else if ((_str[i] & 0xF0) == 0xE0) {
+		} else if ((src[i] & 0xF0) == 0xE0) {
 			num = 3;
-		} else if ((_str[i] & 0xE0) == 0xC0) {
+		} else if ((src[i] & 0xE0) == 0xC0) {
 			num = 2;
 		}
 
-		if (i - _size >= num) {
+		if (len - i >= num) {
 			switch (num) {
 			case 4:
-				chr |= (_str[i++] & 0x07) << 18;
-				chr |= (_str[i++] & 0x3F) << 12;
-				chr |= (_str[i++] & 0x3F) << 6;
-				chr |= (_str[i++] & 0x3F);
+				chr |= (src[i++] & 0x07) << 18;
+				chr |= (src[i++] & 0x3F) << 12;
+				chr |= (src[i++] & 0x3F) << 6;
+				chr |= (src[i++] & 0x3F);
 				break;
 
 			case 3:
-				chr |= (_str[i++] & 0x0F) << 12;
-				chr |= (_str[i++] & 0x3F) << 6;
-				chr |= (_str[i++] & 0x3F);
+				chr |= (src[i++] & 0x0F) << 12;
+				chr |= (src[i++] & 0x3F) << 6;
+				chr |= (src[i++] & 0x3F);
 				break;
 
 			case 2:
-				chr |= (_str[i++] & 0x1F) << 6;
-				chr |= (_str[i++] & 0x3F);
+				chr |= (src[i++] & 0x1F) << 6;
+				chr |= (src[i++] & 0x3F);
 				break;
 
 			default:
-				chr = (_str[i++] & 0x7F);
+				chr = (src[i++] & 0x7F);
 				break;
 			}
 		} else {
@@ -105,12 +104,12 @@ void String::encodeUTF8(const U32String &src) {
 	char writingBytes[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
 
 	uint i = 0;
-	while (i < _size) {
+	while (i < src.size()) {
 		unsigned short bytesToWrite = 0;
 		const uint32 byteMask = 0xBF;
 		const uint32 byteMark = 0x80;
 
-		uint32 ch = _str[i++];
+		uint32 ch = src[i++];
 		if (ch < (uint32)0x80) {
 			bytesToWrite = 1;
 		} else if (ch < (uint32)0x800) {
@@ -272,12 +271,12 @@ void U32String::decodeOneByte(const char *src, uint32 len, CodePage page) {
 	ensureCapacity(len, false);
 
 	for (uint i = 0; i < _size; ++i) {
-		if ((_str[i] & 0x80) == 0) {
-			operator+=(_str[i]);
+		if ((src[i] & 0x80) == 0) {
+			operator+=(src[i]);
 			continue;
 		}
 
-		operator+=(conversionTable[_str[i] & 0x7f]);
+		operator+=(conversionTable[src[i] & 0x7f]);
 	}
 }
 
