@@ -245,8 +245,9 @@ public:
 	U32String decode(CodePage page = kUtf8) const;
 
 protected:
-	void decodeUTF8(U32String &dst) const;
-	void decodeOneByte(U32String &dst, CodePage page) const;
+	void encodeUTF8(const U32String &src);
+	void encodeOneByte(const U32String &src, CodePage page);
+	void encodeInternal(const U32String &src, CodePage page);
 };
 
 // Append two strings to form a new (temp) string

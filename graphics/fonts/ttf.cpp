@@ -31,7 +31,7 @@
 #include "graphics/font.h"
 #include "graphics/surface.h"
 
-#include "common/encoding.h"
+#include "common/ustr.h"
 #include "common/file.h"
 #include "common/config-manager.h"
 #include "common/singleton.h"

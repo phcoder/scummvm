@@ -24,7 +24,7 @@
 #define TESTBED_ENCODING_H
 
 #include "testbed/testsuite.h"
-#include "common/encoding.h"
+#include "common/str.h"
 
 namespace Testbed {
 

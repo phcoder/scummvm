@@ -130,9 +130,11 @@ public:
 	static Common::U32String decodeUTF16Native(uint16 *start, uint len);
 
 private:
-	void encodeUTF8(String &dst) const;
-	void encodeOneByte(String &dst, CodePage page) const;
-	void initWithCStr(const char *str, uint32 len, CodePage page);
+	void decodeInternal(const char *str, uint32 len, CodePage page);
+	void decodeOneByte(const char *str, uint32 len, CodePage page);
+	void decodeUTF8(const char *str, uint32 len);
+		
+	friend class String;
 };
 
 U32String operator+(const U32String &x, const U32String &y);

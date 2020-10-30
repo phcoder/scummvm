@@ -20,7 +20,6 @@
  *
  */
 
-#include "common/encoding.h"
 #include "common/system.h"
 #include "engines/testbed/encoding.h"
 
