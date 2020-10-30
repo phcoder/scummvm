@@ -91,6 +91,96 @@ void U32String::decodeUTF8(const char *src, uint32 len) {
 
 const uint16 invalidCode = 0xFFFD;
 
+void U32String::decodeWindows949(const char *src, uint32 len) {
+	ensureCapacity(len, false);
+
+	for (uint i = 0; i < len; i++) {
+		uint8 high = src[i++];
+
+		if ((high & 0x80) == 0x00) {
+			operator+=(high);
+			continue;
+		}
+
+		if (high == 0x80 || high == 0xff) {
+			operator+=(invalidCode);
+			continue;
+		}
+
+		if (i >= len) {
+			operator+=(invalidCode);
+			continue;
+		}
+
+		uint8 low = src[i++];
+		uint lowidx = 0;
+		if (low >= 0x41 && low <= 0x5a)
+			lowidx = low - 0x41;
+		else if (low >= 0x61 && low <= 0x7a)
+			lowidx = low - 0x61 + 0x1a;
+		else if (low >= 0x81 && low <= 0xfe)
+			lowidx = low - 0x81 + 0x1a * 2;
+		else {
+			operator+=(invalidCode);
+			continue;
+		}
+		uint16 idx = (high - 0x81) * 0xb2 + lowidx;
+
+		operator+=(kWindows949ConversionTable[idx]);
+	}
+}
+
+void String::encodeWindows949(const U32String &src) {
+	static const uint16 *reverseTable;
+
+	ensureCapacity(src.size() * 2, false);
+
+	if (!reverseTable) {
+		uint16 *rt = new uint16[0x10000];
+		memset(rt, 0, sizeof(rt[0]) * 0x10000);
+
+		for (uint highidx = 0; highidx < 0x7e; highidx++)
+			for (uint lowidx = 0; lowidx < 0xb2; lowidx++) {
+				uint8 high = highidx + 0x81;
+				uint8 low = 0;
+				uint16 unicode = kWindows949ConversionTable[highidx * 0xb2 + lowidx];
+
+				if (lowidx < 0x1a)
+					low = 0x41 + lowidx;
+				else if (lowidx < 0x1a)
+					low = 0x61 + lowidx - 0x1a;
+				else
+					low = 0x81 + lowidx - 0x1a * 2;
+				rt[unicode] = (high << 8) | low;
+			}
+
+		reverseTable = rt;
+	}
+
+	for (uint i = 0; i < src.size(); i++) {
+		uint32 point = src[i++];
+
+		if (point < 0x80) {
+			operator+=(point);
+			continue;
+		}
+
+		if (point > 0x10000) {
+			operator+=('?');
+			continue;
+		}
+
+		uint16 rev = reverseTable[point];
+		if (point > 0x10000 || rev == 0) {
+			operator+=('?');
+			continue;
+		}
+
+		operator+=(rev >> 8);
+		operator+=(rev & 0xff);
+	}
+}
+
 // //TODO: This is a quick and dirty converter. Refactoring needed:
 // 1. Original version has an option for performing strict / nonstrict
 //    conversion for the 0xD800...0xDFFF interval
@@ -314,14 +404,19 @@ void String::encodeOneByte(const U32String &src, CodePage page) {
 }
 
 void String::encodeInternal(const U32String &src, CodePage page) {
-	if (page == kUtf8) {
+	switch(page) {
+	case kUtf8:
 		encodeUTF8(src);
-	} else {
+		break;
+	case kWindows949:
+		encodeWindows949(src);
+		break;
+	default:
 		encodeOneByte(src, page);
+		break;
 	}
 	// TODO:
 	// "MS932", /* kWindows932 */
-	// "MSCP949", /* kWindows949 */
 	// "CP950"  /* kWindows950 */
 }
 
@@ -347,10 +442,16 @@ void U32String::decodeInternal(const char *str, uint32 len, CodePage page) {
 	_storage[0] = 0;
 	_size = 0;
 
-	if (page == kUtf8) {
+	switch(page) {
+	case kUtf8:
 		decodeUTF8(str, len);
-	} else {
+		break;
+	case kWindows949:
+		decodeWindows949(str, len);
+		break;
+	default:
 		decodeOneByte(str, len, page);
+		break;
 	}
 }
 

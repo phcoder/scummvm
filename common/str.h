@@ -246,6 +246,7 @@ public:
 
 protected:
 	void encodeUTF8(const U32String &src);
+    	void encodeWindows949(const U32String &src);
 	void encodeOneByte(const U32String &src, CodePage page);
 	void encodeInternal(const U32String &src, CodePage page);
 

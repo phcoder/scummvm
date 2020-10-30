@@ -16,6 +16,7 @@ extern const uint16 kMacCentralEuropeConversionTable[128];
 extern const uint16 kLatin1ConversionTable[128];
 extern const uint16 kLatin2ConversionTable[128];
 extern const uint16 kDos850ConversionTable[128];
+extern const uint16 kWindows949ConversionTable[0x7e * 0xb2];
 
 }
 
