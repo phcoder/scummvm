@@ -231,7 +231,7 @@ void String::replace(uint32 posOri, uint32 countOri, const char *str,
 		makeUnique();
 
 		// Pull the remainder string back
-		for (uint32 i = posOri + countDest; i < _size; i++)
+		for (uint32 i = posOri + countDest; i + offset <= _size; i++)
 			_str[i] = _str[i + offset];
 
 		_size -= offset;
