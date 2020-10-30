@@ -95,6 +95,8 @@ public:
 	U32String &operator=(const char *str);
 	U32String &operator+=(const U32String &str);
 	U32String &operator+=(value_type c);
+	using BaseString<uint32>::operator==;
+	using BaseString<uint32>::operator!=;
 	bool operator==(const String &x) const;
 	bool operator==(const char *x) const;
 	bool operator!=(const String &x) const;
