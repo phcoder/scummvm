@@ -126,7 +126,7 @@ void U32String::decodeWindows949(const char *src, uint32 len) {
 		}
 		uint16 idx = (high - 0x81) * 0xb2 + lowidx;
 
-		operator+=(kWindows949ConversionTable[idx]);
+		operator+=(kWindows949ConversionTable[idx] ?: invalidCode);
 	}
 }
 
