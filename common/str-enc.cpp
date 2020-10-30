@@ -185,7 +185,7 @@ decodeUTF16Template(Native, READ_UINT16)
 static const int kMaxCharSingleByte = 0x3000;
 
 
-static const uint32 *
+static const uint16 *
 getConversionTable(CodePage page) {
 	switch (page) {
 	case kWindows1250:
@@ -243,7 +243,7 @@ static const ReverseTablePrefixTreeLevel1 *
 getReverseConversionTable(CodePage page) {
 	if (reverseTables[page].valid)
 		return &reverseTables[page];
-	const uint32 *conversionTable = getConversionTable(page);
+	const uint16 *conversionTable = getConversionTable(page);
 	if (!conversionTable)
 		return nullptr;
 	reverseTables[page].valid = true;
@@ -262,7 +262,7 @@ getReverseConversionTable(CodePage page) {
 }
 
 void U32String::decodeOneByte(const char *src, uint32 len, CodePage page) {
-    	const uint32 *conversionTable = getConversionTable(page);
+    	const uint16 *conversionTable = getConversionTable(page);
 
 	if (conversionTable == nullptr) {
 		return;
