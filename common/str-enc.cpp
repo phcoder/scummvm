@@ -157,7 +157,7 @@ void String::encodeWindows949(const U32String &src) {
 		reverseTable = rt;
 	}
 
-	for (uint i = 0; i < src.size(); i++) {
+	for (uint i = 0; i < src.size();) {
 		uint32 point = src[i++];
 
 		if (point < 0x80) {
