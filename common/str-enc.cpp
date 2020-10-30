@@ -147,7 +147,7 @@ void String::encodeWindows949(const U32String &src) {
 
 				if (lowidx < 0x1a)
 					low = 0x41 + lowidx;
-				else if (lowidx < 0x1a)
+				else if (lowidx < 0x1a * 2)
 					low = 0x61 + lowidx - 0x1a;
 				else
 					low = 0x81 + lowidx - 0x1a * 2;
