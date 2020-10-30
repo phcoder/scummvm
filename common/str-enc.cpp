@@ -94,7 +94,7 @@ const uint16 invalidCode = 0xFFFD;
 void U32String::decodeWindows949(const char *src, uint32 len) {
 	ensureCapacity(len, false);
 
-	for (uint i = 0; i < len; i++) {
+	for (uint i = 0; i < len;) {
 		uint8 high = src[i++];
 
 		if ((high & 0x80) == 0x00) {
