@@ -628,13 +628,14 @@ void U32String::decodeOneByte(const char *src, uint32 len, CodePage page) {
 
 	ensureCapacity(len, false);
 
-	for (uint i = 0; i < _size; ++i) {
+	for (uint i = 0; i < len; ++i) {
 		if ((src[i] & 0x80) == 0) {
 			operator+=(src[i]);
 			continue;
 		}
 
-		operator+=(conversionTable[src[i] & 0x7f]);
+		uint16 val = conversionTable[src[i] & 0x7f];
+		operator+=(val ? val : invalidCode);
 	}
 }
 
