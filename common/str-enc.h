@@ -49,7 +49,7 @@ enum CodePage {
 
 	kLatin1 = kISO8859_1,
 	kBig5 = kWindows950,
-	kLastEncoding = kMacCentralEurope
+	kLastEncoding = kDos850
 };
 
 U32String convertUtf8ToUtf32(const String &str);
