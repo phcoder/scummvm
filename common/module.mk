@@ -37,6 +37,7 @@ MODULE_OBJS := \
 	streamdebug.o \
 	str-enc.o \
 	encodings/singlebyte.o \
+	encodings/windows932.o \
 	encodings/windows949.o \
 	encodings/windows950.o \
 	stuffit.o \

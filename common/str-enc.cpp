@@ -91,6 +91,53 @@ void U32String::decodeUTF8(const char *src, uint32 len) {
 
 const uint16 invalidCode = 0xFFFD;
 
+void U32String::decodeWindows932(const char *src, uint32 len) {
+	ensureCapacity(len, false);
+
+	for (uint i = 0; i < len;) {
+		uint8 high = src[i++];
+
+		if ((high & 0x80) == 0x00) {
+			operator+=(high);
+			continue;
+		}
+
+		// Katakana
+		if (high >= 0xa1 && high <= 0xdf) {
+			operator+=(high - 0xa1 + 0xFF61);
+			continue;
+		}
+
+		if (i >= len) {
+			operator+=(invalidCode);
+			continue;
+		}
+
+		uint8 low = src[i++];
+		if (low < 0x40) {
+			operator+=(invalidCode);
+			continue;
+		}
+		uint8 lowidx = low - 0x40;
+		uint8 highidx;
+
+		if (high >= 0x81 && high <= 0x84)
+			highidx = high - 0x81;
+		else if (high >= 0x87 && high <= 0x9f)
+			highidx = high - 0x87 + 4;
+		else if (high >= 0xe0 && high <= 0xee)
+			highidx = high - 0xe0 + 29;
+		else {
+			operator+=(invalidCode);
+			continue;
+		}
+
+		// Main range
+		uint16 val = kWindows932ConversionTable[highidx * 192 + lowidx];
+		operator+=(val ? val : invalidCode);
+	}
+}
+
 void U32String::decodeWindows949(const char *src, uint32 len) {
 	ensureCapacity(len, false);
 
@@ -181,6 +228,64 @@ void U32String::decodeWindows950(const char *src, uint32 len) {
 			operator+=(0xe000 + (157 * (high-0xfa)) + lowidx);
 			continue;
 		}
+	}
+}
+
+void String::encodeWindows932(const U32String &src) {
+	static uint16 *reverseTable;
+
+	ensureCapacity(src.size() * 2, false);
+
+	if (!reverseTable) {
+		uint16 *rt = new uint16[0x10000];
+		memset(rt, 0, sizeof(rt[0]) * 0x10000);
+		for (uint highidx = 0; highidx < 58; highidx++)
+			for (uint lowidx = 0; lowidx < 192; lowidx++) {
+				uint8 high = 0;
+				uint8 low = lowidx + 0x40;
+				uint16 unicode = kWindows932ConversionTable[highidx * 192 + lowidx];
+
+				if (highidx < 4)
+					high = highidx + 0x81;
+				else if (highidx < 29)
+					high = highidx + 0x87 - 4;
+				else
+					high = highidx + 0xe0 - 29;
+
+				rt[unicode] = (high << 8) | low;
+			}
+
+		reverseTable = rt;
+	}
+
+	for (uint i = 0; i < src.size();) {
+		uint32 point = src[i++];
+
+		if (point < 0x80) {
+			operator+=(point);
+			continue;
+		}
+
+		// Katakana
+		if (point >= 0xff61 && point <= 0xff9f) {
+			operator+=(0xa1 + (point - 0xFF61));
+			continue;
+		}
+
+		if (point > 0x10000) {
+			operator+=('?');
+			continue;
+		}
+
+		uint16 rev = reverseTable[point];
+		if (rev != 0) {
+			operator+=(rev >> 8);
+			operator+=(rev & 0xff);
+			continue;
+		}
+
+		operator+=('?');
+		continue;
 	}
 }
 
@@ -545,6 +650,9 @@ void String::encodeInternal(const U32String &src, CodePage page) {
 	case kUtf8:
 		encodeUTF8(src);
 		break;
+	case kWindows932:
+		encodeWindows932(src);
+		break;		
 	case kWindows949:
 		encodeWindows949(src);
 		break;
@@ -555,8 +663,6 @@ void String::encodeInternal(const U32String &src, CodePage page) {
 		encodeOneByte(src, page);
 		break;
 	}
-	// TODO:
-	// "MS932", /* kWindows932 */
 }
 
 U32String convertToU32String(const char *str, CodePage page) {
@@ -584,6 +690,9 @@ void U32String::decodeInternal(const char *str, uint32 len, CodePage page) {
 	switch(page) {
 	case kUtf8:
 		decodeUTF8(str, len);
+		break;
+	case kWindows932:
+		decodeWindows932(str, len);
 		break;
 	case kWindows949:
 		decodeWindows949(str, len);
