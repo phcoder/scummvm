@@ -276,7 +276,7 @@ public:
 		syncAsUint32LE(len);
 
 		if (isLoading()) {
-			uint32 *sl = new uint32[len];
+			U32String::value_type *sl = new U32String::value_type[len];
 			for (uint i = 0; i < len; i++)
 				syncAsUint32LE(sl[i]);
 			str = U32String(sl, len);

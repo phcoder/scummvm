@@ -30,7 +30,7 @@
 namespace Common {
 
 String::String(char c)
-	: BaseString() {
+	: BaseString<char>() {
 
 	_storage[0] = c;
 	_storage[1] = 0;
@@ -40,7 +40,7 @@ String::String(char c)
 
 #ifndef SCUMMVM_UTIL
 String::String(const U32String &str, Common::CodePage page)
-	: BaseString() {
+	: BaseString<char>() {
 	_storage[0] = 0;
 	*this = String(str.encode(page));
 }
@@ -175,6 +175,12 @@ bool String::contains(uint32 x) const {
 	}
 	return false;
 }
+
+#ifdef USE_CXX11
+bool String::contains(char32_t x) const {
+	return contains((uint32)x);
+}
+#endif
 
 #ifndef SCUMMVM_UTIL
 

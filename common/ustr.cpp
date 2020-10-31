@@ -28,7 +28,7 @@
 
 namespace Common {
 
-U32String::U32String(const char *str, Common::CodePage page) : BaseString() {
+U32String::U32String(const char *str, Common::CodePage page) : BaseString<u32char_type_t>() {
 	if (str == nullptr) {
 		_storage[0] = 0;
 		_size = 0;
@@ -37,20 +37,20 @@ U32String::U32String(const char *str, Common::CodePage page) : BaseString() {
 	}
 }
 
-U32String::U32String(const char *str, uint32 len, Common::CodePage page) : BaseString() {
+U32String::U32String(const char *str, uint32 len, Common::CodePage page) : BaseString<u32char_type_t>() {
 	decodeInternal(str, len, page);
 }
 
-U32String::U32String(const char *beginP, const char *endP, Common::CodePage page) : BaseString() {
+U32String::U32String(const char *beginP, const char *endP, Common::CodePage page) : BaseString<u32char_type_t>() {
 	assert(endP >= beginP);
 	decodeInternal(beginP, endP - beginP, page);
 }
 
-U32String::U32String(const String &str, Common::CodePage page) : BaseString() {
+U32String::U32String(const String &str, Common::CodePage page) : BaseString<u32char_type_t>() {
 	decodeInternal(str.c_str(), str.size(), page);
 }
 
-U32String::U32String(const UnicodeBiDiText &txt) : BaseString() {
+U32String::U32String(const UnicodeBiDiText &txt) : BaseString<u32char_type_t>() {
 	initWithValueTypeStr(txt.visual.c_str(), txt.visual.size());
 }
 

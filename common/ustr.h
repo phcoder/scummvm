@@ -53,24 +53,36 @@ class UnicodeBiDiText;
  * The presence of \0 characters in the string will cause undefined
  * behavior in some operations.
  */
-class U32String : public BaseString<uint32> {
+#ifdef USE_CXX11
+typedef char32_t u32char_type_t;
+#else
+typedef uint32 u32char_type_t;
+#endif
+
+class U32String : public BaseString<u32char_type_t> {
 public:
 	typedef uint32 unsigned_type;
 public:
 	/** Construct a new empty string. */
-	U32String() : BaseString() {}
+	U32String() : BaseString<u32char_type_t>() {}
 
 	/** Construct a new string from the given NULL-terminated C string. */
-	explicit U32String(const value_type *str) : BaseString(str) {}
+	explicit U32String(const value_type *str) : BaseString<u32char_type_t>(str) {}
 
 	/** Construct a new string containing exactly len characters read from address str. */
-	U32String(const value_type *str, uint32 len) : BaseString(str, len) {}
+	U32String(const value_type *str, uint32 len) : BaseString<u32char_type_t>(str, len) {}
+
+#ifdef USE_CXX11
+	explicit U32String(const uint32 *str) : BaseString<u32char_type_t>((const value_type *) str) {}
+	U32String(const uint32 *str, uint32 len) : BaseString<u32char_type_t>((const value_type *) str, len) {}
+	U32String(const uint32 *beginP, const uint32 *endP) : BaseString<u32char_type_t>((const value_type *) beginP, (const value_type *) endP) {}
+#endif
 
 	/** Construct a new string containing the characters between beginP (including) and endP (excluding). */
-	U32String(const value_type *beginP, const value_type *endP) : BaseString(beginP, endP) {}
+	U32String(const value_type *beginP, const value_type *endP) : BaseString<u32char_type_t>(beginP, endP) {}
 
 	/** Construct a copy of the given string. */
-	U32String(const U32String &str) : BaseString(str) {}
+	U32String(const U32String &str) : BaseString<u32char_type_t>(str) {}
 
 	/** Construct a copy of the given unicode BiDi converted string. */
 	U32String(const UnicodeBiDiText &txt);
@@ -95,8 +107,8 @@ public:
 	U32String &operator=(const char *str);
 	U32String &operator+=(const U32String &str);
 	U32String &operator+=(value_type c);
-	using BaseString<uint32>::operator==;
-	using BaseString<uint32>::operator!=;
+	using BaseString<value_type>::operator==;
+	using BaseString<value_type>::operator!=;
 	bool operator==(const String &x) const;
 	bool operator==(const char *x) const;
 	bool operator!=(const String &x) const;
@@ -123,9 +135,13 @@ public:
 	*/
 	static char* itoa(int num, char* str, int base);
 
-	using BaseString<uint32>::insertString;
+	using BaseString<value_type>::insertString;
 	void insertString(const char *s, uint32 p, CodePage page = kUtf8);
 	void insertString(const String &s, uint32 p, CodePage page = kUtf8);
+
+	const uint32 *u32_str() const {
+		return (const uint32 *) _str;
+	}
 
 	static Common::U32String decodeUTF16BE(uint16 *start, uint len);
 	static Common::U32String decodeUTF16LE(uint16 *start, uint len);

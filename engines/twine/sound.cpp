@@ -61,6 +61,7 @@ void Sound::playFlaSample(int32 index, int32 frequency, int32 repeat, int32 x, i
 
 	int channelIdx = getFreeSampleChannelIndex();
 	if (channelIdx == -1) {
+		warning("Failed to play fla sample for index: %i - no free channel", index);
 		return;
 	}
 
@@ -81,6 +82,7 @@ void Sound::playSample(int32 index, int32 frequency, int32 repeat, int32 x, int3
 
 	int channelIdx = getFreeSampleChannelIndex();
 	if (channelIdx == -1) {
+		warning("Failed to play sample for index: %i - no free channel", index);
 		return;
 	}
 
@@ -92,7 +94,7 @@ void Sound::playSample(int32 index, int32 frequency, int32 repeat, int32 x, int3
 
 	uint8 *sampPtr = _engine->_resources->samplesTable[index];
 	int32 sampSize = _engine->_resources->samplesSizeTable[index];
-	playSample(channelIdx, index, sampPtr, sampSize, repeat, Resources::HQR_SAMPLES_FILE, DisposeAfterUse::NO);
+	playSample(channelIdx, index, sampPtr, sampSize, repeat, Resources::HQR_SAMPLES_FILE, Audio::Mixer::kPlainSoundType, DisposeAfterUse::NO);
 }
 
 void Sound::playVoxSample(int32 index) {
@@ -101,7 +103,7 @@ void Sound::playVoxSample(int32 index) {
 	}
 
 	int channelIdx = getFreeSampleChannelIndex();
-	if (channelIdx != -1) {
+	if (channelIdx == -1) {
 		warning("Failed to play vox sample for index: %i - no free channel", index);
 		return;
 	}
@@ -117,19 +119,20 @@ void Sound::playVoxSample(int32 index) {
 	if (*sampPtr != 'C') {
 		_engine->_text->hasHiddenVox = *sampPtr != '\0';
 		_engine->_text->voxHiddenIndex++;
+		*sampPtr = 'C';
 	}
 
-	playSample(channelIdx, index, sampPtr, sampSize, 1, _engine->_text->currentVoxBankFile.c_str());
+	playSample(channelIdx, index, sampPtr, sampSize, 1, _engine->_text->currentVoxBankFile.c_str(), Audio::Mixer::kSpeechSoundType);
 }
 
-bool Sound::playSample(int channelIdx, int index, uint8 *sampPtr, int32 sampSize, int32 loop, const char *name, DisposeAfterUse::Flag disposeFlag) {
+bool Sound::playSample(int channelIdx, int index, uint8 *sampPtr, int32 sampSize, int32 loop, const char *name, Audio::Mixer::SoundType soundType, DisposeAfterUse::Flag disposeFlag) {
 	Common::MemoryReadStream *stream = new Common::MemoryReadStream(sampPtr, sampSize, disposeFlag);
 	Audio::SeekableAudioStream *audioStream = Audio::makeVOCStream(stream, DisposeAfterUse::YES);
 	if (audioStream == nullptr) {
 		warning("Failed to create audio stream for %s", name);
 		return false;
 	}
-	_engine->_system->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &samplesPlaying[channelIdx], audioStream, index);
+	_engine->_system->getMixer()->playStream(soundType, &samplesPlaying[channelIdx], audioStream, index);
 	return true;
 }
 

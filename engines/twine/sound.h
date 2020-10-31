@@ -37,7 +37,7 @@ enum _Samples {
 	SoldierHit = 4,
 	ItemPopup = 11,
 	Explode = 37,
-	BitItemFound = 41,
+	BigItemFound = 41,
 	TaskCompleted = 41,
 	Hit = 86,
 	ItemFound = 97,
@@ -59,7 +59,7 @@ private:
 	/** Samples playing at a actors position */
 	int32 samplesPlayingActors[NUM_CHANNELS]{0};
 
-	bool playSample(int channelIdx, int index, uint8 *sampPtr, int32 sampSize, int32 loop, const char *name, DisposeAfterUse::Flag disposeFlag = DisposeAfterUse::YES);
+	bool playSample(int channelIdx, int index, uint8 *sampPtr, int32 sampSize, int32 loop, const char *name, Audio::Mixer::SoundType soundType = Audio::Mixer::kPlainSoundType, DisposeAfterUse::Flag disposeFlag = DisposeAfterUse::YES);
 
 	bool isChannelPlaying(int32 channel);
 
