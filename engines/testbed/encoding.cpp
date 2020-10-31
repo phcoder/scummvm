@@ -136,7 +136,7 @@ TestExitStatus Encodingtests::testConversionUnicodeMachineEndian() {
 
 	// UTF16 to UTF32
 	resultustr = Common::U32String::decodeUTF16Native((uint16 *) utf16, 6);
-	if (resultustr == nullptr || memcmp(resultustr.c_str(), utf32, 16)) {
+	if (resultustr.c_str() == nullptr || memcmp(resultustr.c_str(), utf32, 16)) {
 		Testsuite::logPrintf("UTF-16 to UTF-32 conversion differs from the expected result.");
 		return kTestFailed;
 	}
