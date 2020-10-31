@@ -513,6 +513,32 @@ decodeUTF16Template(BE, READ_BE_UINT16)
 decodeUTF16Template(LE, READ_LE_UINT16)
 decodeUTF16Template(Native, READ_UINT16)
 
+#define encodeUTF16Template(suffix, write)				\
+uint16 *U32String::encodeUTF16 ## suffix (uint *len) {			\
+	uint16 *out = new uint16[_size * 2 + 1];			\
+	uint16 *ptr = out;						\
+									\
+	for (uint i = 0; i < _size; i++) {				\
+		uint32 c = _str[i];					\
+		if (c < 0x10000) {					\
+			write(ptr++, c);				\
+			continue;					\
+		}							\
+		write (ptr++, 0xD800 | ((c >> 10) & 0x3ff));		\
+		write (ptr++, 0xDC00 | (c & 0x3ff));			\
+	}								\
+									\
+	write(ptr, 0);							\
+        if (len)							\
+		*len = ptr - out;					\
+									\
+	return out;							\
+}
+
+encodeUTF16Template(BE, WRITE_BE_UINT16)
+encodeUTF16Template(LE, WRITE_LE_UINT16)
+encodeUTF16Template(Native, WRITE_UINT16)
+
 // Upper bound on unicode codepoint in any single-byte encoding. Must be divisible by 0x100 and be strictly above large codepoint
 static const int kMaxCharSingleByte = 0x3000;
 

@@ -131,6 +131,11 @@ public:
 	static Common::U32String decodeUTF16LE(uint16 *start, uint len);
 	static Common::U32String decodeUTF16Native(uint16 *start, uint len);
 
+	/* Transform U32String into UTF-16 representation. The result must be freed. */
+	uint16 *encodeUTF16BE(uint *len);
+	uint16 *encodeUTF16LE(uint *len);
+	uint16 *encodeUTF16Native(uint *len);
+
 private:
 	void decodeInternal(const char *str, uint32 len, CodePage page);
 	void decodeOneByte(const char *str, uint32 len, CodePage page);

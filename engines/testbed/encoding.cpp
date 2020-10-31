@@ -71,61 +71,33 @@ TestExitStatus Encodingtests::testConversionUnicodeMachineEndian() {
 		return kTestFailed;
 	}
 
-#if 0
+
 	// UTF32 to UTF16
-	converter.setTo("UTF-16");
-
-	result = converter.convert((char *) utf32, 12);
-	if (result == NULL) {
+	uint16 *result16 = Common::U32String((const char *) utf32, 12).encodeUTF16Native(NULL);
+	if (result16 == NULL) {
 		Testsuite::logPrintf("UTF-32 to UTF-16 conversion isn't available");
 		return kTestFailed;
 	}
-	if (memcmp(result, utf16, 8)) {
+	if (memcmp(result16, utf16, 8)) {
 		Testsuite::logPrintf("UTF-32 to UTF-16 conversion differs from the expected result.");
-		free(result);
+		free(result16);
 		return kTestFailed;
 	}
-	free(result);
-
-	result = Common::Encoding::convert("UTF-16", "UTF-32", (char *) utf32, 12);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-32 to UTF-16 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf16, 8)) {
-		Testsuite::logPrintf("UTF-32 to UTF-16 conversion differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
+	free(result16);
 
 	// UTF8 to UTF16
-	converter.setFrom("UTF-8");
 
-	result = converter.convert((char *) utf8, 6);
-	if (result == NULL) {
+	result16 = Common::U32String((char *) utf8, 6, Common::kUtf8).encodeUTF16Native(NULL);
+	if (result16 == NULL) {
 		Testsuite::logPrintf("UTF-8 to UTF-16 conversion isn't available");
 		return kTestFailed;
 	}
-	if (memcmp(result, utf16, 8)) {
+	if (memcmp(result16, utf16, 8)) {
 		Testsuite::logPrintf("UTF-8 to UTF-16 conversion differs from the expected result.");
-		free(result);
+		free(result16);
 		return kTestFailed;
 	}
-	free(result);
-
-	result = Common::Encoding::convert("UTF-16", "UTF-8", (char *) utf8, 6);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-8 to UTF-16 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf16, 8)) {
-		Testsuite::logPrintf("UTF-8 to UTF-16 conversion differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
-#endif
+	free(result16);
 
 	// UTF8 to UTF32
 	Common::U32String resultustr = Common::String((const char *) utf8, 6).decode(Common::kUtf8);
@@ -234,34 +206,22 @@ TestExitStatus Encodingtests::testConversionUnicodeBigEndian() {
 		return kTestFailed;
 	}
 	free(result);
+#endif
 
 	// UTF8 to UTF16
-	converter.setFrom("UTF-8");
-
-	result = converter.convert((char *) utf8, 6);
-	if (result == NULL) {
+	uint16 *result16 = Common::U32String((char *) utf8, 6, Common::kUtf8).encodeUTF16BE(NULL);
+	if (result16 == NULL) {
 		Testsuite::logPrintf("UTF-8 to UTF-16 conversion isn't available");
 		return kTestFailed;
 	}
-	if (memcmp(result, utf16be, 8)) {
+	if (memcmp(result16, utf16be, 8)) {
 		Testsuite::logPrintf("UTF-8 to UTF-16 conversion differs from the expected result.");
-		free(result);
+		free(result16);
 		return kTestFailed;
 	}
-	free(result);
+	free(result16);
 
-	result = Common::Encoding::convert("UTF-16BE", "UTF-8", (char *) utf8, 6);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-8 to UTF-16 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf16be, 8)) {
-		Testsuite::logPrintf("UTF-8 to UTF-16 conversion differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
-
+#if 0
 	// UTF8 to UTF32
 	converter.setTo("UTF-32BE");
 
@@ -471,33 +431,21 @@ TestExitStatus Encodingtests::testConversionUnicodeLittleEndian() {
 		return kTestFailed;
 	}
 	free(result);
-
+#endif
 	// UTF8 to UTF16
-	converter.setFrom("UTF-8");
-
-	result = converter.convert((char *) utf8, 6);
-	if (result == NULL) {
+	uint16 *result16 = Common::U32String((char *) utf8, 6, Common::kUtf8).encodeUTF16LE(NULL);
+	if (result16 == NULL) {
 		Testsuite::logPrintf("UTF-8 to UTF-16 conversion isn't available");
 		return kTestFailed;
 	}
-	if (memcmp(result, utf16le, 8)) {
+	if (memcmp(result16, utf16le, 8)) {
 		Testsuite::logPrintf("UTF-8 to UTF-16 conversion differs from the expected result.");
-		free(result);
+		free(result16);
 		return kTestFailed;
 	}
-	free(result);
-
-	result = Common::Encoding::convert("UTF-16LE", "UTF-8", (char *) utf8, 6);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-8 to UTF-16 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf16le, 8)) {
-		Testsuite::logPrintf("UTF-8 to UTF-16 conversion differs from the expected result.");
-		free(result);
-		return kTestFailed;
-	}
-	free(result);
+	free(result16);
+	
+#if 0
 
 	// UTF8 to UTF32
 	converter.setTo("UTF-32LE");
