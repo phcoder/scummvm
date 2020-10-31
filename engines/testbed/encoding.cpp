@@ -57,7 +57,7 @@ TestExitStatus Encodingtests::testConversionUnicodeMachineEndian() {
 #endif
 
 	// UTF16 to UTF8
-	Common::String resultstr8 = Common::U32String::decodeUTF16Native((uint16 *) utf16, 6).encode(Common::kUtf8);
+	Common::String resultstr8 = Common::U32String::decodeUTF16Native((uint16 *) utf16, 3).encode(Common::kUtf8);
 	if (resultstr8.c_str() == NULL || memcmp(resultstr8.c_str(), utf8, 7)) {
 		Testsuite::logPrintf("UTF-16 to UTF-8 conversion differs from the expected result.");
 		return kTestFailed;
@@ -65,7 +65,7 @@ TestExitStatus Encodingtests::testConversionUnicodeMachineEndian() {
 
 	// UTF32 to UTF8
 
-	resultstr8 = Common::U32String((const char *) utf32, 12).encode(Common::kUtf8);
+	resultstr8 = Common::U32String((uint32 *) utf32, 3).encode(Common::kUtf8);
 	if (resultstr8.c_str() == NULL || memcmp(resultstr8.c_str(), utf8, 7)) {
 		Testsuite::logPrintf("UTF-32 to UTF-8 conversion differs from the expected result.");
 		return kTestFailed;
@@ -73,7 +73,7 @@ TestExitStatus Encodingtests::testConversionUnicodeMachineEndian() {
 
 
 	// UTF32 to UTF16
-	uint16 *result16 = Common::U32String((const char *) utf32, 12).encodeUTF16Native(NULL);
+	uint16 *result16 = Common::U32String((uint32 *) utf32, 3).encodeUTF16Native(NULL);
 	if (result16 == NULL) {
 		Testsuite::logPrintf("UTF-32 to UTF-16 conversion isn't available");
 		return kTestFailed;
@@ -107,7 +107,7 @@ TestExitStatus Encodingtests::testConversionUnicodeMachineEndian() {
 	}
 
 	// UTF16 to UTF32
-	resultustr = Common::U32String::decodeUTF16Native((uint16 *) utf16, 6);
+	resultustr = Common::U32String::decodeUTF16Native((uint16 *) utf16, 3);
 	if (resultustr.c_str() == nullptr || memcmp(resultustr.c_str(), utf32, 16)) {
 		Testsuite::logPrintf("UTF-16 to UTF-32 conversion differs from the expected result.");
 		return kTestFailed;
@@ -146,7 +146,7 @@ TestExitStatus Encodingtests::testConversionUnicodeBigEndian() {
 #endif
 
 	// UTF16 to UTF8
-	Common::String resultstr8 = Common::U32String::decodeUTF16BE((uint16 *) utf16be, 6).encode(Common::kUtf8);
+	Common::String resultstr8 = Common::U32String::decodeUTF16BE((uint16 *) utf16be, 3).encode(Common::kUtf8);
 	if (resultstr8.c_str() == NULL || memcmp(resultstr8.c_str(), utf8, 7)) {
 		Testsuite::logPrintf("UTF-16 to UTF-8 conversion differs from the expected result.");
 		return kTestFailed;
@@ -371,7 +371,7 @@ TestExitStatus Encodingtests::testConversionUnicodeLittleEndian() {
 #endif
 
 	// UTF16 to UTF8
-	Common::String resultstr8 = Common::U32String::decodeUTF16LE((uint16 *) utf16le, 6).encode(Common::kUtf8);
+	Common::String resultstr8 = Common::U32String::decodeUTF16LE((uint16 *) utf16le, 3).encode(Common::kUtf8);
 	if (resultstr8.c_str() == NULL || memcmp(resultstr8.c_str(), utf8, 7)) {
 		Testsuite::logPrintf("UTF-16 to UTF-8 conversion differs from the expected result.");
 		return kTestFailed;
