@@ -48,6 +48,7 @@ enum CodePage {
 	kDos850,
 
 	kLatin1 = kISO8859_1,
+	kBig5 = kWindows950,
 	kLastEncoding = kMacCentralEurope
 };
 

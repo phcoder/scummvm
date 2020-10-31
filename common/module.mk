@@ -38,6 +38,7 @@ MODULE_OBJS := \
 	str-enc.o \
 	encodings/singlebyte.o \
 	encodings/windows949.o \
+	encodings/windows950.o \
 	stuffit.o \
 	system.o \
 	textconsole.o \

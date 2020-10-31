@@ -135,6 +135,7 @@ private:
 	void decodeInternal(const char *str, uint32 len, CodePage page);
 	void decodeOneByte(const char *str, uint32 len, CodePage page);
 	void decodeWindows949(const char *src, uint32 len);
+    	void decodeWindows950(const char *src, uint32 len);
 	void decodeUTF8(const char *str, uint32 len);
 		
 	friend class String;

@@ -125,8 +125,62 @@ void U32String::decodeWindows949(const char *src, uint32 len) {
 			continue;
 		}
 		uint16 idx = (high - 0x81) * 0xb2 + lowidx;
+		uint16 val = kWindows949ConversionTable[idx];
 
-		operator+=(kWindows949ConversionTable[idx] ?: invalidCode);
+		operator+=(val ? val : invalidCode);
+	}
+}
+
+void U32String::decodeWindows950(const char *src, uint32 len) {
+	ensureCapacity(len, false);
+
+	for (uint i = 0; i < len;) {
+		uint8 high = src[i++];
+
+		if ((high & 0x80) == 0x00) {
+			operator+=(high);
+			continue;
+		}
+
+		// Euro symbol
+		if (high == 0x80) {
+			operator+=(0x20ac);
+			continue;
+		}
+
+		if (high == 0xff) {
+			operator+=(invalidCode);
+			continue;
+		}
+
+		if (i >= len) {
+			operator+=(invalidCode);
+			continue;
+		}
+
+		uint8 low = src[i++];
+		uint8 lowidx = low < 0x80 ? low - 0x40 : low - 0x62;
+
+		// Main range
+		if (high >= 0xa1 && high < 0xfa) {
+			uint16 val = kWindows950ConversionTable[(high - 0xa1) * 157 + lowidx];
+			operator+=(val ? val : invalidCode);
+			continue;
+		}
+
+		// PUA range
+		if (high <= 0x8d) {
+			operator+=(0xeeb8 + 157 * (high-0x81) + lowidx);
+			continue;
+		}
+		if (high <= 0xa0) {
+			operator+=(0xe311 + (157 * (high-0x8e)) + lowidx);
+			continue;
+		}
+		if (high >= 0xfa) {
+			operator+=(0xe000 + (157 * (high-0xfa)) + lowidx);
+			continue;
+		}
 	}
 }
 
@@ -171,13 +225,96 @@ void String::encodeWindows949(const U32String &src) {
 		}
 
 		uint16 rev = reverseTable[point];
-		if (point > 0x10000 || rev == 0) {
+		if (rev == 0) {
 			operator+=('?');
 			continue;
 		}
 
 		operator+=(rev >> 8);
 		operator+=(rev & 0xff);
+	}
+}
+
+void String::encodeWindows950(const U32String &src) {
+	static uint16 *reverseTable;
+
+	ensureCapacity(src.size() * 2, false);
+
+	if (!reverseTable) {
+		uint16 *rt = new uint16[0x10000];
+		memset(rt, 0, sizeof(rt[0]) * 0x10000);
+
+		for (uint highidx = 0; highidx < 90; highidx++)
+			for (uint lowidx = 0; lowidx < 157; lowidx++) {
+				uint8 high = highidx + 0xa1;
+				uint8 low = 0;
+				uint16 unicode = kWindows950ConversionTable[highidx * 157 + lowidx];
+
+				if (lowidx <= 0x3e)
+					low = 0x40 + lowidx;
+				else
+					low = 0x62 + lowidx;
+				rt[unicode] = (high << 8) | low;
+			}
+
+		reverseTable = rt;
+	}
+
+	for (uint i = 0; i < src.size();) {
+		uint32 point = src[i++];
+
+		if (point < 0x80) {
+			operator+=(point);
+			continue;
+		}
+
+		if (point > 0x10000) {
+			operator+=('?');
+			continue;
+		}
+
+		// Euro symbol
+		if (point == 0x20ac) {
+			operator+=(0x80);
+			continue;
+		}		
+
+		uint16 rev = reverseTable[point];
+		if (rev != 0) {
+			operator+=(rev >> 8);
+			operator+=(rev & 0xff);
+			continue;
+		}
+
+		// PUA range
+		if (point >= 0xe000 && point <= 0xf848) {
+			byte lowidx = 0, high = 0, low = 0;
+			if (point <= 0xe310) {
+				high = (point - 0xe000) / 157 + 0xfa;
+				lowidx = (point - 0xe000) % 157;
+			} else if (point <= 0xeeb7) {
+				high = (point - 0xe311) / 157 + 0x8e;
+				lowidx = (point - 0xe311) % 157;
+			} else if (point <= 0xf6b0) {
+				high = (point - 0xeeb8) / 157 + 0x81;
+				lowidx = (point - 0xeeb8) % 157;
+			} else {
+				high = (point - 0xf672) / 157 + 0xc6;
+				lowidx = (point - 0xf672) % 157;
+			}
+
+			if (lowidx <= 0x3e)
+				low = 0x40 + lowidx;
+			else
+				low = 0x62 + lowidx;
+
+			operator+=(high);
+			operator+=(low);
+			reverseTable[point] = (high << 8) | low;
+		}
+
+		operator+=('?');
+		continue;
 	}
 }
 
@@ -411,13 +548,15 @@ void String::encodeInternal(const U32String &src, CodePage page) {
 	case kWindows949:
 		encodeWindows949(src);
 		break;
+	case kWindows950:
+		encodeWindows950(src);
+		break;
 	default:
 		encodeOneByte(src, page);
 		break;
 	}
 	// TODO:
 	// "MS932", /* kWindows932 */
-	// "CP950"  /* kWindows950 */
 }
 
 U32String convertToU32String(const char *str, CodePage page) {
@@ -448,6 +587,9 @@ void U32String::decodeInternal(const char *str, uint32 len, CodePage page) {
 		break;
 	case kWindows949:
 		decodeWindows949(str, len);
+		break;
+	case kWindows950:
+		decodeWindows950(str, len);
 		break;
 	default:
 		decodeOneByte(str, len, page);
