@@ -380,7 +380,7 @@ void String::encodeWindows950(const U32String &src) {
 
 		// Euro symbol
 		if (point == 0x20ac) {
-			operator+=(0x80);
+			operator+=((char) 0x80);
 			continue;
 		}		
 
