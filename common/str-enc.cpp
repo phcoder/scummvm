@@ -514,7 +514,7 @@ decodeUTF16Template(LE, READ_LE_UINT16)
 decodeUTF16Template(Native, READ_UINT16)
 
 #define encodeUTF16Template(suffix, write)				\
-uint16 *U32String::encodeUTF16 ## suffix (uint *len) {			\
+uint16 *U32String::encodeUTF16 ## suffix (uint *len) const {		\
 	uint16 *out = new uint16[_size * 2 + 1];			\
 	uint16 *ptr = out;						\
 									\
