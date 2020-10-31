@@ -46,7 +46,6 @@
 #include "common/error.h"
 #include "common/textconsole.h"
 #include "common/translation.h"
-#include "common/encoding.h"
 #include "engines/engine.h"
 
 #include "backends/platform/android/android.h"
@@ -229,7 +228,7 @@ void JNI::displayMessageOnOSD(const Common::U32String &msg) {
 	// called from common/osd_message_queue, method: OSDMessageQueue::pollEvent()
 	JNIEnv *env = JNI::getEnv();
 
-	jstring java_msg = convertToJString(env, msg.encode());
+	jstring java_msg = convertToJString(env, msg);
 	if (java_msg == nullptr) {
 		// Show a placeholder indicative of the translation error instead of silent failing
 		java_msg = env->NewStringUTF("?");
@@ -304,7 +303,7 @@ Common::U32String JNI::getTextFromClipboard() {
 
 bool JNI::setTextInClipboard(const Common::U32String &text) {
 	JNIEnv *env = JNI::getEnv();
-	jstring javaText = convertToJString(env, text.encode());
+	jstring javaText = convertToJString(env, text);
 
 	bool success = env->CallBooleanMethod(_jobj, _MID_setTextInClipboard, javaText);
 
@@ -337,7 +336,7 @@ bool JNI::isConnectionLimited() {
 
 void JNI::setWindowCaption(const Common::String &caption) {
 	JNIEnv *env = JNI::getEnv();
-	jstring java_caption = convertToJString(env, caption.decode(kISO8859_1).decode(kUtf8));
+	jstring java_caption = convertToJString(env, caption.decode(kISO8859_1));
 
 	env->CallVoidMethod(_jobj, _MID_setWindowCaption, java_caption);
 
