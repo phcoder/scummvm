@@ -153,7 +153,7 @@ bool Scene::loadSceneLBA1() {
 		act->entity = stream.readUint16LE();
 
 		if (!act->staticFlags.bIsSpriteActor) {
-			act->entityDataSize = _engine->_hqrdepack->hqrGetallocEntry(&act->entityDataPtr, Resources::HQR_FILE3D_FILE, act->entity);
+			act->entityDataSize = HQR::getAllocEntry(&act->entityDataPtr, Resources::HQR_FILE3D_FILE, act->entity);
 		}
 
 		act->body = stream.readByte();
@@ -224,7 +224,7 @@ bool Scene::loadSceneLBA1() {
 
 bool Scene::initScene(int32 index) {
 	// load scene from file
-	_currentSceneSize = _engine->_hqrdepack->hqrGetallocEntry(&currentScene, Resources::HQR_SCENE_FILE, index);
+	_currentSceneSize = HQR::getAllocEntry(&currentScene, Resources::HQR_SCENE_FILE, index);
 	if (_currentSceneSize == 0) {
 		return false;
 	}
@@ -347,13 +347,10 @@ ActorStruct *Scene::getActor(int32 actorIdx) {
 }
 
 void Scene::processEnvironmentSound() {
-	int16 s, currentAmb, decal, repeat;
-	int16 sampleIdx = -1;
-
 	if (_engine->lbaTime >= sampleAmbienceTime) {
-		currentAmb = _engine->getRandomNumber(4); // random ambiance
+		int16 currentAmb = _engine->getRandomNumber(4); // random ambiance
 
-		for (s = 0; s < 4; s++) {
+		for (int32 s = 0; s < 4; s++) {
 			if (!(samplePlayed & (1 << currentAmb))) { // if not already played
 				samplePlayed |= (1 << currentAmb);     // make sample played
 
@@ -361,12 +358,12 @@ void Scene::processEnvironmentSound() {
 					samplePlayed = 0;
 				}
 
-				sampleIdx = sampleAmbiance[currentAmb];
+				int16 sampleIdx = sampleAmbiance[currentAmb];
 				if (sampleIdx != -1) {
-					decal = sampleRound[currentAmb];
-					repeat = sampleRepeat[currentAmb];
+					int16 decal = sampleRound[currentAmb];
+					int16 repeat = sampleRepeat[currentAmb];
 
-					_engine->_sound->playSample(sampleIdx, (0x1000 + _engine->getRandomNumber(decal) - (decal / 2)), repeat, 110, -1, 110);
+					_engine->_sound->playSample(sampleIdx, (4096 + _engine->getRandomNumber(decal) - (decal / 2)), repeat, 110, -1, 110);
 					break;
 				}
 			}

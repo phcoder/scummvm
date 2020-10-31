@@ -52,7 +52,7 @@
 #include "twine/gamestate.h"
 #include "twine/grid.h"
 #include "twine/holomap.h"
-#include "twine/hqrdepack.h"
+#include "twine/hqr.h"
 #include "twine/input.h"
 #include "twine/interface.h"
 #include "twine/menu.h"
@@ -86,7 +86,6 @@ TwinEEngine::TwinEEngine(OSystem *system, Common::Language language, uint32 flag
 	_gameState = new GameState(this);
 	_grid = new Grid(this);
 	_movements = new Movements(this);
-	_hqrdepack = new HQRDepack();
 	_interface = new Interface(this);
 	_menu = new Menu(this);
 	_flaMovies = new FlaMovies(this);
@@ -116,7 +115,6 @@ TwinEEngine::~TwinEEngine() {
 	delete _gameState;
 	delete _grid;
 	delete _movements;
-	delete _hqrdepack;
 	delete _interface;
 	delete _menu;
 	delete _flaMovies;
@@ -650,7 +648,7 @@ int32 TwinEEngine::runGameEngine() { // mainLoopInteration
 					_animations->initAnim(kLandDeath, 4, 0, 0);
 					actor->controlMode = ControlMode::kNoMove;
 				} else {
-					_sound->playSample(37, getRandomNumber(2000) + 3096, 1, actor->x, actor->y, actor->z, a);
+					_sound->playSample(Samples::Explode, getRandomNumber(2000) + 3096, 1, actor->x, actor->y, actor->z, a);
 
 					if (a == _scene->mecaPinguinIdx) {
 						_extra->addExtraExplode(actor->x, actor->y, actor->z);
@@ -697,7 +695,7 @@ int32 TwinEEngine::runGameEngine() { // mainLoopInteration
 					if ((brickSound & 0xF) == 1) {
 						if (a) { // all other actors
 							int32 rnd = getRandomNumber(2000) + 3096;
-							_sound->playSample(37, rnd, 1, actor->x, actor->y, actor->z, a);
+							_sound->playSample(Samples::Explode, rnd, 1, actor->x, actor->y, actor->z, a);
 							if (actor->bonusParameter & 0x1F0) {
 								if (!(actor->bonusParameter & 1)) {
 									_actor->processActorExtraBonus(a);

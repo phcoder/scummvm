@@ -30,7 +30,7 @@
 #include "twine/collision.h"
 #include "twine/flamovies.h"
 #include "twine/grid.h"
-#include "twine/hqrdepack.h"
+#include "twine/hqr.h"
 #include "twine/movements.h"
 #include "twine/resources.h"
 #include "twine/text.h"
@@ -65,7 +65,7 @@ void Sound::playFlaSample(int32 index, int32 frequency, int32 repeat, int32 x, i
 	}
 
 	uint8 *sampPtr;
-	const int32 sampSize = _engine->_hqrdepack->hqrGetallocEntry(&sampPtr, Resources::HQR_FLASAMP_FILE, index);
+	const int32 sampSize = HQR::getAllocEntry(&sampPtr, Resources::HQR_FLASAMP_FILE, index);
 	if (sampSize == 0) {
 		warning("Failed to load %s", Resources::HQR_FLASAMP_FILE);
 		return;
@@ -83,7 +83,6 @@ void Sound::playSample(int32 index, int32 frequency, int32 repeat, int32 x, int3
 	if (channelIdx == -1) {
 		return;
 	}
-
 
 	if (actorIdx != -1) {
 		setSamplePosition(channelIdx, x, y, z);
@@ -103,11 +102,16 @@ void Sound::playVoxSample(int32 index) {
 
 	int channelIdx = getFreeSampleChannelIndex();
 	if (channelIdx != -1) {
+		warning("Failed to play vox sample for index: %i - no free channel", index);
 		return;
 	}
 
 	uint8 *sampPtr = nullptr;
-	int32 sampSize = _engine->_hqrdepack->hqrGetallocVoxEntry(&sampPtr, _engine->_text->currentVoxBankFile.c_str(), index, _engine->_text->voxHiddenIndex);
+	int32 sampSize = HQR::getAllocVoxEntry(&sampPtr, _engine->_text->currentVoxBankFile.c_str(), index, _engine->_text->voxHiddenIndex);
+	if (sampSize == 0) {
+		warning("Failed to get vox sample for index: %i", index);
+		return;
+	}
 
 	// Fix incorrect sample files first byte
 	if (*sampPtr != 'C') {
