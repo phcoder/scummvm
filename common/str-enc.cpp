@@ -568,8 +568,12 @@ getConversionTable(CodePage page) {
 		return kLatin1ConversionTable;
 	case kISO8859_2:
 		return kLatin2ConversionTable;
+	case kISO8859_5:
+		return kISO5ConversionTable;
 	case kDos850:
 		return kDos850ConversionTable;
+	case kASCII:
+		return kASCIIConversionTable;
 
 	case kCodePageInvalid:
 	// Multibyte encodings. Can't be represented in simple table way
@@ -607,7 +611,7 @@ getReverseConversionTable(CodePage page) {
 	reverseTables[page].valid = true;
 	for (uint i = 0; i < 0x80; i++) {
 		uint32 c = conversionTable[i];
-		if (c >= kMaxCharSingleByte)
+		if (c == 0 || c >= kMaxCharSingleByte)
 			continue;
 		if (!reverseTables[page].next[c >> 8]) {
 			reverseTables[page].next[c >> 8] = new ReverseTablePrefixTreeLevel2();
@@ -623,7 +627,7 @@ void U32String::decodeOneByte(const char *src, uint32 len, CodePage page) {
     	const uint16 *conversionTable = getConversionTable(page);
 
 	if (conversionTable == nullptr) {
-		return;
+		conversionTable = kASCIIConversionTable;
 	}
 
 	ensureCapacity(len, false);
