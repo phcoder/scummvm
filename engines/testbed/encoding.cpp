@@ -566,7 +566,6 @@ TestExitStatus Encodingtests::testConversionUnicodeLittleEndian() {
 	return kTestPassed;
 }
 
-#if 0
 TestExitStatus Encodingtests::testCyrillicTransliteration() {
 	Common::String info = "Cyrillic transliteration test. Multiple conversions between unicode, iso-8859-5 and ASCII will be performed.";
 
@@ -581,75 +580,38 @@ TestExitStatus Encodingtests::testCyrillicTransliteration() {
 	unsigned char iso_8859_5[] = {0xB7, 0xD4, 0xE0, 0xD0, 0xD2, 0xE1, 0xE2, 0xD2, 0xE3, 0xD9, 0xE2, 0xD5, 0};
 	unsigned char ascii[] = "Zdravstvujte";
 
-	Common::Encoding converter("ASCII", "UTF-8");
-	char *result = converter.convert((char *)utf8, 24);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-8 to ASCII conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, ascii, 13)) {
+	Common::String result = Common::U32String((const char *) utf8, 24, Common::kUtf8).encode(Common::kASCII);
+	if (memcmp(result.c_str(), ascii, 13)) {
 		Testsuite::logPrintf("UTF-8 to ASCII conversion isn'differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
 
-	converter.setFrom("iso-8859-5");
-	result = converter.convert((char *)iso_8859_5, 12);
-	if (result == NULL) {
-		Testsuite::logPrintf("iso-8859-5 to ASCII conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, ascii, 13)) {
+	result = Common::U32String((const char *) iso_8859_5, 12, Common::kISO8859_5).encode(Common::kASCII);
+	if (memcmp(result.c_str(), ascii, 13)) {
 		Testsuite::logPrintf("iso-8859-5 to ASCII conversion differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
 
-	converter.setTo("UTF-8");
-	result = converter.convert((char *)iso_8859_5, 12);
-	if (result == NULL) {
-		Testsuite::logPrintf("iso-8859-5 to UTF-8 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, utf8, 25)) {
+	result = Common::U32String((const char *) iso_8859_5, 12, Common::kISO8859_5).encode(Common::kUtf8);
+	if (memcmp(result.c_str(), utf8, 25)) {
 		Testsuite::logPrintf("iso-8859-5 to UTF-differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
 
-	converter.setTo("iso-8859-5");
-	converter.setFrom("UTF-8");
-	result = converter.convert((char *)utf8, 24);
-	if (result == NULL) {
-		Testsuite::logPrintf("UTF-8 to iso-8859-5 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, iso_8859_5, 13)) {
+	result = Common::U32String((const char *) utf8, 24, Common::kUtf8).encode(Common::kISO8859_5);
+	if (memcmp(result.c_str(), iso_8859_5, 13)) {
 		Testsuite::logPrintf("UTF-8 to iso-8859-differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
 
 	// this should stay the same
-	converter.setFrom("ASCII");
-	result = converter.convert((char *)ascii, 12);
-	if (result == NULL) {
-		Testsuite::logPrintf("ASCII to iso-8859-5 conversion isn't available");
-		return kTestFailed;
-	}
-	if (memcmp(result, ascii, 13)) {
+	result = Common::U32String((const char *) ascii, 12, Common::kASCII).encode(Common::kISO8859_5);
+	if (memcmp(result.c_str(), ascii, 13)) {
 		Testsuite::logPrintf("ASCII to iso-8859-5 conversion differs from the expected result.");
-		free(result);
 		return kTestFailed;
 	}
-	free(result);
 	return kTestPassed;
 }
-#endif
 
 TestExitStatus Encodingtests::testOtherConversions() {
 	Common::String info = "Other conversions test. Some regular encoding conversions will be performed.";
@@ -669,25 +631,25 @@ TestExitStatus Encodingtests::testOtherConversions() {
 
 	Common::String result = Common::U32String((const char *) cp850, 5, Common::kDos850).encode(Common::kUtf8);
 	if (result.c_str() == nullptr || memcmp(result.c_str(), utf8_1, 9)) {
-		Testsuite::logPrintf("CP850 to UTF-8 conversion isn'differs from the expected result.");
+		Testsuite::logPrintf("CP850 to UTF-8 conversion differs from the expected result.");
 		return kTestFailed;
 	}
 
 	result = Common::U32String((const char *) utf8_1, 8, Common::kUtf8).encode(Common::kDos850);
 	if (result.c_str() == nullptr || memcmp(result.c_str(), cp850, 6)) {
-		Testsuite::logPrintf("CP850 to UTF-8 conversion isn'differs from the expected result.");
+		Testsuite::logPrintf("UTF-8 to CP850 conversion differs from the expected result.");
 		return kTestFailed;
 	}
 
 	result = Common::U32String((const char *) iso_8859_2, 7, Common::kISO8859_2).encode(Common::kUtf8);
 	if (result.c_str() == nullptr || memcmp(result.c_str(), utf8_2, 11)) {
-		Testsuite::logPrintf("CP850 to UTF-8 conversion isn'differs from the expected result.");
+		Testsuite::logPrintf("Latin2 to UTF-8 conversion isn'differs from the expected result.");
 		return kTestFailed;
 	}
 
 	result = Common::U32String((const char *) utf8_2, 11, Common::kUtf8).encode(Common::kISO8859_2);
 	if (result.c_str() == nullptr || memcmp(result.c_str(), iso_8859_2, 8)) {
-		Testsuite::logPrintf("CP850 to UTF-8 conversion isn'differs from the expected result.");
+		Testsuite::logPrintf("UTF-8 to Latin2 conversion isn'differs from the expected result.");
 		return kTestFailed;
 	}
 
@@ -698,9 +660,7 @@ EncodingTestSuite::EncodingTestSuite() {
 	addTest("testConversionUnicodeMachineEndian", &Encodingtests::testConversionUnicodeMachineEndian, true);
 	addTest("testConversionUnicodeBigEndian", &Encodingtests::testConversionUnicodeBigEndian, true);
 	addTest("testConversionUnicodeLittleEndian", &Encodingtests::testConversionUnicodeLittleEndian, true);
-#if 0
 	addTest("testCyrillicTransliteration", &Encodingtests::testCyrillicTransliteration, true);
-#endif
 	addTest("testOtherConversions", &Encodingtests::testOtherConversions, true);
 }
 

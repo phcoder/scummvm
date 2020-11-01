@@ -284,6 +284,8 @@ void String::encodeWindows932(const U32String &src) {
 			continue;
 		}
 
+		// This codepage contains cyrillic, so no need to transliterate
+
 		operator+=('?');
 		continue;
 	}
@@ -331,6 +333,7 @@ void String::encodeWindows949(const U32String &src) {
 
 		uint16 rev = reverseTable[point];
 		if (rev == 0) {
+			// This codepage contains cyrillic, so no need to transliterate
 			operator+=('?');
 			continue;
 		}
@@ -340,7 +343,40 @@ void String::encodeWindows949(const U32String &src) {
 	}
 }
 
-void String::encodeWindows950(const U32String &src) {
+static const char g_cyrillicTransliterationTable[] = {
+	' ', 'E', 'D', 'G', 'E', 'Z', 'I', 'I', 'J', 'L', 'N', 'C', 'K', 'I', 'U', 'D',
+	'A', 'B', 'V', 'G', 'D', 'E', 'Z', 'Z', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+	'R', 'S', 'T', 'U', 'F', 'H', 'C', 'C', 'S', 'S', '\"', 'Y', '\'', 'E', 'U', 'A',
+	'a', 'b', 'v', 'g', 'd', 'e', 'z', 'z', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+	'r', 's', 't', 'u', 'f', 'h', 'c', 'c', 's', 's', '\"', 'y', '\'', 'e', 'u', 'a',
+	'e', 'e', 'd', 'g', 'e', 'z', 'i', 'i', 'j', 'l', 'n', 'c', 'k', 'i', 'u', 'd',
+};
+
+void String::translitChar(U32String::value_type point) {
+	if (point == 0xa0) {
+		operator+=(' ');
+		return;
+	}
+
+	if (point == 0xad) {
+		operator+=('-');
+		return;
+	}
+
+	if (point == 0x2116) {
+		operator+=('N');
+		return;
+	}
+
+	if (point >= 0x401 && point <= 0x45f) {
+		operator+=(g_cyrillicTransliterationTable[point - 0x400]);
+		return;
+	}
+
+	operator+=('?');
+}
+
+void String::encodeWindows950(const U32String &src, bool transliterate) {
 	static uint16 *reverseTable;
 
 	ensureCapacity(src.size() * 2, false);
@@ -416,6 +452,12 @@ void String::encodeWindows950(const U32String &src) {
 			operator+=(high);
 			operator+=(low);
 			reverseTable[point] = (high << 8) | low;
+			continue;
+		}
+
+		if (transliterate) {
+			translitChar(point);
+			continue;
 		}
 
 		operator+=('?');
@@ -643,7 +685,7 @@ void U32String::decodeOneByte(const char *src, uint32 len, CodePage page) {
 	}
 }
 
-void String::encodeOneByte(const U32String &src, CodePage page) {
+void String::encodeOneByte(const U32String &src, CodePage page, bool transliterate) {
 	const ReverseTablePrefixTreeLevel1 *conversionTable = 
 		getReverseConversionTable(page);
 
@@ -656,6 +698,11 @@ void String::encodeOneByte(const U32String &src, CodePage page) {
 				operator+=((char)c);
 				continue;
 			}
+
+			if (transliterate) {
+				translitChar(c);
+			} else
+				operator+=('?');
 		}
 		return;
 	}
@@ -673,7 +720,13 @@ void String::encodeOneByte(const U32String &src, CodePage page) {
 		unsigned char uc = l2 ? l2->end[c&0xff] : 0;
 		if (uc != 0) {
 			operator+=((char)uc);
+			continue;
 		}
+
+		if (transliterate) {
+			translitChar(c);
+		} else
+			operator+=('?');
 	}
 }
 

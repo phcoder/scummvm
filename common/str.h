@@ -251,9 +251,10 @@ protected:
 	void encodeUTF8(const U32String &src);
 	void encodeWindows932(const U32String &src);
     	void encodeWindows949(const U32String &src);
-	void encodeWindows950(const U32String &src);
-	void encodeOneByte(const U32String &src, CodePage page);
+	void encodeWindows950(const U32String &src, bool translit = true);
+	void encodeOneByte(const U32String &src, CodePage page, bool translit = true);
 	void encodeInternal(const U32String &src, CodePage page);
+	void translitChar(U32String::value_type point);
 
 	friend class U32String;
 };
