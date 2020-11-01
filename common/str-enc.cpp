@@ -650,7 +650,7 @@ void String::encodeOneByte(const U32String &src, CodePage page) {
 	ensureCapacity(src.size(), false);
 
 	if (conversionTable == nullptr) {
-		for (uint i = 0; i < _size; ++i) {
+		for (uint i = 0; i < src.size(); ++i) {
 			uint32 c = src[i];
 			if (c <= 0x7F) {
 				operator+=((char)c);
@@ -660,7 +660,7 @@ void String::encodeOneByte(const U32String &src, CodePage page) {
 		return;
 	}
 
-	for (uint i = 0; i < _size; ++i) {
+	for (uint i = 0; i < src.size(); ++i) {
 		uint32 c = src[i];
 		if (c <= 0x7F) {
 			operator+=((char)c);
