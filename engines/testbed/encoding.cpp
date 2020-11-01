@@ -26,7 +26,7 @@
 namespace Testbed {
 
 TestExitStatus Encodingtests::testConversionUnicodeMachineEndian() {
-	Testsuite::displayMessage("Encoding conversion tests.\nTo test iconv conversion, compile with --enable-iconv.\nTo test backend conversion, compile with --disable-iconv.\nSome tests may fail without iconv, because some backends support only a handful of conversions.");
+	Testsuite::displayMessage("Encoding conversion tests.");
 	Common::String info = "Unicode conversion test. Multiple conversions between UTF-8, UTF-16 and UTF-32 in the default machinge endian will be performed.";
 
 	Common::Point pt(0, 100);
