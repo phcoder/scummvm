@@ -665,7 +665,8 @@ void String::encodeOneByte(const U32String &src, CodePage page) {
 
 		if (c >= kMaxCharSingleByte)
 			continue;
-		unsigned char uc = conversionTable->next[c>>8]->end[c&0xff];
+		ReverseTablePrefixTreeLevel2 *l2 = conversionTable->next[c>>8];
+		unsigned char uc = l2 ? l2->end[c&0xff] : 0;
 		if (uc != 0) {
 			operator+=((char)uc);
 		}
