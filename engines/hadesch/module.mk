@@ -52,3 +52,51 @@ endif
 
 # Include common rules
 include $(srcdir)/rules.mk
+
+POTFILE := $(srcdir)/engines/hadesch/po/hadesch.pot
+POFILES := $(wildcard $(srcdir)/engines/hadesch/po/*.po)
+
+hadesch-updatepot:
+	cat $(srcdir)/engines/hadesch/po/POTFILES_hadesch | \
+	xgettext -f - -D $(srcdir) -d hadesch --c++ -k_ -k_s -k_c:1,2c -k_sc:1,2c -kTranscribedSound:2 --add-comments=I18N\
+		-kDECLARE_TRANSLATION_ADDITIONAL_CONTEXT:1,2c -o $(POTFILE) \
+		--copyright-holder="ScummVM Team" --package-name=ScummVM \
+		--package-version=$(VERSION) --msgid-bugs-address=scummvm-devel@lists.scummvm.org -o $(POTFILE)_
+
+	sed -e 's/SOME DESCRIPTIVE TITLE/LANGUAGE translation for ScummVM/' \
+		-e 's/UTF-8/CHARSET/' -e 's/PACKAGE/ScummVM/' $(POTFILE)_ > $(POTFILE).new
+
+	rm $(POTFILE)_
+	if test -f $(POTFILE); then \
+		sed -f $(srcdir)/po/remove-potcdate.sed < $(POTFILE) > $(POTFILE).1 && \
+		sed -f $(srcdir)/po/remove-potcdate.sed < $(POTFILE).new > $(POTFILE).2 && \
+		if cmp $(POTFILE).1 $(POTFILE).2 >/dev/null 2>&1; then \
+			rm -f $(POTFILE).new; \
+		else \
+			rm -f $(POTFILE) && \
+			mv -f $(POTFILE).new $(POTFILE); \
+		fi; \
+		rm -f $(POTFILE).1 $(POTFILE).2; \
+	else \
+		mv -f $(POTFILE).new $(POTFILE); \
+	fi;
+
+%.po: $(POTFILE)
+	msgmerge $@ $(POTFILE) -o $@.new
+	if cmp $@ $@.new >/dev/null 2>&1; then \
+		rm -f $@.new; \
+	else \
+		mv -f $@.new $@; \
+	fi;
+
+hadesch-translations-dat: devtools/create_translations
+	devtools/create_translations/create_translations $(POFILES)
+	mv translations.dat $(srcdir)/gui/themes/hadesch_translations.dat
+
+update-hadesch-translations: hadesch-updatepot $(POFILES) hadesch-translations-dat
+
+update-hadesch-translations: hadesch-updatepot $(POFILES)
+	@$(foreach file, $(POFILES), echo -n $(notdir $(basename $(file)))": ";msgfmt --statistic $(file);)
+	@rm -f messages.mo
+
+.PHONY: updatehadeschpot hadesch-translations-dat update-hadesch-translations
