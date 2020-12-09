@@ -95,41 +95,41 @@ getOutroName(RoomId dest) {
 	switch (dest) {
 	case kWallOfFameRoom:
 		if (!persistent->_argoSailedInQuest[dest][quest])
-			return TranscribedSound("philsfirst", _s("That'd be where the grand heroes and heroines of the world go to train"));
+			return TranscribedSound("philsfirst", "That'd be where the grand heroes and heroines of the world go to train");
 		break;
 	case kSeriphosRoom:
 		if ((quest == kTroyQuest || quest == kCreteQuest) && !persistent->_argoSailedInQuest[dest][quest])
-			return TranscribedSound("seriphoscretetroy", _s("This place be ruled by the evil tyrant king Polydectes"));
+			return TranscribedSound("seriphoscretetroy", "This place be ruled by the evil tyrant king Polydectes");
 		if (quest == kMedusaQuest && !persistent->_argoSailedInQuest[dest][quest])
-			return TranscribedSound("seriphosperseus", _s("Arr, Perseus be in trouble deep. Could use a hand"));
+			return TranscribedSound("seriphosperseus", "Arr, Perseus be in trouble deep. Could use a hand");
 		break;
 	case kMedIsleRoom:
 		if (quest == kMedusaQuest && !persistent->_argoSailedInQuest[dest][quest])
-			return TranscribedSound("medusabeware", _s("Beware of Medusa. She be one scary looking lady. All her mirrors be made of shatter-proof glass"));
+			return TranscribedSound("medusabeware", "Beware of Medusa. She be one scary looking lady. All her mirrors be made of shatter-proof glass");
 		break;
 	case kTroyRoom:
 		if (!persistent->isRoomVisited(kTroyRoom))
-			return TranscribedSound("troytenyears", _s("For ten years now trojan and greek soldiers have been fighting that trojan war. Talk about job security"));
+			return TranscribedSound("troytenyears", "For ten years now trojan and greek soldiers have been fighting that trojan war. Talk about job security");
 		if (quest == kTroyQuest && !persistent->_argoSailedInQuest[dest][quest])
-			return TranscribedSound("troyregards", _s("Send me regards to Odysseus"));
+			return TranscribedSound("troyregards", "Send me regards to Odysseus");
 		if (quest > kTroyQuest && !persistent->_argoSaidTroyFinally) {
 			persistent->_argoSaidTroyFinally = true;
-			return TranscribedSound("troyfinally", _s("Finally, the trojan war be over and Helen be back with Menelaus. Now those two can fight without an interruption"));
+			return TranscribedSound("troyfinally", "Finally, the trojan war be over and Helen be back with Menelaus. Now those two can fight without an interruption");
 		}
 		break;
 	case kCreteRoom:
 		if (!persistent->isRoomVisited(kCreteRoom))
-			return TranscribedSound("cretedaedalus", _s("This be where Daedalus, the inventor, lives"));
+			return TranscribedSound("cretedaedalus", "This be where Daedalus, the inventor, lives");
 
 		if (quest != kCreteQuest && !persistent->_argoSaidCretePort)
-			return TranscribedSound("creteport", _s("Crete, the famous international port of trade"));
+			return TranscribedSound("creteport", "Crete, the famous international port of trade");
 		break;
 	case kVolcanoRoom:
 		if (!persistent->isRoomVisited(kVolcanoRoom))
-			return TranscribedSound("volcanotopfirst", _s("Know this: should you go down there, you may not come back"));
+			return TranscribedSound("volcanotopfirst", "Know this: should you go down there, you may not come back");
 
 		if (quest == kRescuePhilQuest && !!persistent->_argoSailedInQuest[dest][quest])
-			return TranscribedSound("volcanotopyoufirst", _s("Hah, many are monsters down there. Very dangerous. You go first"));
+			return TranscribedSound("volcanotopyoufirst", "Hah, many are monsters down there. Very dangerous. You go first");
 		break;
 
 	default:
@@ -162,8 +162,8 @@ public:
 			room->stopAnim("idlesound");
 			if (_destination == _prevId) {
 				playMastSound(TranscribedSound(
-						      "currentlocation",
-						      _s("Here be your current location, matie.")),
+						  "currentlocation",
+						  "Here be your current location, matie."),
 					      kOutroFinished);
 				return;
 			}
@@ -186,12 +186,12 @@ public:
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
 		switch (eventId) {
 		case kPlayIntro2:
-			playMastSound(TranscribedSound("intro2", _s("Navigate by clicking on the island you want to go to")), kPlayIntro3);
+			playMastSound(TranscribedSound("intro2", "Navigate by clicking on the island you want to go to"), kPlayIntro3);
 			break;
 		case kPlayIntro3:
 			playMastSound(TranscribedSound(
 					      "intro3",
-					      _s("The map shall always show the location of the Argo in relation to the other islands in the region")),
+					      "The map shall always show the location of the Argo in relation to the other islands in the region"),
 				      kReturnToIdleEvent);
 			break;
 		case kReturnToIdleEvent:
@@ -210,7 +210,7 @@ public:
 			g_vm->addTimer(kIdleEvent, 30000);
 			if (_mastHeadIsBusy)
 				break;
-			playMastSound(TranscribedSound("idlesound", _s("And what course lies ahead for you, matie?")), kMastSoundFinished);
+			playMastSound(TranscribedSound("idlesound", "And what course lies ahead for you, matie?"), kMastSoundFinished);
 			room->selectFrame(kMastHeadAnim, kMastHeadZ, 1);
 			break;
 		case 27301:
@@ -306,7 +306,7 @@ public:
 		if (!persistent->isRoomVisited(kArgoRoom))
 			playMastSound(TranscribedSound(
 					      "intro1",
-					      _s("Sharpen up now, matie. You'll be on the Argo now. It's a hero of ships. It used to belong to Jason and his crew, the argonauts. And now it'll be here for you")),
+					      "Sharpen up now, matie. You'll be on the Argo now. It's a hero of ships. It used to belong to Jason and his crew, the argonauts. And now it'll be here for you"),
 				      kPlayIntro2);
 		else {
 			int rnd = g_vm->getRnd().getRandomNumberRng(0, ARRAYSIZE(intros) - 1);

@@ -666,7 +666,7 @@ TODO:
 			room->disableMouse();
 			room->playAnimWithSpeech("r2230ba0",
 						TranscribedSound("r2230wa0",
-								 _s("Hey, why don't you check out that box? Maybe it has something that can help")),
+								 "Hey, why don't you check out that box? Maybe it has something that can help"),
 						4000,
 						PlayAnimParams::keepLastFrame(),
 						12145,
@@ -747,7 +747,7 @@ TODO:
 		case 12403:
 			room->disableMouse();
 			room->playAnimWithSpeech("r2230ba0",
-						 TranscribedSound("r2230wb0", _s("I think those buttons control the symbols")),
+						 TranscribedSound("r2230wb0", "I think those buttons control the symbols"),
 						 4000,
 						 PlayAnimParams::keepLastFrame(), 12404,
 						 kOffsetRightRoom);
@@ -854,7 +854,7 @@ TODO:
 			// Originally event 12123
 			room->playSpeech(TranscribedSound(
 						      "r2035wa0",
-						      _s("Seems the only thing I can count on you two for is target practice")), 12124);
+						      "Seems the only thing I can count on you two for is target practice"), 12124);
 			persistent->_creteHadesPusnishesPainAndPanic = false;
 			return;
 		}

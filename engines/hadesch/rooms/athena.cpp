@@ -143,9 +143,11 @@ public:
 			room->stopAnim("c8130bf0");
 			room->disableHotzone("Sword");
 			room->disableMouse();
-			room->playSpeech(TranscribedSound("c8140wa0",
-								   _s("The magic sword will never leave Perseus' hand, "
-								      "so he can successfully cut off Medusa's head")), 23026);
+			room->playSpeech(TranscribedSound(
+					     "c8140wa0",
+					     "The magic sword will never leave Perseus' hand, "
+					     "so he can successfully cut off Medusa's head"),
+					 23026);
 			return;
 		}
 
@@ -156,9 +158,10 @@ public:
 			room->disableHotzone("Shield");
 			room->disableMouse();
 			room->playSpeech(TranscribedSound(
-						      "c8150wa0",
-						      _s("Medusa can only turn Perseus to stone if he looks directly at her. "
-							 "He'll use this shield to block her gaze")), 23027);
+					     "c8150wa0",
+					     "Medusa can only turn Perseus to stone if he looks directly at her. "
+					     "He'll use this shield to block her gaze"),
+					 23027);
 			return;
 		}
 
@@ -240,13 +243,18 @@ public:
 			room->addStaticLayer("c8180pa0", 9000);
 			room->playSFX("g0261ma0", 23031);
 			room->playSpeech(persistent->_gender == kMale
-					? TranscribedSound("c8180wa0", _s("Oh no. Why did I shine that light in Athena's temple. "
-									  "I was just trying to see what the hero was doing"))
-					: TranscribedSound("c8180wb0", _s("Oh no. Why did I shine that light in Athena's temple. "
-									  "I was just trying to see what the heroine was doing")), 23029);
+					? TranscribedSound(
+					    "c8180wa0",
+					    "Oh no. Why did I shine that light in Athena's temple. "
+					    "I was just trying to see what the hero was doing")
+					 : TranscribedSound(
+					     "c8180wb0",
+					     "Oh no. Why did I shine that light in Athena's temple. "
+					     "I was just trying to see what the heroine was doing"),
+					 23029);
 			break;
 		case 23029:
-			room->playSpeech(TranscribedSound("c8180wc0", _s("Well now you can see what I'm doing: tomato heads")), 23030);
+			room->playSpeech(TranscribedSound("c8180wc0", "Well now you can see what I'm doing: tomato heads"), 23030);
 			break;
 		case 23030:
 			room->playVideo("c8180ba0", 0, 23032);

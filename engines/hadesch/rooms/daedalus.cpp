@@ -282,8 +282,9 @@ public:
 				room->selectFrame(persistent->_gender == kMale ? "daedalus note text male"
 						  : "daedalus note text female", 799, 0);
 				room->playSpeech(persistent->_gender == kMale ?
-							  TranscribedSound("daedalus note vo male", _s("Dear hero, now that we've brought peace to the people of Crete, I've used the wings that I've built for myself and my son Icarus to escape. I'm forever grateful for your help. Your friend, Daedalus")) :
-							  TranscribedSound("daedalus note vo female", _s("Dear heroine, now that we've brought peace to the people of Crete, I've used the wings that I've built for myself and my son Icarus to escape. I'm forever grateful for your help. Your friend, Daedalus. Au revoir. Salaam. Good bye.")), 13004);
+						 TranscribedSound("daedalus note vo male", "Dear hero, now that we've brought peace to the people of Crete, I've used the wings that I've built for myself and my son Icarus to escape. I'm forever grateful for your help. Your friend, Daedalus") :
+						 TranscribedSound("daedalus note vo female", "Dear heroine, now that we've brought peace to the people of Crete, I've used the wings that I've built for myself and my son Icarus to escape. I'm forever grateful for your help. Your friend, Daedalus. Au revoir. Salaam. Good bye."),
+						 13004);
 			}
 		}
 

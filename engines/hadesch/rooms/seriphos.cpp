@@ -49,7 +49,7 @@ static const TranscribedSound seClickTranscript[] = {
 	{"c7320wd0", _s("Do you know ho many narcisses it takes to screw in an oil lamp? One. He holds the lamp and the world revolves around him") },
 	{"c7320we0", _s("My dear, these hovels are small. Even the mice are crammed") },
 	{"c7320wf0", _s("Happiness is seeing king Polydectes' picture on the side of a milk bucket") },
-	{"c7330xa0", _s("You know what would look really good on king Polydectes? A pitbull")}, // TODO: I'm unable to hear beginning of the utterance
+	{"c7330xa0", _s("You know what would look really good on king Polydectes? A pitbull")}, // unclear: I'm unable to hear beginning of the utterance
 	{"c7330xc0", _s("That Perseus kid: brave, strong, steady as rock. And if he takes one look at Medusa and it's where he's gonna be. Yeah, well, keep your fingers crossed, he's all over in snakes right now.")},
 	{"c7340xa0", _s("Did you hear Daedalus is building a huge labyrinth to catch Minotaur? Works great except now he can't find his way out. I heard he's building some wings made of wax. He-he. Good luch getting that idea off the ground")},
 	{"c7340xc0", _s("Boy our king is mean. Did you know that when Oedipus went blind the king rearranged the furniture? But at least we're not as bad off as the Crete: they have a rotten king, the dangerous Minotaur and lousy parking. Good luck finding a place for your chariot")},
