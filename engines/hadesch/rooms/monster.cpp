@@ -109,7 +109,7 @@ public:
 		case 15357:
 			room->playSpeech(g_vm->getRnd().getRandomBit()
 					 ? TranscribedSound("V7150WC0", "Get back in there. Here is another branch")
-					 : TranscribedSound("V7150WB0", _"Here's another branch. Keep going"),
+					 : TranscribedSound("V7150WB0", "Here's another branch. Keep going"),
 					 15353);
 			break;
 		case 15358:
@@ -133,7 +133,7 @@ public:
 					     "V7100WD0",
 					     "Ah, and this branch of life will let "
 					     "you to remain in the underworld until "
-					     "all of its leaves have fallen")),
+					     "all of its leaves have fallen"),
 				15365);
 			_battleground->_leavesRemaining = 9;
 			g_vm->getHeroBelt()->setBranchOfLifeFrame(1);
@@ -259,7 +259,7 @@ public:
 						 "You dare to think you can outwit me? "
 						 "You, my little friend, will be ripped to shreads and slowly digested for eternity "
 						 "inside a belly of a thousand hideous creatures. You will die a thousand agonizing "
-						 "deaths as I now bring down upon you all the forces of Hades.")),
+						 "deaths as I now bring down upon you all the forces of Hades."),
 				15382);
 			break;
 		case 15389:
@@ -270,7 +270,7 @@ public:
 						 "And welcome to my world. "
 						 "You know what they say: \"My world - my rules\". "
 						 "So here is the rule number one: No trespassing. "
-						 "My bouncer will show you the way out. Have a nice day")),
+						 "My bouncer will show you the way out. Have a nice day"),
 					 15361);
 			break;
 		case 15390:
