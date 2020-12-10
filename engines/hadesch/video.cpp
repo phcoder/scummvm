@@ -752,12 +752,15 @@ void VideoRoom::cancelVideo() {
 	}
 }
 
-void VideoRoom::playVideo(const Common::String &name, int zValue,
-			     EventHandlerWrapper callbackEvent,
-			     Common::Point offset) {
+void VideoRoom::playVideoInternal(const Common::String &name,
+				  Audio::Mixer::SoundType soundType,
+				  int zValue,
+				  EventHandlerWrapper callbackEvent,
+				  Common::Point offset) {
 	cancelVideo();
 	Common::SharedPtr<Video::SmackerDecoder> decoder
-	  = Common::SharedPtr<Video::SmackerDecoder>(new Video::SmackerDecoder());
+		= Common::SharedPtr<Video::SmackerDecoder>(new Video::SmackerDecoder());
+	decoder->setSoundType(soundType);
 
 	Common::File *file = new Common::File;
 	Common::String mappedName = _assetMap.get(name, 1);
@@ -996,12 +999,12 @@ private:
 };
 
 void VideoRoom::playStatueSMK(StatueId id, const LayerId &animName, int zValue,
-			      const Common::Array<Common::String> &smkNames,
+			      const Common::Array<TranscribedSound> &smkNames,
 			      int startOfLoop, int startOfEnd,
 			      Common::Point offset) {
 	int phase = g_vm->getPersistent()->_statuePhase[id] % smkNames.size();
-	playVideo(smkNames[phase], zValue,
-		  Common::SharedPtr<EventHandler>(new StatuePlayEnd(animName, zValue, offset, startOfEnd)));
+	playVideoSpeech(smkNames[phase], zValue,
+			Common::SharedPtr<EventHandler>(new StatuePlayEnd(animName, zValue, offset, startOfEnd)));
 	if (!doesLayerExist(animName)) {
 		addAnimLayerInternal(animName, zValue);
 		stopAnim(animName);

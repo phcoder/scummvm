@@ -242,9 +242,12 @@ public:
 				   Common::Point offset = Common::Point(0, 0));
 
 	// Videos
-	void playVideo(const Common::String &name, int zValue,
-		       EventHandlerWrapper callbackEvent = EventHandlerWrapper(),
-		       Common::Point offset = Common::Point(0, 0));
+	void playVideoSFX(const Common::String &name, int zValue,
+			  EventHandlerWrapper callbackEvent = EventHandlerWrapper(),
+			  Common::Point offset = Common::Point(0, 0));
+	void playVideoSpeech(const TranscribedSound &name, int zValue,
+			     EventHandlerWrapper callbackEvent = EventHandlerWrapper(),
+			     Common::Point offset = Common::Point(0, 0));    
 	void cancelVideo();
 	bool isVideoPlaying();
 
@@ -294,7 +297,7 @@ public:
 	void playSpeech(const TranscribedSound &sound,
 				 EventHandlerWrapper callbackEvent = EventHandlerWrapper());
 	void playStatueSMK(StatueId id, const LayerId &animName, int zValue,
-			   const Common::Array<Common::String> &smkNames,
+			   const Common::Array<TranscribedSound> &smkNames,
 			   int startOfLoop, int startOfEnd,
 			   Common::Point offset = Common::Point(0, 0));
 	Common::SeekableReadStream *openFile(const Common::String &name);
@@ -339,6 +342,11 @@ private:
 				       EventHandlerWrapper callbackEvent,
 				       Common::Point offset,
 				       int subID = -1);
+	void playVideoInternal(const Common::String &name,
+			       Audio::Mixer::SoundType soundType,
+			       int zValue,
+			       EventHandlerWrapper callbackEvent,
+			       Common::Point offset);
 	void playSubtitles(const char *text, int subID);
 	void addLayer(Renderable *renderable, const LayerId &name,
 		      int zValue,
