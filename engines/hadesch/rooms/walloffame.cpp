@@ -60,7 +60,15 @@ static const char *kApplicationRollsUpHero = "application rolls up hero";
 static const char *kApplicationChooseHeroSound = "application choose hero sound";
 static const char *kApplicationChooseHeroineSound = "application choose heroine sound";
 
-static const char *kHadesBurstsIn = "hades bursts in";
+static TranscribedSound kHadesBurstsIn = {
+	"hades bursts in",
+	// unclear
+	_s("Hey-hey. Woo-hoo. Not so fast, kid. "
+	   "Sure mr blowheart, mr high and mighty, sure, he is desperate enough to enlist just about anyone. "
+	   "But the job is a lot tougher than it looks. "
+	   "My basement is full of hero wannabees who thought they had the stuff. "
+	   "Oh sure, Hercules squeaked through but that was an oversight that won't be repeated")
+};
 static const char *kHadesNoMoreHeroes = "hades no more heroes got it";
 static const char *kHadesNoMoreHeroines = "hades no more heroines got it";
 
@@ -976,15 +984,15 @@ private:
 			room->disableMouse();
 			// Or should it be music? Unclear to me
 			room->playSFX("hades evil intro theme");
-			room->playVideo(kHadesBurstsIn, kHadesVideoZ, 19016);
+			room->playVideoSpeech(kHadesBurstsIn, kHadesVideoZ, 19016);
 		}
 	}
 
-	void zeusCommentRight(const Common::String &id, bool mouseIsEnabled = false) {
+	void zeusCommentRight(TranscribedSound sound, bool mouseIsEnabled = false) {
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
 		if (!mouseIsEnabled)
 			room->disableMouse();
-		room->playVideo(id, kSoundOnlyZ, 19045);
+		room->playVideoSpeech(sound, kSoundOnlyZ, 19045);
 		room->playAnim(
 			getShaftOfLightRight(), kShaftOfLightRightZ, PlayAnimParams::keepLastFrame().speed(500), -1, kOffsetRightRoom);
 		philBecomesListening();
@@ -1000,13 +1008,14 @@ private:
 			v += Common::Point(166 * _philWalkPhase, -2 * _philWalkPhase);
 		return v;
 	}
-	void playPhilVideo(const Common::String &name, int callback, const Common::Point videoOffset) {
+
+	void playPhilVideoSpeech(TranscribedSound name, int callback, const Common::Point videoOffset) {
 		Persistent *persistent = g_vm->getPersistent();
 		cancelAllPhils();
 		if (persistent->_quest == kRescuePhilQuest)
 			return;
-		g_vm->getVideoRoom()->playVideo(name, kPhilZ, callback,
-						videoOffset + getPhilBase());
+		g_vm->getVideoRoom()->playVideoSpeech(name, kPhilZ, callback,
+						      videoOffset + getPhilBase());
 	}
 
 	void playPhilAnimSFX(const Common::String &name,
