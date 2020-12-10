@@ -99,7 +99,7 @@ public:
 						15379); // 15379(anim), 15381(-1), 15359(sound)
 			break;
 		case 15352:
-			room->playVideoSpeech(TranscribedSound("V7190BA0", "That way to go, kid. You're awesome"),
+			room->playVideoSpeech(TranscribedSound("V7190BA0", "That's way to go, kid. You're awesome"),
 					      0, 15386, Common::Point(0, 216));
 			break;
 		case 15353:
