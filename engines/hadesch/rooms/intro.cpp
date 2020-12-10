@@ -47,7 +47,7 @@ public:
 
 	void prepareRoom() override {
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
-		room->playVideo("o0010ba0", 101, 32003);
+		room->playVideoSFX("o0010ba0", 101, 32003);
 		room->disableHeroBelt();
 		room->disableMouse();
 	}
