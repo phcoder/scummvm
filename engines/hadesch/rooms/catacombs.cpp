@@ -203,10 +203,15 @@ public:
 			break;
 		}
 		case 22009:
-			room->playVideo("PhilQuickNameThatTune", 0);
+			room->playVideoSpeech(TranscribedSound("PhilQuickNameThatTune",
+							       "Well, kid, name that melody. "
+							       "And make it quick. This place sounds like it's "
+							       "gonna collapse"), 0);
 			break;			
 		case 22012:
-			room->playVideo("PhilWowLowOnTroops", 0);
+			room->playVideoSpeech(TranscribedSound("PhilWowLowOnTroops",
+							       "Don't you hear that? Battle is on. "
+							       "Odysseus is already low on troups"), 0);
 			break;
 		case 22016:
 			room->playSFX("SndGuardTrapDoorOpen", 22017);
@@ -231,7 +236,7 @@ public:
 			persistent->_catacombLevel = kCatacombLevelSign;
 			break;
 		case 22023:
-			room->playVideo("MovPainPanicBonk", 103, kBonkVideoFinished);
+			room->playVideoSFX("MovPainPanicBonk", 103, kBonkVideoFinished);
 			break;
 		case kBonkVideoFinished:
 			g_vm->moveToRoom(kTroyRoom);
@@ -416,7 +421,7 @@ private:
 
 		if (level == 0 && !_philWarnedTorch && !persistent->isInInventory(kTorch) && persistent->_hintsAreEnabled) {
 			_philWarnedTorch = true;
-			room->playVideo("PhilGrabTheTorch", 0, 22003);
+			room->playVideoSpeech(TranscribedSound("PhilGrabTheTorch", "Grab the torch"), 0, 22003);
 			return;
 		}
 
