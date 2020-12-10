@@ -36,6 +36,17 @@ enum {
 
 static const char *kZeusLight = "V7100BJ0";
 static const int kLightningCutoff = kVideoWidth / 2;
+static const TranscribedSound kJustAnIllusion = {
+	"V7220BR0", _s("It's just an illusion, kid")
+};
+static const TranscribedSound kTakeOutBigGuns = {
+	"V7210BB0", _s("Ok, kid, time to take out big guns. "
+		       "Give it all you've got. You can take this guy")
+};
+static const TranscribedSound kSneakPastCyclops = {
+	"V7180BB0", _s("Maybe you can sneak past him. "
+		       "Cyclops have got fewer brains than they have eyes")
+};
 
 TranscribedSound revitalisedSound() {
 	return g_vm->getRnd().getRandomBit()
@@ -88,7 +99,8 @@ public:
 						15379); // 15379(anim), 15381(-1), 15359(sound)
 			break;
 		case 15352:
-			room->playVideo("V7190BA0", 0, 15386, Common::Point(0, 216));
+			room->playVideoSpeech(TranscribedSound("V7190BA0", "That way to go, kid. You're awesome"),
+					      0, 15386, Common::Point(0, 216));
 			break;
 		case 15353:
 			room->playAnim(kZeusLight, kZeusLightZ,
@@ -104,7 +116,7 @@ public:
 			g_vm->addTimer(526, 5000);
 			break;
 		case 15356:
-			room->playVideo("V7180BB0", 0, 15361, Common::Point(0, 216));
+			room->playVideoSpeech(kSneakPastCyclops, 0, 15361, Common::Point(0, 216));
 			break;
 		case 15357:
 			room->playSpeech(g_vm->getRnd().getRandomBit()
@@ -115,13 +127,16 @@ public:
 		case 15358:
 			switch (_battleground->_monsterNum) {
 			case kCyclops:
-				room->playVideo("V7180BB0", 0, 15389, Common::Point(0, 216));
+				room->playVideoSpeech(kSneakPastCyclops,
+						      0, 15389, Common::Point(0, 216));
 				break;
 			case kTyphoon:
-				room->playVideo("V7210BB0", 0, 15387, Common::Point(0, 216));
+				room->playVideoSpeech(kTakeOutBigGuns,
+						      0, 15387, Common::Point(0, 216));
 				break;
 			case kIllusion:
-				room->playVideo("V7220BR0", 0, 15382, Common::Point(0, 216));
+				room->playVideoSpeech(kJustAnIllusion,
+						      0, 15382, Common::Point(0, 216));
 				break;
 			}
 			break;
@@ -192,7 +207,7 @@ public:
 				       15377);
 			break;
 		case 15377:
-			room->playVideo("V7210BB0", 0, 15387, Common::Point(0, 216));
+			room->playVideoSpeech(kTakeOutBigGuns, 0, 15387, Common::Point(0, 216));
 			break;
 		case 15378:
 			handleEvent(15390);
@@ -207,7 +222,7 @@ public:
 				       15381);
 			break;
 		case 15381:
-			room->playVideo("V7220BR0", 0, 15388, Common::Point(0, 216));
+			room->playVideoSpeech(kJustAnIllusion, 0, 15388, Common::Point(0, 216));
 			break;
 		case 15382:
 			g_vm->addTimer(15392, 100);
