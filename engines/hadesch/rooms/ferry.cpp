@@ -584,7 +584,12 @@ public:
 			break;
 		case k24802_arg1:
 			hideCharon();
-			room->playVideo("V9300bA0", kCharonZ, 24019,
+			// unclear
+			room->playVideoSpeech(TranscribedSound(
+						  "V9300bA0",
+						  "Welcome to the infamous underworld ferry which crosses the river Styx. "
+						  "In the unlikely event of an emergency, alas, you're already dead. "
+						  "Have a pleasant trip"), kCharonZ, 24019,
 					Common::Point(406, 68));
 			break;
 		case 24807:
@@ -602,8 +607,8 @@ public:
 				break;
 			hideCharon();
 			int vid = g_vm->getRnd().getRandomNumberRng(0, ARRAYSIZE(charonIdleVideos) - 1);
-			room->playVideo(charonIdleVideos[vid].name,
-					kCharonZ, 24811, charonIdleVideos[vid].getOffset());
+			room->playVideoSFX(charonIdleVideos[vid].name,
+					   kCharonZ, 24811, charonIdleVideos[vid].getOffset());
 			break;
 		}
 		case k24801_arg1:
@@ -640,7 +645,7 @@ public:
 		room->playAnimLoop("V9060bA0", 540);
 		room->playAnimLoop("V9060bB0", 540);
 		room->playAnimLoop("V9060bC0", 540);
-		room->playVideo("V9010xA0", 0, 24002);
+		room->playVideoMusic("V9010xA0", 0, 24002);
 		room->loadHotZones("ff.hot", false);
 
 		room->playMusicLoop("V9010eA0");
@@ -730,7 +735,7 @@ private:
 		_lastCharonAnim = selected;
 		room->playAnim(charonAnims[selected], kCharonZ, PlayAnimParams::loop());
 		if (isSMK)
-			room->playVideo(sound.soundName, 0, ev);
+			room->playVideoSpeech(sound, 0, ev);
 		else
 			room->playSpeech(sound, ev);
 	}
