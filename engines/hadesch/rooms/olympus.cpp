@@ -117,7 +117,12 @@ public:
 		if (g_vm->getPreviousRoomId() == kOptionsRoom) {
 			room->playSFX("o1010ea0", 21002);
 		} else {
-			room->playVideo("movie", 201, 21002);
+			room->playVideoSpeech(TranscribedSound("movie",
+							       "Well hello, Hermes. What's the hurry? You're racing around like your wings are on fire, heh. "
+							       "Well Zeus, my sources tell me Hades is stirring up trouble."
+							       "With Hercules off battling the giants we're a little short-handed "
+							       "in the hero department. Hades? The gods are going to need some help."
+							       "And by thunder, I know just who to call"), 201, 21002);
 			g_vm->addTimer(21001, 40000);
 		}
 		room->disableHeroBelt();
