@@ -67,7 +67,7 @@ public:
 		room->disableHeroBelt();
 		room->disableMouse();
 		room->addStaticLayer("h2030pa0", kBackgroundZ);
-		room->playVideo("c2590ma0", 0, 31001);
+		room->playVideoMusic("c2590ma0", 0, 31001);
 		room->selectFrame("h2030ba0", kCreditsZ, 0,
 				  Common::Point(0, 481));
 		startTime = g_vm->getCurrentTime();
