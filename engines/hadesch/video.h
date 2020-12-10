@@ -245,6 +245,9 @@ public:
 	void playVideoSFX(const Common::String &name, int zValue,
 			  EventHandlerWrapper callbackEvent = EventHandlerWrapper(),
 			  Common::Point offset = Common::Point(0, 0));
+	void playVideoMusic(const Common::String &name, int zValue,
+			    EventHandlerWrapper callbackEvent = EventHandlerWrapper(),
+			    Common::Point offset = Common::Point(0, 0));
 	void playVideoSpeech(const TranscribedSound &name, int zValue,
 			     EventHandlerWrapper callbackEvent = EventHandlerWrapper(),
 			     Common::Point offset = Common::Point(0, 0));    
