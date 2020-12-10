@@ -84,15 +84,13 @@ enum {
 	kRerenderLabyrinth = 1017001
 };
 
-static const char *daedalusSoundSMK[] = {
-	"R6100nA0",
-	"R6100wA0",
-	"R6100nB0",
-	"R6100wC0",
-	"R6100nD0",
-};
-
-static const TranscribedSound daedalusSoundsAIF[] = {
+static const TranscribedSound daedalusSounds[] = {
+	{"R6100nA0", _s("Here is the labyrinth I've told you about. "
+			"They's putting together the last of materials you've brought me as we speak")},
+	{"R6100wA0", _s("Daedalus, the Minotaur is loose in the labyrinth")},
+	{"R6100nB0", _s("No, no-no-no. We're not finished yet")},
+	{"R6100wC0", _s("We've put the walls together but they're not arranged yet")}, // unclear
+	{"R6100nD0", _s("Hero, you must help us trap the Minotaur or all will be lost")},
 	{"R6100nH0", _s("Help us to move the walls so that they are strong enough to stop the minotaur")},
 	{"R6100nL0", _s("Click on a square to rotate the walls")},
 	{"R6100nG0", _s("Some walls are already locked in place and won't rotate")},
@@ -239,10 +237,10 @@ private:
 		// TODO: balance
 		_currentSound = index;
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
-		if (index < ARRAYSIZE(daedalusSoundSMK))
-			room->playVideo(daedalusSoundSMK[index], 17953);
+		if (index < 5)
+			room->playVideoSpeech(daedalusSounds[index], 17953);
 		else
-			room->playSpeech(daedalusSoundsAIF[index-ARRAYSIZE(daedalusSoundSMK)], 17953);
+			room->playSpeech(daedalusSounds[index], 17953);
 	}
 
 	void playDaedalusSoundWrap() {
