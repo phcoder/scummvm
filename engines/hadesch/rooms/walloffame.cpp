@@ -32,9 +32,16 @@ static const char *kHotspots = "HallTrph.hot";
 static const char *kArgo = "argo";
 
 static const char *kZeusYooHoo = "zeus yoo-hoo";
-static const char *kZeusYellsPhil = "zeus yells phil";
+static const TranscribedSound kZeusYellsPhil = {
+	"zeus yells phil",
+	_s("Phil!")
+};
 static const char *kZeusVacationIsOver = "zeus vacation's over";
-static const char *kZeusFineChoiceHero = "zeus fine choice hero";
+static const TranscribedSound kZeusFineChoiceHero = {
+	// unclear
+	"zeus fine choice hero",
+	_s("Uh, fine choice. Now put away the loud voice and get this hero ready for action")
+};
 static const char *kZeusShaftOfLightLeft = "zeus shaft of light left";
 
 static const char *kRope = "rope";
@@ -69,8 +76,16 @@ static TranscribedSound kHadesBurstsIn = {
 	   "My basement is full of hero wannabees who thought they had the stuff. "
 	   "Oh sure, Hercules squeaked through but that was an oversight that won't be repeated")
 };
-static const char *kHadesNoMoreHeroes = "hades no more heroes got it";
-static const char *kHadesNoMoreHeroines = "hades no more heroines got it";
+
+static const TranscribedSound kHadesNoMoreHeroes = {
+	"hades no more heroes got it",
+	_s("No more heroes, got it?")
+};
+
+static TranscribedSound kHadesNoMoreHeroines = {
+	"hades no more heroines got it",
+	_s("No more heroines, got it?")
+};
 
 #define kPhilWalksCenterToLeft "phil walks center to left"
 #define kPhilSighsLeft "phil sighs left"
@@ -87,11 +102,26 @@ static const char *kPhilBasicInformation = "phil basic information";
 static const char *kPhilFlakyPlaster = "phil flaky plaster";
 static const char *kPhilGettinStarted = "phil gettin started";
 static const char *kPhilToolsOfTrade = "phil tools of the trade";
-static const char *kPhilHeroBelt = "phil hero belt";
-static const char *kPhilHeroBeltBuckle = "phil left belt buckle";
-static const char *kPhilClickAnItem = "phil click an item";
-static const char *kPhilHeroPowers = "phil hero powers";
-static const char *kPhilRightNotches = "phil right notches";
+static const TranscribedSound kPhilHeroBelt = {
+	"phil hero belt",
+	_s("You can store the things you pick up along the way in this hero belt")
+};
+static const TranscribedSound kPhilHeroBeltBuckle = {
+	"phil left belt buckle",
+	_s("To see what items you're carying just look at the left side of the buckle")
+};
+static const TranscribedSound kPhilClickAnItem = {
+	"phil click an item",
+	_s("Click on an item if you want to use it or give it to someone")
+};
+static const TranscribedSound kPhilHeroPowers = {
+	"phil hero powers",
+	_s("Your hero powers will be stored on your belt buckle. You don't have any yet but you'll learn some soon or I'll be out of business")
+};
+static const TranscribedSound kPhilRightNotches = {
+	"phil right notches",
+	_s("Those notches on the right will let you save your adventure and leave... Or take a look at your quest scroll again")
+};
 static const char *kPhilEyeOfFates = "phil eye of fates";
 static const char *kPhilBadNews = "phil bad news";
 static const char *kPhilFirstQuest = "phil first quest";
@@ -410,7 +440,7 @@ public:
 			break;
 		case 1019002:
 			displayPhilIdle();
-			room->playVideo(kZeusFineChoiceHero, kSoundOnlyZ, 19013);
+			room->playVideoSpeech(kZeusFineChoiceHero, kSoundOnlyZ, 19013);
 			break;
 		case 19013:
 			room->playAnim(kZeusShaftOfLightLeft, kShaftOfLightLeftZ, PlayAnimParams::disappear().backwards().speed(500));
@@ -419,7 +449,7 @@ public:
 			break;
 		case 19016:
 			room->addStaticLayer(kApplicationBurntHole, kApplicationButtonZ);
-			room->playVideo(persistent->_gender == kFemale ? kHadesNoMoreHeroines : kHadesNoMoreHeroes,
+			room->playVideoSpeech(persistent->_gender == kFemale ? kHadesNoMoreHeroines : kHadesNoMoreHeroes,
 					   kHadesVideoZ, 19018,
 					   Common::Point(207, 103));
 			break;
@@ -432,7 +462,7 @@ public:
 		case 1019001:
 			cancelAllPhils();
 			playPhilAnimSFX(kPhilJumpsOffPillow, -1, Common::Point(-26, 2)); // state 4
-			room->playVideo(kZeusYellsPhil, kSoundOnlyZ, 19011);
+			room->playVideoSpeech(kZeusYellsPhil, kSoundOnlyZ, 19011);
 			break;
 		case 1019003:
 			room->setLayerEnabled(kRope, true);
@@ -480,29 +510,29 @@ public:
 				19022, kOffsetRightRoom);
 			break;
 		case 19022:
-			room->playVideo(kPhilHeroBelt, kPhilZ, 1019012); // state 13
+			room->playVideoSpeech(kPhilHeroBelt, kPhilZ, 1019012); // state 13
 			break;
 		case 1019012:
-			room->playVideo(kPhilHeroBeltBuckle, kPhilZ, 1019013); // state 14
+			room->playVideoSpeech(kPhilHeroBeltBuckle, kPhilZ, 1019013); // state 14
 			break;
 		case 1019013:
 			room->selectFrame(kHeroBelt, kHeroBeltZ, 10,
 					     kOffsetRightRoom);
 			room->playSFX("hero belt items highlight sound");
-			room->playVideo(kPhilClickAnItem, kPhilZ, 1019014); // state 15
+			room->playVideoSpeech(kPhilClickAnItem, kPhilZ, 1019014); // state 15
 			break;
 		case 1019014:
 			room->selectFrame(kHeroBelt, kHeroBeltZ, 11,
 					     kOffsetRightRoom);
 			room->playSFX("hero belt items highlight sound");
-			room->playVideo(kPhilHeroPowers, kPhilZ, 1019015); // state 16
+			room->playVideoSpeech(kPhilHeroPowers, kPhilZ, 1019015); // state 16
 			break;
 		case 1019015:
 			room->selectFrame(kHeroBelt, kHeroBeltZ, 12,
 					     kOffsetRightRoom);
 			room->playSFX("hero belt items highlight sound");
 			g_vm->addTimer(19029, 4000);
-			room->playVideo(kPhilRightNotches, kPhilZ, 1019016); // state 17
+			room->playVideoSpeech(kPhilRightNotches, kPhilZ, 1019016); // state 17
 			break;
 		case 1019016:
 			g_vm->cancelTimer(19029);
@@ -704,7 +734,13 @@ public:
 			room->enableHotzone("hades note popup background2");
 			room->selectFrame("hades note popup", 150, 0, kOffsetRightRoom);
 			room->selectFrame("hades note text", 149, 0, kOffsetRightRoom);
-			room->playVideo("hades reads note", 0, 19049);
+			room->playVideoSpeech(TranscribedSound(
+						"hades reads note",
+						"Dear victim, forget about Phil. "
+						"He's mine now and he's going to stay that way. "
+						"We do have room for one more though "
+						"if you'd like to join him. "
+						"Hey, you know what, if I were you, I'd quit while I was ahead or rather while I had a head. He-hey, what a comic"), 0, 19049);
 			break;
 		case 19049:
 			room->enableMouse();
@@ -729,7 +765,7 @@ public:
 			room->disableMouse();
 			room->setPannable(false);
 			room->addStaticLayer("black background", kBackgroundZ, kOffsetRightRoom);
-			room->playVideo("hades eye of fates", 0, 19054, kOffsetRightRoom);
+			room->playVideoSFX("hades eye of fates", 0, 19054, kOffsetRightRoom);
 			room->playSFX("herc laughs");
 			room->playSFX("phil laughs");
 			break;
@@ -760,21 +796,21 @@ public:
 			playPhilAnimSFX(kPhilWalksCenterToLeft, 1019037);
 			break;
 		case 1019037:
-			playPhilVideo("phil good work", kPhilNewQuestScroll, Common::Point(40, 324)); // state 35
+			playPhilVideo(TranscribedSound("phil good work", "Good work but we're not through yet"), kPhilNewQuestScroll, Common::Point(40, 324)); // state 35
 			break;
 		case 19900:
 			if (_gender != kUnknown && !_heroName.empty()) {
 				break;
 			}
 			if (!_heroName.empty()) {
-				room->playVideo("phil pick a statue", 0, 19901);
+				room->playVideoSpeech(TranscribedSound("phil pick a statue", "What are you waiting for? Pick a statue"), 0, 19901);
 				break;
 			}
 
 			if (g_vm->getRnd().getRandomBit()) {
-				room->playVideo("phil not a mind reader", 0, 19901);
+				room->playVideoSpeech(TranscribedSound("phil not a mind reader", "Hey kid, I'm not a mind-reader"), 0, 19901);
 			} else {
-				room->playVideo("phil type in your name", 0, 19901);
+				room->playVideoSpeech(TranscribedSound("phil type in your name", "So type in your name"), 0, 19901);
 			}
 			break;
 		case 19901:
