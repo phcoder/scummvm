@@ -1025,12 +1025,11 @@ private:
 	Common::Point _offset;
 };
 
-void VideoRoom::playStatueSMK(StatueId id, const LayerId &animName, int zValue,
-			      const Common::Array<TranscribedSound> &smkNames,
-			      int startOfLoop, int startOfEnd,
-			      Common::Point offset) {
-	int phase = g_vm->getPersistent()->_statuePhase[id] % smkNames.size();
-	playVideoSpeech(smkNames[phase], zValue,
+void VideoRoom::playStatueSMKInternal(StatueId id, const LayerId &animName, int zValue,
+				      const TranscribedSound &chosen, size_t total,
+				      int startOfLoop, int startOfEnd,
+				      Common::Point offset) {
+	playVideoSpeech(chosen, zValue,
 			Common::SharedPtr<EventHandler>(new StatuePlayEnd(animName, zValue, offset, startOfEnd)));
 	if (!doesLayerExist(animName)) {
 		addAnimLayerInternal(animName, zValue);
@@ -1040,8 +1039,28 @@ void VideoRoom::playStatueSMK(StatueId id, const LayerId &animName, int zValue,
 		 Common::SharedPtr<EventHandler>(new StatuePlayTwoThirdsLoop(animName, zValue, offset, startOfLoop, startOfEnd - 1)), offset);
 
 	g_vm->getPersistent()->_statuesTouched[id] = true;
-	g_vm->getPersistent()->_statuePhase[id] = (phase + 1) % smkNames.size();
+	g_vm->getPersistent()->_statuePhase[id] = (g_vm->getPersistent()->_statuePhase[id] + 1) % total;
 	disableMouse();
+}
+
+void VideoRoom::playStatueSMK(StatueId id, const LayerId &animName, int zValue,
+			      const Common::Array<TranscribedSound> &smkNames,
+			      int startOfLoop, int startOfEnd,
+			      Common::Point offset) {
+	int phase = g_vm->getPersistent()->_statuePhase[id] % smkNames.size();
+	playStatueSMKInternal(id, animName, zValue, smkNames[phase], smkNames.size(), startOfLoop, startOfEnd,
+			      offset);
+}
+
+void VideoRoom::playStatueSMK(StatueId id, const LayerId &animName, int zValue,
+			      const TranscribedSound *smkNames,
+			      int startOfLoop, int startOfEnd,
+			      Common::Point offset) {
+	size_t total = 0;
+	for (total = 0; smkNames[total].soundName; total++);
+	int phase = g_vm->getPersistent()->_statuePhase[id] % total;
+	playStatueSMKInternal(id, animName, zValue, smkNames[phase], total, startOfLoop, startOfEnd,
+			      offset);
 }
 
 void VideoRoom::resetFade() {

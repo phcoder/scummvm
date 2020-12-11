@@ -303,6 +303,10 @@ public:
 			   const Common::Array<TranscribedSound> &smkNames,
 			   int startOfLoop, int startOfEnd,
 			   Common::Point offset = Common::Point(0, 0));
+	void playStatueSMK(StatueId id, const LayerId &animName, int zValue,
+			   const TranscribedSound *smkNames,
+			   int startOfLoop, int startOfEnd,
+			   Common::Point offset = Common::Point(0, 0));
 	Common::SeekableReadStream *openFile(const Common::String &name);
 	void fadeOut(int ms, const EventHandlerWrapper &callback);
 	void resetFade();
@@ -337,6 +341,10 @@ private:
 		int ID;
 	};
 
+	void playStatueSMKInternal(StatueId id, const LayerId &animName, int zValue,
+				   const TranscribedSound &chosen, size_t total,
+				   int startOfLoop, int startOfEnd,
+				   Common::Point offset);
 	void playAnimWithSoundInternal(const LayerId &animName,
 				       const Common::String &soundName,
 				       Audio::Mixer::SoundType soundType,
