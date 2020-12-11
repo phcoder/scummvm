@@ -50,7 +50,8 @@ public:
 
 	void prepareRoom() override {
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
-		room->playVideo("movie", 500, 29001);
+		// unclear
+		room->playVideoSpeech(TranscribedSound("movie", "Hey, kid. Hey, it's me. Can we talk? That Zeus he's got... Does he have...? I mean he knows I was just kidding around. You're really gonna help me out and put in a word"), 500, 29001);
 		room->disableHeroBelt();
 		room->playMusicLoop("V6010eA0");
 		room->disableMouse();
