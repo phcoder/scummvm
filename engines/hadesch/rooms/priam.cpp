@@ -79,7 +79,10 @@ public:
 		if (name == "DoorGuard") {
 			room->disableMouse();
 			_ambients.hide("AmbSmallGuard");
-			room->playVideo("MovDoorGuardNoPass", 700, 20018, Common::Point(508, 414));
+			room->playVideoSpeech(TranscribedSound(
+						      "MovDoorGuardNoPass",
+						      "Only royal messengers on official business can leave the city. King Priam's orders"
+						      ), 700, 20018, Common::Point(508, 414));
 			return;
 		}
 
@@ -91,17 +94,25 @@ public:
 
 			room->disableMouse();
 			if (_bigGuardCounter) {
-				playPhilVideo("PhilTowerGuard");
+				// unclear
+				playPhilVideo(TranscribedSound(
+						      "PhilTowerGuard",
+						      "You can't get up with that guard calling the place. That'll never happen. You've got to find another way to get that note to Helen"));
 			} else {
 				_ambients.hide("AmbBigGuard");
-				room->playVideo("MovTowerGuard", 200, 20017, Common::Point(0, 58));
+				room->playVideoSpeech(TranscribedSound(
+							      "MovTowerGuard",
+							      "Noone sees Helen of Troy. Forget about it"),
+						      200, 20017, Common::Point(0, 58));
 			}
 			_bigGuardCounter = !_bigGuardCounter;
 			return;
 		}
 
 		if (name == "Helen") {
-			playPhilVideo("PhilSheCantHearYou");
+			playPhilVideo(TranscribedSound(
+					      "PhilSheCantHearYou",
+					      "Sorry, kid. She can't hear you from there"));
 			return;
 		}
 	}
@@ -112,19 +123,26 @@ public:
 		if (name == "DoorGuard" && item == kDecree) {
 			room->disableMouse();
 			if (!persistent->_troyMessageIsDelivered && _philExitWarning < (persistent->_hintsAreEnabled ? 2 : 1)) {
-				playPhilVideo(_philExitWarning ? "PhilHint" : "PhilNoDuckingOut");
+				playPhilVideo(_philExitWarning
+					      ? TranscribedSound(
+						      "PhilHint",
+						      "Hey, I've got an idea: why don't you use the pigeons to fly the message up to Helen?")
+					      : TranscribedSound(
+						      "PhilNoDuckingOut",
+						      "You're not ducking out without delivering the message to Helen, are you?"));
 				_philExitWarning++;
 				return true;
 			}
 			_ambients.hide("AmbSmallGuard");
-			room->playVideo("MovDoorGuardPass", 700, 20019, Common::Point(508, 414));
+			room->playVideoSpeech(TranscribedSound("MovDoorGuardPass", "Oh, so you're a new messenger, hm. Sorry, I didn't recognize you. Go ahead and watch out for those Greeks. They're everywhere."), 700, 20019, Common::Point(508, 414));
 			return true;
 		}
 
 		if (name == "Helen" && item == kMessage) {
 			playPhilVideo(
 				persistent->_gender == kMale
-				? "PhilEvenAHero" : "PhilEvenAHeroine");
+				? TranscribedSound("PhilEvenAHero", "Even a hero can't jump that high. Sorry, you'll have to find another way")
+				: TranscribedSound("PhilEvenAHeroine", "Even a heroine can't jump that high. Sorry, you'll have to find another way"));
 			return true;
 		}
 
@@ -134,7 +152,7 @@ public:
 			room->disableMouse();
 			room->disableHotzone("Helen");
 			room->disableHotzone("SpecialPigeon");
-			room->playVideo("MovSpecialPigeonNote", 500, 20016);
+			room->playVideoSFX("MovSpecialPigeonNote", 500, 20016);
 			_ambients.hide("AmbSpecialPigeon");
 			_ambients.hide("AmbHelen");
 			_specialPigeonIsBusy = true;
