@@ -27,10 +27,10 @@
 
 namespace Hadesch {
 
-static const char * eyeOfFateVolcanoToStyx[] = {
-	"eye of fates too good to be true",
-	"eye of fates never ever",
-	"eye of fates this place again"
+static const TranscribedSound eyeOfFateVolcanoToStyx[] = {
+	{"eye of fates too good to be true", _s("I knew it was too good to be true. I've got a bad feeling about this") },
+	{"eye of fates never ever", _s("Not this place again. I never ever want to end up in the underworld. That the gods have good friends that can come get me out.") },
+	{"eye of fates this place again", _s("This place again? What are you? Sucker for underworld punishment?") }
 };
 
 enum {
@@ -77,7 +77,7 @@ public:
 			room->stopAnim("lever gem");
 			_painAnim.hide();
 			_panicAnim.hide();
-			room->playVideo("plug volcano movie", 0, 16025);
+			room->playVideoSFX("plug volcano movie", 0, 16025);
 			persistent->_volcanoPuzzleState = Persistent::VOLCANO_BOULDER_ON_VOLCANO;
 			return;
 		}
@@ -94,7 +94,7 @@ public:
 			if (persistent->_quest != kRescuePhilQuest
 			    && persistent->_volcanoToStyxCounter < ARRAYSIZE(eyeOfFateVolcanoToStyx)) {
 				room->disableMouse();
-				room->playVideo(eyeOfFateVolcanoToStyx[persistent->_volcanoToStyxCounter], 0, 16007, Common::Point(0, 216));
+				room->playVideoSpeech(eyeOfFateVolcanoToStyx[persistent->_volcanoToStyxCounter], 0, 16007, Common::Point(0, 216));
 				persistent->_volcanoToStyxCounter++;
 			} else {
 				handleEvent(16007);
@@ -116,7 +116,7 @@ public:
 		case 16007:
 			room->stopAnim("gem overlay");
 			room->playMusic("morph music", 16009);
-			room->playVideo("morphing gems", 500, 16005, Common::Point(10, 10));
+			room->playVideoSFX("morphing gems", 500, 16005, Common::Point(10, 10));
 			break;
 		case 16008:
 			g_vm->moveToRoom(kRiverStyxRoom);
@@ -128,7 +128,11 @@ public:
 			if (!persistent->_volcanoHeyKid
 			    && persistent->_hintsAreEnabled) {
 				persistent->_volcanoHeyKid = true;
-				room->playVideo("eye of fates hey kid", 0, 16011, Common::Point(0, 216));
+				// unclear
+				room->playVideoSpeech(TranscribedSound("eye of fates hey kid",
+								       "Hey, kid. Are you thinking what I'm thinking? "
+								       "Push that boulder, quick"),
+						0, 16011, Common::Point(0, 216));
 			} else {
 				room->enableMouse();
 			}
@@ -143,7 +147,9 @@ public:
 			break;
 		case 16024:
 			if (persistent->_hintsAreEnabled)
-				room->playVideo("eye of fates on ta something", 0, 16011, Common::Point(0, 216));
+				room->playVideoSpeech(TranscribedSound("eye of fates on ta something",
+								       "You seem to be onto something with that boulder trick. "
+								       "Give it another try"), 0, 16011, Common::Point(0, 216));
 			else
 				room->enableMouse();
 			room->enableHotzone("second boulder");
@@ -188,12 +194,17 @@ public:
 		room->enableHotzone("argo");
 		if (quest == kMedusaQuest && persistent->_medisleShowFates && !persistent->_volcanoPainAndPanicIntroDone) {
 			persistent->_volcanoPainAndPanicIntroDone = true;
-			room->playVideo("pain and panic intro movie", 425, 16016, Common::Point(422, 165));
+			room->playVideoSpeech(TranscribedSound("pain and panic intro movie",
+							       "Sorry, pal. This aren't the spot. "
+							       "Volcano's here but the helmet is not"),
+					425, 16016, Common::Point(422, 165));
 		}
 
 		if (quest < kMedusaQuest) {
 			if (!persistent->isRoomVisited(kVolcanoRoom)) {
-				room->playVideo("eye of fates we're rich", 0, 16010, Common::Point(0, 216));
+				room->playVideoSpeech(TranscribedSound("eye of fates we're rich", "Do you see what I see? "
+								       "We're gonna be rich. Eureka"),
+						      0, 16010, Common::Point(0, 216));
 			}
 		}
 
