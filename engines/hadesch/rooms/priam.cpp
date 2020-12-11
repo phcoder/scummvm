@@ -47,10 +47,12 @@ public:
 		Persistent *persistent = g_vm->getPersistent();
 
 		if (name == "Ares") {
-			Common::Array<Common::String> videos;
-			videos.push_back("T4240nA0");
-			videos.push_back("T4240nB0");
-			videos.push_back("T4240nC0");
+			static const TranscribedSound videos[] = {
+				{"T4240nA0", _s("I'm Ares, god of war. I love to fight. Scavengers of the battlefield like vultures and dogs are my favourite animals") },
+				{"T4240nB0", _s("Athena is my half-sister but we don't quite see eye-to-eye when it comes to fighting battles. Take trojan war for example. I'm for Trojans, she's or the Greeks") },
+				{"T4240nC0", _s("I'm not very popular with gods and goddesses on mount Olympus. But Aphrodite thinks I'm brave") },
+				{ nullptr, nullptr }
+			};
 
 			room->playStatueSMK(kAresStatue,
 					    "AnimAresGlow",
@@ -60,9 +62,12 @@ public:
 		}
 
 		if (name == "Aphrodite") {
-			Common::Array<Common::String> videos;
-			videos.push_back("T4250nA0");
-			videos.push_back("T4250nB0");
+			static const TranscribedSound videos[] = {
+				// unclear
+				{"T4250nA0", _s("I'm Aphrodite. The goddess of love and beauty. I was born from the foam of the see")},
+				{"T4250nB0", _s("Oh that silly fighting in Troy started because I won the judgement of Paris. You see Paris gave me the golden apple, so I have to win Helen of Troy") },
+				{ nullptr, nullptr }
+			};
 
 			room->playStatueSMK(kAphroditeStatue,
 					    "AnimAphroditeGlow",
@@ -219,7 +224,7 @@ public:
 			room->playAnimLoop("AnimHelenScarf", 600);
 			break;
 		case 20022:
-			playPhilVideo("PhilYouDidIt", 20023);
+			playPhilVideo(TranscribedSound("PhilYouDidIt", "Hooray, you did it. You delivered the message. Now get out of here as quick as you can. Move it"), 20023);
 			break;
 		case 20023:
 			// TODO: repeated 20024 timer 1/frame
@@ -235,7 +240,10 @@ public:
 			// TODO: timer 20024
 			_collapseCounter--;
 			if (_collapseCounter == 0) {
-				playPhilVideo("PhilOhCollapse");
+				playPhilVideo(TranscribedSound(
+						      "PhilOhCollapse",
+						      "Oh great, that's just great. "
+						      "The catacombs caved in so there is no going back the way you came. Any ideas?"));
 			}
 			break;
 		}
@@ -266,9 +274,9 @@ public:
 	}
 
 private:
-	void playPhilVideo(const Common::String &name, int callback = 20003) {
+	void playPhilVideo(TranscribedSound name, int callback = 20003) {
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
-		room->playVideo(name, 0, callback, Common::Point(102, 216));
+		room->playVideoSpeech(name, 0, callback, Common::Point(102, 216));
 	}
 
 	AmbientAnimWeightedSet _ambients;
