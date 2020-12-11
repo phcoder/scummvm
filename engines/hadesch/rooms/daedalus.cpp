@@ -72,18 +72,29 @@ public:
 		}
 
 		if (name == "daedalus") {
-			playDaedalusVideo("daedalus no materials", 13005, Common::Point(76, 0));
+			playDaedalusVideo(TranscribedSound(
+						  "daedalus no materials",
+						  "You have your shopping list. Get going"
+						  ), 13005, Common::Point(76, 0));
 			return;
 		}
 
 		if (name == "wings") {
-			playDaedalusVideo("daedalus wings", 4009, Common::Point(10, 56));
+			playDaedalusVideo(TranscribedSound(
+						  "daedalus wings",
+						  "Once I've trapped the minotaur I'm going to escape this place once and for all "
+						  "by using these wings I made out of wax. Keep that under your hat, by the way"),
+					  4009, Common::Point(10, 56));
 			return;
 		}
 
 		if (name == "labyrinth" && persistent->_quest != kCreteQuest) {
 			room->disableMouse();
-			room->playVideo("phil navigation help", 0, 13007, Common::Point(0, 216));
+			room->playVideoSpeech(TranscribedSound(
+						      "phil navigation help",
+						      "The only way out to the labyrinth is through your hall of trophees"
+						      ),
+					      0, 13007, Common::Point(0, 216));
 			return;
 		}
 
@@ -117,12 +128,17 @@ public:
 		}
 		
 		if ((name == "daedalus" || name == "chute") && labItem < 0) {
-			playDaedalusVideo("daedalus what to do with that", 13005, Common::Point(10, 40));
+			playDaedalusVideo(TranscribedSound(
+						  "daedalus what to do with that",
+						  "What am I going to do with that?"),
+					  13005, Common::Point(10, 40));
 			return true;
 		}
 
 		if (name == "daedalus" && labItem >= 0) {
-			playDaedalusVideo("daedalus put that in the chute", 4009, Common::Point(64, 48));
+			playDaedalusVideo(TranscribedSound(
+						  "daedalus put that in the chute",
+						  "Put that in the chute"), 4009, Common::Point(64, 48));
 			return true;
 		}
 
@@ -143,13 +159,16 @@ public:
 			room->playAnimWithSFX("dust cloud", "dust cloud sound", 850, PlayAnimParams::disappear());
 
 			if (hasAll) 
-				playDaedalusVideo("daedalus exclaims", 13008, Common::Point(0, 2));
+				playDaedalusVideo(TranscribedSound("daedalus exclaims", "At last! Now we can finish the maze!"),
+						  13008, Common::Point(0, 2));
 			else {
 				// Original goes to event 4009
 				if (g_vm->getRnd().getRandomBit())
-					playDaedalusVideo("daedalus congrats 1", 4009, Common::Point(70, 30));
+					playDaedalusVideo(TranscribedSound("daedalus congrats 1", "Ah magnificient. We're getting there"),
+							  4009, Common::Point(70, 30));
 				else
-					playDaedalusVideo("daedalus congrats 2", 4009, Common::Point(68, 32));
+					playDaedalusVideo(TranscribedSound("daedalus congrats 2", "Fabulous. We're almost ready"),
+							  4009, Common::Point(68, 32));
 			}
 
 			return true;
@@ -162,23 +181,37 @@ public:
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
 		switch(eventId) {
 		case kIntroStep1:
-			room->playVideo("phil intro 1", kPhilZ, kIntroStep2,
+			room->playVideoSpeech(TranscribedSound(
+						"phil intro 1",
+						"Tell Daedalus if that Minotaur finds him first it will be the last thing he'll ever do"),
+					kPhilZ, kIntroStep2,
 					Common::Point(0, 216));
 			room->selectFrame(kDaedalusAmbient, kDaedalusZ, 0);
 			break;
 		case kIntroStep2:
-			playDaedalusVideo("daedalus intro 2", kIntroStep3,
-					  Common::Point(76, 55));
+			playDaedalusVideo(TranscribedSound(
+						  "daedalus intro 2",
+						  "I cannot finish the maze without certain materials. "
+						  "Here, I've made a list. Go and get them for me. I need stone, wood, straw and bricks"),
+					  kIntroStep3, Common::Point(76, 55));
 			break;
 		case kIntroStep3:
-			room->playVideo("phil intro 2", kPhilZ, kIntroStep4,
+			room->playVideoSpeech(TranscribedSound(
+						      "phil intro 2",
+						      "You've got that kid? Go find the stuff he needs and bring it back to him. "
+						      "We're on a deadline here"
+						      ), kPhilZ, kIntroStep4,
 					Common::Point(0, 216));
 			room->selectFrame(kDaedalusStillFrame, kDaedalusZ, 0);
 			break;
 
 		case kIntroStep4:
-			playDaedalusVideo("daedalus intro 3", kIntroStep5,
-					  Common::Point(76, 60));
+			playDaedalusVideo(TranscribedSound(
+						  "daedalus intro 3",
+						  "I need stron from Medusa isle. I need special wood that is shipped from "
+						  "Atlantis to the harbour in Crete. From Troy I need bricks that have "
+						  "lasted for centuries. And I need fresh straw from the kingdom of Seriphos"),
+					  kIntroStep5, Common::Point(76, 60));
 			break;
 		case 13004:
 			room->stopAnim("daedalus note");
@@ -199,7 +232,10 @@ public:
 				break;
 			}
 			room->disableMouse();
-			room->playVideo("phil coerces", 0, 13007, Common::Point(0, 216));
+			room->playVideoSpeech(TranscribedSound(
+					    "phil coerces", "The Minotaur is not getting any friendlier but he is getting closer. "
+					    "No time to waste"
+					    ), 0, 13007, Common::Point(0, 216));
 			break;
 		case 13007:
 			room->enableMouse();
@@ -298,7 +334,11 @@ public:
 			persistent->_creteShowAtlantisBoat = true;
 			persistent->_creteIntroAtlantisWood = true;
 			persistent->_troyPlayAttack = true;
-			playDaedalusVideo("daedalus intro 1", kIntroStep1,
+			playDaedalusVideo(TranscribedSound(
+					      "daedalus intro 1",
+					      // unclear
+					      "That Minotaur, what a monster. He's leaving dead bodies everywhere. "
+					      "I'm going to trap him even if it's the last thing I do"), kIntroStep1,
 					  Common::Point(50, 35));
 			room->playMusicLoop("theme music 1");
 		} else if (quest == kCreteQuest &&
@@ -314,7 +354,7 @@ public:
 			    AmbientAnim::PAN_ANY).start();
 	}
 private:
-	void playDaedalusVideo(const Common::String &name, int callback, const Common::Point &offset) {
+	void playDaedalusVideo(TranscribedSound name, int callback, const Common::Point &offset) {
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
 
 		_daedalusIsBusy = true;
@@ -323,7 +363,7 @@ private:
 		room->stopAnim(kDaedalusAmbient);
 		room->selectFrame(kModelPiece, kModelPieceZ, 0);
 		room->disableMouse();
-		room->playVideo(name, kDaedalusZ, callback, offset);
+		room->playVideoSpeech(name, kDaedalusZ, callback, offset);
 	}
 
 	void daedalusBecomesIdle() {
