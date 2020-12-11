@@ -248,7 +248,7 @@ public:
 	void playVideoMusic(const Common::String &name, int zValue,
 			    EventHandlerWrapper callbackEvent = EventHandlerWrapper(),
 			    Common::Point offset = Common::Point(0, 0));
-	void playVideoSpeech(const TranscribedSound &name, int zValue,
+	void playVideoSpeech(TranscribedSound name, int zValue,
 			     EventHandlerWrapper callbackEvent = EventHandlerWrapper(),
 			     Common::Point offset = Common::Point(0, 0));    
 	void cancelVideo();
@@ -349,7 +349,8 @@ private:
 			       Audio::Mixer::SoundType soundType,
 			       int zValue,
 			       EventHandlerWrapper callbackEvent,
-			       Common::Point offset);
+			       Common::Point offset,
+			       int subID);
 	void playSubtitles(const char *text, int subID);
 	void addLayer(Renderable *renderable, const LayerId &name,
 		      int zValue,
@@ -369,6 +370,7 @@ private:
 	Common::Point _videoOffset, _videoSurfOffset;
 	Common::SharedPtr<byte> _videoPixels;
 	byte _videoPalette[256 * 3];
+	int _videoSubID;
 
 	HotZoneArray _hotZones;
 	Common::Array<HotZoneArray> _hotZoneStack;

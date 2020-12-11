@@ -533,7 +533,9 @@ void VideoRoom::nextFrame(Common::SharedPtr<GfxContext> context, int time, bool 
 	if (_subtitles.empty())
 		_countQueuedSubtitles.clear();
 
-	if (_videoDecoder && (_videoDecoder->endOfVideo() || (stopVideo && !_mouseEnabled))) {
+	if (_videoDecoder && ((_videoDecoder->endOfVideo() &&
+			       (_countQueuedSubtitles.empty() || _countQueuedSubtitles[_videoSubID] == 0))
+			      || (stopVideo && !_mouseEnabled))) {
 		debug("videoEnd: %s", _videoDecoderEndEvent.getDebugString().c_str());
 		_videoDecoder.reset();
 		g_vm->handleEvent(_videoDecoderEndEvent);
@@ -756,7 +758,8 @@ void VideoRoom::playVideoInternal(const Common::String &name,
 				  Audio::Mixer::SoundType soundType,
 				  int zValue,
 				  EventHandlerWrapper callbackEvent,
-				  Common::Point offset) {
+				  Common::Point offset,
+				  int subID) {
 	cancelVideo();
 	Common::SharedPtr<Video::SmackerDecoder> decoder
 		= Common::SharedPtr<Video::SmackerDecoder>(new Video::SmackerDecoder());
@@ -778,6 +781,30 @@ void VideoRoom::playVideoInternal(const Common::String &name,
 	_videoDecoderEndEvent = callbackEvent;
 	_videoOffset = offset;
 	_videoZ = zValue;
+	_videoSubID = subID;
+}
+
+void VideoRoom::playVideoSFX(const Common::String &name,
+			     int zValue,
+			     EventHandlerWrapper callbackEvent,
+			     Common::Point offset) {
+	playVideoInternal(name, Audio::Mixer::kSFXSoundType, zValue, callbackEvent, offset, -1);
+}
+
+void VideoRoom::playVideoMusic(const Common::String &name,
+			       int zValue,
+			       EventHandlerWrapper callbackEvent,
+			       Common::Point offset) {
+	playVideoInternal(name, Audio::Mixer::kMusicSoundType, zValue, callbackEvent, offset, -1);
+}
+
+void VideoRoom::playVideoSpeech(TranscribedSound name,
+				int zValue,
+				EventHandlerWrapper callbackEvent,
+				Common::Point offset) {
+	int subID = g_vm->genSubtitleID();
+	playVideoInternal(name.soundName, Audio::Mixer::kMusicSoundType, zValue, callbackEvent, offset, subID);
+	playSubtitles(name.transcript, subID);
 }
 
 Common::SeekableReadStream *VideoRoom::openFile(const Common::String &name) {

@@ -330,9 +330,10 @@ void AnimClickables::playChosen(const Common::String &name, int counter, const E
 	Common::String sound = _table.get(name, "sound", counter);
 	int zValue = _table.get(name, "Z", counter).asUint64();
 	if (smacker != "")
-		room->playVideo(smacker.substr(1), zValue, event,
-				Common::Point(_table.get(name, "smackerX", counter).asUint64(),
-					      _table.get(name, "smackerY", counter).asUint64()));
+	    room->playVideoSpeech(
+		    TranscribedSound(smacker.substr(1).c_str(), _transcriptions[smacker.substr(1)].c_str()), zValue, event,
+		    Common::Point(_table.get(name, "smackerX", counter).asUint64(),
+				  _table.get(name, "smackerY", counter).asUint64()));
 	else if (anim != "")
 		room->playAnimWithSpeech(
 			anim, TranscribedSound(sound.c_str(), _transcriptions[sound].c_str()), zValue, PlayAnimParams::disappear(), event,
