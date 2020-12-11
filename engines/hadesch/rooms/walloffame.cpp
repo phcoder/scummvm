@@ -889,12 +889,16 @@ public:
 			switch (quest) {
 			case kTroyQuest:
 				_philWalkPhase = 1;
-				playPhilVideo("phil congrats trapped minotaur", 1019031, Common::Point(14, 320)); // state 27
+				playPhilVideoSpeech(TranscribedSound(
+						      "phil congrats trapped minotaur",
+						      "Way to go kid. I saw it all. When you trapped the Minotaur I got so excited. "
+						      "Phew. A couple more like that and we're going to have to throw you a party"),
+					      1019031, Common::Point(14, 320)); // state 27
 				room->playMusic("done crete quest theme");
 				break;
 			case kMedusaQuest:
 				_philWalkPhase = 1;
-				playPhilVideo("phil dances", 1019035, Common::Point(36, 257)); // state 38
+				playPhilVideoSFX("phil dances", 1019035, Common::Point(36, 257)); // state 38
 				room->playMusic("done troy quest theme");
 				break;
 			case kRescuePhilQuest:
@@ -915,7 +919,10 @@ public:
 			case kNoQuest:
 				_philWalkPhase = 1;
 				philBecomesListening();
-				room->playVideo("herc congratulates", 0, 19051, kOffsetRightRoom);
+				room->playVideoSpeech(TranscribedSound(
+						    "herc congratulates",
+						    "Sorry I wasn't able to help you out. But look at you, you did it all on your own. You proved that being a true hero isn't about the size of your strength but the strength of your heart. Congrats, kid. You're all heart"),
+						0, 19051, kOffsetRightRoom);
 				break;
 			case kCreteQuest:
 				break;
@@ -1016,6 +1023,15 @@ private:
 			return;
 		g_vm->getVideoRoom()->playVideoSpeech(name, kPhilZ, callback,
 						      videoOffset + getPhilBase());
+	}
+
+	void playPhilVideoSFX(const Common::String &name, int callback, const Common::Point videoOffset) {
+		Persistent *persistent = g_vm->getPersistent();
+		cancelAllPhils();
+		if (persistent->_quest == kRescuePhilQuest)
+			return;
+		g_vm->getVideoRoom()->playVideoSFX(name, kPhilZ, callback,
+						   videoOffset + getPhilBase());
 	}
 
 	void playPhilAnimSFX(const Common::String &name,
