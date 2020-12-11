@@ -351,7 +351,10 @@ public:
 						return;
 					}
 					persistent->_medislePlayedPhilFatesDesc = true;
-					room->playVideo("m2210ba0", 0, 11049, Common::Point(640, 216));
+					room->playVideoSpeech(TranscribedSound(
+								      "m2210ba0",
+								      "House of the Fates. These three know all: "
+								      "past, present and future"), 0, 11049, Common::Point(640, 216));
 					return;
 				}
 
@@ -470,8 +473,11 @@ TODO (medusa quest):
 			if (!room->isMouseEnabled() || !room->isPanRight())
 				break;
 			room->disableMouse();
-			room->playVideo("m2100ba0", 0, 11003,
-					Common::Point(640, 216));
+			room->playVideoSpeech(TranscribedSound(
+						      "m2100ba0",
+						      "Hey, Perseus must be around here somewhere. "
+						      "You'd better find him. I have a creepy feeling about this place."),
+					      0, 11003, Common::Point(640, 216));
 			break;
 		case 11003:
 			room->playSpeech(TranscribedSound(
@@ -481,7 +487,11 @@ TODO (medusa quest):
 			room->enableMouse();
 			break;
 		case kStoneTaken:
-			room->playVideo("m1360ba0", 200, kStoneTakenCleanup, Common::Point(0, 216));
+			room->playVideoSpeech(TranscribedSound(
+						      "m1360ba0",
+						      "That Minotaur is planning to eat the entire population of Athens next. "
+						      "I guess he loves Greek food. Come on, you've got to hurry"),
+					      200, kStoneTakenCleanup, Common::Point(0, 216));
 			break;
 		case 11064: // Right pan
 			if (persistent->_medisleShowFatesIntro) {
@@ -527,7 +537,10 @@ TODO (medusa quest):
 		case 11065: // Left pan
 			if (persistent->_seriphosPlayedMedusa && !persistent->_medislePlayedPerseusIntro) {
 				room->disableMouse();
-				room->playVideo("m1140ba0", 0, 11005, Common::Point(0, 216));
+				room->playVideoSpeech(TranscribedSound(
+							      "m1140ba0", "Perseus looks a little tied up right now, "
+							      "don't you think, kid?"),
+						      0, 11005, Common::Point(0, 216));
 			}
 			break;
 		case 11005:
@@ -617,7 +630,7 @@ TODO (medusa quest):
 			break;
 		case 11018:
 			finishPerseusAnim();
-			room->playVideo("m1200ma0", 0, 11019);
+			room->playVideoSFX("m1200ma0", 0, 11019);
 			break;
 		case 11019:
 		case 11037:
@@ -635,7 +648,11 @@ TODO (medusa quest):
 				room->stopAnim(greenSnakes[i]);
 			_perseusAnim.hide();
 			room->stopAnim("m1010oi0");
-			room->playVideo("m1260bh0", 900, 11023, Common::Point(2, 60));
+			// Mix of SFX and speech, classify as speech
+			room->playVideoSpeech(TranscribedSound(
+						      "m1260bh0", "Great work! Now you fly above and direct "
+						      "me while I take on the snake-headed lady"),
+					      900, 11023, Common::Point(2, 60));
 			break;
 		case 11023:
 			room->selectFrame("m1260bh1", 900, 0);
@@ -655,21 +672,27 @@ TODO (medusa quest):
 					      TranscribedSound("m1250na0", "What about the other items?"), 11025);
 			break;
 		case 11027:
-			room->playVideo("m2130ba0", kFatesZ, 11609, Common::Point(756, 0));
+			room->playVideoSpeech(TranscribedSound(
+						      "m2130ba0", "You want to take Medusa's head? "
+						      "You want her gone? You want her dead?"),
+					      kFatesZ, 11609, Common::Point(756, 0));
 			break;
 		case 11029:
 			moveEye(kLachesis, 11621);
 			break;
 		case 11621:
 			renderFatesExcept(kLachesis);
-			room->playVideo("m2160ba0", kFatesZ, _isFirstFates ? 11622 : 11627, Common::Point(854, 0));
+			room->playVideoSpeech(TranscribedSound("m2160ba0", "The helmet's not that hard to spot. "
+							       "Volcano, hiding, right on top"),
+					      kFatesZ, _isFirstFates ? 11622 : 11627, Common::Point(854, 0));
 			break;
 		case 11622:
 			moveEye(kAtropos, 11623);
 			break;
 		case 11623:
 			renderFatesExcept(kAtropos);
-			room->playVideo("m2170ba0", kFatesZ, _isFirstFates ? 11624 : 11627, Common::Point(1002, 96));
+			room->playVideoSpeech(TranscribedSound("m2170ba0", "The magic bag's under the pile. Right here, on Medusa's isle."),
+					      kFatesZ, _isFirstFates ? 11624 : 11627, Common::Point(1002, 96));
 			break;
 		case 11624:
 			if (persistent->_medisleBagPuzzleState < Persistent::BAG_STARTED)
@@ -682,7 +705,9 @@ TODO (medusa quest):
 			break;
 		case 11626:
 			renderFatesExcept(kClotho);
-			room->playVideo("m2180ba0", kFatesZ, 11627, Common::Point(1090, 68));
+			room->playVideoSpeech(TranscribedSound("m2180ba0", "Magic sandals for your feet. "
+							       "Look at pottery, out in Crete"),
+					      kFatesZ, 11627, Common::Point(1090, 68));
 			break;
 		case 11627:
 			renderFatesAll();
@@ -693,16 +718,22 @@ TODO (medusa quest):
 			break;
 		case 11044:
 			if (room->isMouseEnabled() && !_eyeIsGivenBack) {
-				room->playVideo("m2130bd0", 0, 11045, Common::Point(640, 216));
+				room->playVideoSpeech(TranscribedSound("m2130bd0", "Kid, you want the information, they want their eye. "
+								       "So give it to them and let's get out of here"),
+						      0, 11045, Common::Point(640, 216));
 			}
 			break;
 		case 11609:
 			renderFatesExcept(kAtropos, kClotho);
-			room->playVideo("m2130bb0", kFatesZ, 11610, Common::Point(922, 0));
+			room->playVideoSpeech(TranscribedSound("m2130bb0", "You want to know the way to do it? "
+							       "Well, my friend, there is nothing to it"),
+					      kFatesZ, 11610, Common::Point(922, 0));
 			break;
 		case 11610:
 			renderFatesExcept(kClotho);
-			room->playVideo("m2130bc0", kFatesZ, 11611, Common::Point(1024, 0));
+			room->playVideoSpeech(TranscribedSound("m2130bc0", "We're the ones can tell you how. "
+							       "Just give us back our eyeball now"),
+					      kFatesZ, 11611, Common::Point(1024, 0));
 			break;
 		case 11611:
 			renderFatesAll();
@@ -814,7 +845,7 @@ TODO (medusa quest):
 		case 11038:
 			persistent->_medisleBagPuzzleState = Persistent::BAG_SOLVED;
 			showMagicBag();
-			room->playVideo("m1270bd0", 0, 11039, Common::Point(0, 216));
+			room->playVideoSpeech(TranscribedSound("m1270bd0", "Great work!"), 0, 11039, Common::Point(0, 216));
 			break;
 		case 11039:
 		case 11040:
@@ -822,7 +853,10 @@ TODO (medusa quest):
 			break;
 		case 11041:
 			finishPerseusAnim();
-			room->playVideo(persistent->_gender == kMale ? "m1290bb0" : "m1290bc0", 0, 11042);
+			room->playVideoSpeech(persistent->_gender == kMale
+					      ? TranscribedSound("m1290bb0", "Hey, not bad, kid. Yo're going to become a hero yet")
+					      : TranscribedSound("m1290bc0", "Hey, not bad, kid. Yo're going to become a heroine yet"),
+					      0, 11042);
 			break;
 		case 11036:
 			_statueDrag = -1;
@@ -830,7 +864,8 @@ TODO (medusa quest):
 			if (_depProblemState == 1
 			    && persistent->_hintsAreEnabled) {
 				room->disableMouse();
-				room->playVideo("m1270bb0", 0, 11037, Common::Point(0, 216));
+				room->playVideoSpeech(TranscribedSound("m1270bb0", "Try working from the ground up"),
+						      0, 11037, Common::Point(0, 216));
 				_depProblemState = 2;
 			}
 			break;
