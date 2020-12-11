@@ -87,7 +87,9 @@ public:
 				    && _playAreYouForgetting) {
 					_playAreYouForgetting = false;
 					room->disableMouse();
-					room->playVideo("c8020ba0", 0,
+					room->playVideoSpeech(TranscribedSound(
+								      "c8020ba0",
+								      "Hey, aren't you forgetting something?"), 0,
 							kPhilForgettingEnd,
 							Common::Point(0, 216));
 					return;
@@ -105,7 +107,10 @@ public:
 					   && persistent->_hintsAreEnabled) {
 					_playAthenaTempleHardware = false;
 					room->disableMouse();
-					room->playVideo("c8160ba0", 0,
+					room->playVideoSpeech(TranscribedSound(
+								"c8160ba0", "Hey, you don't want to face Medusa with just your looks. "
+								"You're going to need some hardware, pal"
+								), 0,
 							kPhilHardwareFinished,
 							Common::Point(0, 216));
 					return;
@@ -116,12 +121,19 @@ public:
 		}
 
 		if (name == "Athena") {
-			Common::Array<Common::String> videos;
+			Common::Array<TranscribedSound> videos;
 			if (quest == kMedusaQuest && !persistent->_athenaPuzzleSolved) {
-				videos.push_back(persistent->_gender == kMale ? "c8060wa0" : "c8060wb0");
+				videos.push_back(persistent->_gender == kMale
+						 ? TranscribedSound("c8060wa0", "I assure you that the items you need for are here. "
+							 "Don't give up. Never give up. A true hero can do it")
+						 : TranscribedSound("c8060wb0", "I assure you that the items you need for are here. "
+							 "Don't give up. A true heroine can do it. And you're a true heroine"));
 			} else {
-				videos.push_back("c8060wc0");
-				videos.push_back("c8060wd0");
+				videos.push_back(TranscribedSound(
+							 "c8060wc0", "I'm Athena, the goddess of wisdom, crafts and warfare"));
+				videos.push_back(TranscribedSound(
+							 "c8060wd0", "I was born from the head of my father Zeus. "
+							 "Full grown and in full armor"));
 			}
 
 			room->playStatueSMK(kAthenaStatue,
@@ -168,7 +180,10 @@ public:
 		if (name == "Athena's Sword") {
 			room->disableMouse();
 			room->playAnimLoop("c8010oc0", 2101);
-			room->playVideo("c8080wa0", 0, 23043);
+			room->playVideoSpeech(TranscribedSound(
+						  "c8080wa0",
+						  "This is my sword. If you want one just like it, "
+						  "you will have to proof yourself worthy by solving this puzzle"), 0, 23043);
 			room->playSFX("C8080eA1");
 			return;
 		}
@@ -176,7 +191,10 @@ public:
 		if (name == "Athena's Shield") {
 			room->disableMouse();
 			room->playAnimLoop("c8010ob0", 2101);
-			room->playVideo("c8070wa0", 0, 23044);
+			room->playVideoSpeech(TranscribedSound(
+						  "c8070wa0",
+						  "This is my trusty shield. If you want one of your own, "
+						  "you will have to earn it by solving this puzzle"), 0, 23044);
 			room->playSFX("C8080eA1");
 			return;
 		}
@@ -214,7 +232,9 @@ public:
 		case 23010:
 			if (persistent->_hintsAreEnabled && room->isMouseEnabled()) {
 				room->disableMouse();
-				room->playVideo("c8170ba0", 0, 23011, Common::Point(0, 216));
+				room->playVideoSpeech(TranscribedSound("c8170ba0",
+								       "Click on the statues to change the direction of the lightbeam"),
+						      0, 23011, Common::Point(0, 216));
 			}
 			break;
 		case 23011:
@@ -257,7 +277,7 @@ public:
 			room->playSpeech(TranscribedSound("c8180wc0", "Well now you can see what I'm doing: tomato heads"), 23030);
 			break;
 		case 23030:
-			room->playVideo("c8180ba0", 0, 23032);
+			room->playVideoSFX("c8180ba0", 0, 23032);
 			break;
 		case 23031:
 			break;
@@ -317,7 +337,15 @@ public:
 		if (quest == kMedusaQuest && !persistent->_athenaPuzzleSolved) {
 			persistent->_athenaIntroPlayed = true;
 			room->disableMouse();
-			room->playVideo(persistent->_gender == kMale ? "c8040wa0" : "c8040wb0",
+			room->playVideoSpeech(persistent->_gender == kMale
+					      ? TranscribedSound("c8040wa0", "Welcome, great hero. "
+								 "You and Perseus must slay the Gorgon Medusa. "
+								 "I have the weapons neeeded to battle this creature hidden in my temple. "
+								 "Only the wisest will find them")
+					      : TranscribedSound("c8040wb0", "Welcome, great heroine. "
+								 "You and Perseus must slay the Gorgon Medusa. "
+								 "I have the weapons neeeded to battle this creature hidden in my temple. "
+								 "Only the wisest will find them"),
 					1101, kIntroFinished);
 			room->playAnim(kAthenaAnim, 1101, PlayAnimParams::loop());
 			room->playMusic("c8040ma0", 23013);
