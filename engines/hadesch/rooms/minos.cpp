@@ -31,6 +31,14 @@ static const char *kBacchusHighlight = "AnimBacchusStatue";
 static const char *kGuardLooking = "AnimGuardLooking";
 static const char *kAnimMinosEating = "AnimMinosEating";
 static const char *kStatues = "AnimStatueZeroPose";
+static const TranscribedSound kMovMinosBeGone = {
+	"MovMinosBeGone",
+	_s("Be gone from my sight.")
+};
+static const char *kTossTranscript = _s("How dare you to bring me a statue of such a ratchid creature?");
+static const TranscribedSound kMovMinosWhatTrash = {
+	"MovMinosWhatTrash", "What trash"
+};
 
 enum {
 	kMinosBackToIdleEvent = 14003,
@@ -69,10 +77,18 @@ public:
 	void handleClick(const Common::String &name) override {
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
 		if (name == "Bacchus") {
-			Common::Array<Common::String> videos;
-			videos.push_back("SndBacchusStatueA");
-			videos.push_back("SndBacchusStatueB");
-			videos.push_back("SndBacchusStatueC");
+			static const TranscribedSound videos[] =
+			{
+				{ "SndBacchusStatueA",
+				  // unclear
+				  _s("I'm Bacchus, god of wine and merryland. I always wear a reef of grape leaf on my hand")},
+				{ "SndBacchusStatueB",
+				  // unclear
+				  _s("I'm also the god of fiestas. Many festivals and singing parties are held in my honor")},
+				{ "SndBacchusStatueC",
+				  _s("Pirates once tried to kidnap me, so I turned them into dolphins")},
+				{ nullptr, nullptr },
+			};
 
 			room->playStatueSMK(kBacchusStatue,
 					    kBacchusHighlight,
@@ -105,18 +121,20 @@ public:
 		}
 
 		if (name == "Minos") {
-			playMinosMovie("MovMinosBeGone", kMinosBackToIdleEvent, Common::Point(202, 229));
+			playMinosMovie(kMovMinosBeGone, kMinosBackToIdleEvent, Common::Point(202, 229));
 			return;
 		}
 
 		if (name == "Table") {
-			playMinosMovie("MovMinosHavePiece", kMinosBackToIdleEvent, Common::Point(230, 227));
+			playMinosMovie(TranscribedSound("MovMinosHavePiece", "Have you brought me my new centerpiece?"),
+				       kMinosBackToIdleEvent, Common::Point(230, 227));
 			return;
 		}
 
 		if (name == "Statue" && !_guardIsBusy) {
 			_guardIsBusy = true;
-			room->playVideo("MovGuardDontTouch", kGuardZ, 14004, Common::Point(432, 142));
+			room->playVideoSpeech(TranscribedSound("MovGuardDontTouch", "Don't touch that"),
+					      kGuardZ, 14004, Common::Point(432, 142));
 			room->stopAnim(kGuardLooking);
 			return;
 		}
@@ -127,11 +145,12 @@ public:
 		Persistent *persistent = g_vm->getPersistent();
 		if (name == "Minos") {
 			if (item >= kHornlessStatue1 && item <= kHornedStatue) {
-				playMinosMovie("MovMinosPutOnTable", kMinosBackToIdleEvent, Common::Point(218, 227));
+				playMinosMovie(TranscribedSound("MovMinosPutOnTable", "Put it on the table, so I can have a better look at it"),
+					       kMinosBackToIdleEvent, Common::Point(218, 227));
 				return true;
 			}
 
-			playMinosMovie("MovMinosBeGone", kMinosBackToIdleEvent, Common::Point(202, 229));
+			playMinosMovie(kMovMinosBeGone, kMinosBackToIdleEvent, Common::Point(202, 229));
 			return true;
 		}
 
@@ -146,7 +165,9 @@ public:
 			if (item == kHornedStatue) {
 				g_vm->getHeroBelt()->removeFromInventory(item);
 //				room->selectFrame(kStatues, 0);
-				playMinosMovie("MovMinosLoveTheHorns", kMinosHornedStatue, Common::Point(202, 178));
+				playMinosMovie(TranscribedSound("MovMinosLoveTheHorns", "Now that is a fabulous gift. "
+								"I love the horns. You may go in and see Daedalus now"),
+					       kMinosHornedStatue, Common::Point(202, 178));
 				persistent->_creteDaedalusRoomAvailable = true;
 				return true;
 			}
@@ -156,11 +177,11 @@ public:
 					2, 4, 1, 3
 				};
 				room->selectFrame(kStatues, kStatueOnTheTableZ, mapFrames[item - kHornlessStatue1]);
-				playMinosMovie("MovMinosWhatTrash", kMinosToss1 + item - kHornlessStatue1, Common::Point(202, 225));
+				playMinosMovie(kMovMinosWhatTrash, kMinosToss1 + item - kHornlessStatue1, Common::Point(202, 225));
 				persistent->_creteTriedHornless[item - kHornlessStatue1] = true;
 				return true;
 			}
-			playMinosMovie("MovMinosWhatTrash", kMinosOtherItem, Common::Point(202, 225));
+			playMinosMovie(kMovMinosWhatTrash, kMinosOtherItem, Common::Point(202, 225));
 			return true;
 		}
 		return false;
@@ -181,27 +202,31 @@ public:
 			g_vm->moveToRoom(kCreteRoom);
 			break;
 		case kMinosOtherItem:
-			playMinosMovie("MovMinosBeGone", kMinosBackToIdleEvent, Common::Point(202, 229));
+			playMinosMovie(kMovMinosBeGone, kMinosBackToIdleEvent, Common::Point(202, 229));
 			scheduleNagging();
 			break;
 		case kMinosToss1:
 			room->setLayerEnabled(kStatues, false);
-			playMinosMovie("MovMinosToss1", kMinosStatueTossed, Common::Point(0, 191));
+			playMinosMovie(TranscribedSound("MovMinosToss1", kTossTranscript),
+				       kMinosStatueTossed, Common::Point(0, 191));
 			break;
 		case kMinosToss2:
 			room->setLayerEnabled(kStatues, false);
-			playMinosMovie("MovMinosToss2", kMinosStatueTossed, Common::Point(0, 188));
+			playMinosMovie(TranscribedSound("MovMinosToss2", kTossTranscript),
+				       kMinosStatueTossed, Common::Point(0, 188));
 			break;
 		case kMinosToss3:
 			room->setLayerEnabled(kStatues, false);
-			playMinosMovie("MovMinosToss3", kMinosStatueTossed, Common::Point(0, 183));
+			playMinosMovie(TranscribedSound("MovMinosToss3", kTossTranscript),
+				kMinosStatueTossed, Common::Point(0, 183));
 			break;
 		case kMinosToss4:
 			room->setLayerEnabled(kStatues, false);
-			playMinosMovie("MovMinosToss4", kMinosStatueTossed, Common::Point(0, 191));
+			playMinosMovie(TranscribedSound("MovMinosToss4", kTossTranscript),
+				       kMinosStatueTossed, Common::Point(0, 191));
 			break;			
 		case kMinosStatueTossed:
-			playMinosMovie("MovMinosBeGone", kMinosBackToIdleEvent, Common::Point(202, 229));
+			playMinosMovie(kMovMinosBeGone, kMinosBackToIdleEvent, Common::Point(202, 229));
 			scheduleNagging();
 			break;
 
@@ -239,7 +264,8 @@ public:
 			scheduleNagging();
 			if (!_guardIsBusy && !_minosIsBusy) {
 				_guardIsBusy = true;
-				room->playVideo("MovGuardUMustGo", kGuardNagCleanup, kGuardZ, Common::Point(0, 142));
+				room->playVideoSpeech(TranscribedSound("MovGuardUMustGo", "You must go now"),
+						      kGuardNagCleanup, kGuardZ, Common::Point(0, 142));
 				room->stopAnim(kGuardLooking);
 			}
 			break;
@@ -283,7 +309,9 @@ public:
 
 		if (!persistent->_creteMinosInstructed) {
 			playMinosMovie(
-				"MovMinosInstructions", kInstructionMovieCompleted,
+				TranscribedSound("MovMinosInstructions", "So, you're here to see Daedalus. "
+					"Well I won't let you see him unless you bring me a gift worthy of a king."
+					"And I am in need of a new centerpiece"), kInstructionMovieCompleted,
 				Common::Point(210, 229));
 			persistent->_creteMinosInstructed = true;
 			persistent->_creteShowMerchant = true;
@@ -314,11 +342,11 @@ private:
 		g_vm->addTimer(kGuardNag, g_vm->getRnd().getRandomNumberRng(5000, 10000));
 	}
 
-	void playMinosMovie(const Common::String &name, int callback,
+	void playMinosMovie(TranscribedSound name, int callback,
 			    Common::Point offset) {
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
 		room->setLayerEnabled(kAnimMinosEating, false);
-		room->playVideo(name, kMinosZ, callback, offset);
+		room->playVideoSpeech(name, kMinosZ, callback, offset);
 		room->disableMouse();
 		_minosIsBusy = true;
 	}
