@@ -94,14 +94,42 @@ static TranscribedSound kHadesNoMoreHeroines = {
 static const char *kPhilSnoresSound = "phil snores sound";
 #define kPhilRollsOver "phil rolls over"
 #define kPhilJumpsOffPillow "phil jumps off pillow"
-static const char *kPhilOfCourseIdo = "phil of course i do";
-static const char *kPhilWhatAHothead = "phil what a hothead";
-static const char *kPhilTimeToGetStarted = "phil time to get started";
-static const char *kPhilTreasuresOfHercules = "phil treasures of hercules";
-static const char *kPhilBasicInformation = "phil basic information";
-static const char *kPhilFlakyPlaster = "phil flaky plaster";
-static const char *kPhilGettinStarted = "phil gettin started";
-static const char *kPhilToolsOfTrade = "phil tools of the trade";
+static const TranscribedSound kPhilOfCourseIdo = {
+	"phil of course i do",
+	_s("Of course, I do. I've got someone who looks like hero material right here")
+};
+static const TranscribedSound kPhilWhatAHothead = {
+	"phil what a hothead",
+	_s("Phew, what a hothead. Hades never makes it easy for new recruits")
+};
+static const TranscribedSound kPhilTimeToGetStarted = {
+	"phil time to get started",
+	_s("Anyway, time to get started")
+};
+static const TranscribedSound kPhilTreasuresOfHercules = {
+	"phil treasures of hercules",
+	_s("These are the treasures of Hercules, "
+	   "the most decorated hero of all time. "
+	   "This is his hall of trophies")
+};
+static const TranscribedSound kPhilBasicInformation = {
+	"phil basic information",
+	_s("First, I need you to give me some basic information")
+};
+static const TranscribedSound kPhilFlakyPlaster = {
+	"phil flaky plaster",
+	_s("This lonely decrepid stack of bricks is your hall of flaky plaster")
+};
+static const TranscribedSound kPhilGettinStarted = {
+	"phil gettin started",
+	_s("But you're just getting started. "
+	   "And you know the hero business, kid. It's full of surprises")
+};
+static const TranscribedSound kPhilToolsOfTrade = {
+	"phil tools of the trade",
+	_s("Before going off on your first quest I need you to be prepared. "
+	   "First off, you're going to need some tools of the trade")
+};
 static const TranscribedSound kPhilHeroBelt = {
 	"phil hero belt",
 	_s("You can store the things you pick up along the way in this hero belt")
@@ -122,14 +150,33 @@ static const TranscribedSound kPhilRightNotches = {
 	"phil right notches",
 	_s("Those notches on the right will let you save your adventure and leave... Or take a look at your quest scroll again")
 };
-static const char *kPhilEyeOfFates = "phil eye of fates";
-static const char *kPhilBadNews = "phil bad news";
-static const char *kPhilFirstQuest = "phil first quest";
+static const TranscribedSound kPhilEyeOfFates = {
+	"phil eye of fates",
+	_s("Don't get the creeps, kid. This is the other eye of fate. "
+	   "It will allow me to keep an eye on you since I have "
+	   "to stay here and train new recruits. You'll be hearing "
+	   "from me through this eye")
+};
+static const TranscribedSound kPhilBadNews = {
+	"phil bad news",
+	_s("Hey, these two mean bad news, bad times and bad breath. "
+	   "Their names are pain and panic and they've got an eternal "
+	   "contract with Hades to make life miserable for young recruits "
+	   "like you. Watch out, they can change shape")
+};
+static const TranscribedSound kPhilFirstQuest = {
+	"phil first quest",
+	// unclear
+	_s("Ready for your first quest? Alright then. Here is the scoop-troop")
+};
 #define kPhilTakesScroll "phil takes scroll"
 #define kPhilDropsScroll "phil drops scroll"
 static const char *kPhilDaedalusNeedsHelp = "phil daedalus needs help";
 static const char *kPhilOffToCrete = "phil off to crete";
-static const char *kPhilArgo = "phil argo";
+static const TranscribedSound kPhilArgo = {
+	"phil argo",
+	_s("Oh another thing: that boat out there, the Argo, it's yours to get around on")
+};
 #define kPhilTapsFootLeft "phil taps foot left"
 
 #define kPhilYapsWithoutSound "phil yaps without sound"
@@ -436,7 +483,7 @@ public:
 			room->playVideo(kZeusVacationIsOver, kSoundOnlyZ, 19012);
 			break;
 		case 19012:
-			playPhilVideo(kPhilOfCourseIdo, 1019002, Common::Point(30, 304)); // state 5
+			playPhilVideoSpeech(kPhilOfCourseIdo, 1019002, Common::Point(30, 304)); // state 5
 			break;
 		case 1019002:
 			displayPhilIdle();
@@ -445,7 +492,7 @@ public:
 		case 19013:
 			room->playAnim(kZeusShaftOfLightLeft, kShaftOfLightLeftZ, PlayAnimParams::disappear().backwards().speed(500));
 			room->setLayerEnabled(kRope, false);
-			playPhilVideo(kPhilBasicInformation, 1019003, Common::Point(-4, 2)); // state 6
+			playPhilVideoSpeech(kPhilBasicInformation, 1019003, Common::Point(-4, 2)); // state 6
 			break;
 		case 19016:
 			room->addStaticLayer(kApplicationBurntHole, kApplicationButtonZ);
@@ -457,7 +504,7 @@ public:
 			applicationClose();
 			break;
 		case 19019:
-			playPhilVideo(kPhilWhatAHothead, 1019005, Common::Point(40, 327)); // state 7
+			playPhilVideoSpeech(kPhilWhatAHothead, 1019005, Common::Point(40, 327)); // state 7
 			break;
 		case 1019001:
 			cancelAllPhils();
@@ -476,11 +523,11 @@ public:
 			startApplication();
 			break;
 		case 1019005:
-			playPhilVideo(kPhilTimeToGetStarted, 1019006,
-				      Common::Point(36, 319)); // state 8
+			playPhilVideoSpeech(kPhilTimeToGetStarted, 1019006,
+					    Common::Point(36, 319)); // state 8
 			break;
 		case 1019006:
-			playPhilVideo(kPhilTreasuresOfHercules, 1019007,
+			playPhilVideoSpeech(kPhilTreasuresOfHercules, 1019007,
 				      Common::Point(40, 323)); // state 9
 			break;
 		case 1019007:
@@ -490,16 +537,16 @@ public:
 		case 1019008:
 			_philIsOnTheRight = true;
 			updatePhilHotzone();
-			playPhilVideo(kPhilFlakyPlaster, 1019009,
+			playPhilVideoSpeech(kPhilFlakyPlaster, 1019009,
 				      Common::Point(0, 0)); //state 10
 			break;
 		case 1019009:
-			playPhilVideo(kPhilGettinStarted, 1019010,
+			playPhilVideoSpeech(kPhilGettinStarted, 1019010,
 					Common::Point(14, 324)); //state 11
 			break;
 		case 1019010:
 			room->disableHeroBelt();
-			playPhilVideo(kPhilToolsOfTrade, 1019011,
+			playPhilVideoSpeech(kPhilToolsOfTrade, 1019011,
 				      Common::Point(40, 320)); //state 12
 			break;
 		case 1019011:
@@ -542,12 +589,12 @@ public:
 			break;
 		case 1019017:
 			room->enableHeroBelt();
-			playPhilVideo(kPhilEyeOfFates, 1019018,
+			playPhilVideoSpeech(kPhilEyeOfFates, 1019018,
 				      Common::Point(-8, 144)); // state 18
 			break;
 		case 1019018:
 			room->playSFX(kPanicAndPainSting);
-			playPhilVideo(kPhilBadNews, 1019019, Common::Point(14, 320)); // state 19
+			playPhilVideoSpeech(kPhilBadNews, 1019019, Common::Point(14, 320)); // state 19
 			break;
 		case 1019019:
 			displayPhilIdle();
@@ -561,7 +608,7 @@ public:
 					      19009, kOffsetRightRoom);
 			break;
 		case 19009:
-			playPhilVideo(kPhilFirstQuest, kPhilNewQuestScroll, Common::Point(40, 324)); // state 21
+			playPhilVideoSpeech(kPhilFirstQuest, kPhilNewQuestScroll, Common::Point(40, 324)); // state 21
 			break;
 		case kPhilNewQuestScroll:
 			room->selectFrame(kScroll, kScrollZ, 0, kOffsetRightRoom);
@@ -599,7 +646,7 @@ public:
 			}
 			break;
 		case 1019024:
-			playPhilVideo(kPhilArgo, kPhilBecomesIdle, Common::Point(40, 324)); // state 26
+			playPhilVideoSpeech(kPhilArgo, kPhilBecomesIdle, Common::Point(40, 324)); // state 26
 			break;
 		case kPhilBecomesIdle:
 			philBecomesIdle();
@@ -750,7 +797,12 @@ public:
 						AmbientAnim::KEEP_LOOP, kOffsetRightRoom,
 						AmbientAnim::PAN_ANY);
 			_hercules.start();
-			playPhilVideo("phil that was awesome", 19052,
+			playPhilVideoSpeech(TranscribedSound(
+					      "phil that was awesome",
+					      _s("That was awesome, kid."
+						 "You were brilliant. You're going to go down in history. "
+						 "We make a heck of a good team. I'll see you on our next adventure")
+					      ), 19052,
 				      Common::Point(14, 320)); // state 56
 			break;
 		case 19052:
@@ -778,17 +830,25 @@ public:
 			playPhilAnimSFX(kPhilWalksCenterToLeft, 1019032);
 			break;
 		case 1019032:
-			playPhilVideo("phil lots more to do", kPhilNewQuestScroll, Common::Point(14, 312)); // state 28
+			playPhilVideoSpeech(TranscribedSound("phil lots more to do", "Ok, we've got lots more to do"),
+				      kPhilNewQuestScroll, Common::Point(14, 312)); // state 28
 			break;
 		case 1019033:
-			playPhilVideo(persistent->_gender == kFemale ? "phil go to it heroine" : "phil go to it hero",
+			playPhilVideoSpeech(persistent->_gender == kFemale
+				      ? TranscribedSound(
+					      "phil go to it heroine", "Go to it, heroine")
+				      : TranscribedSound(
+					      "phil go to it hero", "Go to it, hero"),
 				      1019034, Common::Point(40, 324)); // state 32/31
 			break;
 		case 1019034:
-			playPhilVideo("phil off to troy", kPhilBecomesIdle, Common::Point(40, 324)); // state 33
+			playPhilVideoSpeech(TranscribedSound("phil off to troy", "You're off to Troy"),
+				      kPhilBecomesIdle, Common::Point(40, 324)); // state 33
 			break;
 		case 1019035:
-			playPhilVideo("phil sneaky devil", 1019036, Common::Point(40, 324)); // state 34
+			playPhilVideoSpeech(TranscribedSound("phil sneaky devil", "He-he-he you, sneaky devil, you earned the power of stealth."
+						       "You're making me proud, kid"),
+				      1019036, Common::Point(40, 324)); // state 34
 			break;
 		case 1019036:
 			_philWalkPhase--;
@@ -796,7 +856,7 @@ public:
 			playPhilAnimSFX(kPhilWalksCenterToLeft, 1019037);
 			break;
 		case 1019037:
-			playPhilVideo(TranscribedSound("phil good work", "Good work but we're not through yet"), kPhilNewQuestScroll, Common::Point(40, 324)); // state 35
+			playPhilVideoSpeech(TranscribedSound("phil good work", "Good work but we're not through yet"), kPhilNewQuestScroll, Common::Point(40, 324)); // state 35
 			break;
 		case 19900:
 			if (_gender != kUnknown && !_heroName.empty()) {
