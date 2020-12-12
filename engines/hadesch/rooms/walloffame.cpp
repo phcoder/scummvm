@@ -172,7 +172,10 @@ static const TranscribedSound kPhilFirstQuest = {
 #define kPhilTakesScroll "phil takes scroll"
 #define kPhilDropsScroll "phil drops scroll"
 static const char *kPhilDaedalusNeedsHelp = "phil daedalus needs help";
-static const char *kPhilOffToCrete = "phil off to crete";
+static const TranscribedSound kPhilOffToCrete = {
+	"phil off to crete",
+	_s("You're off to Crete. Make it there, you'll make it anywhere")
+};
 static const TranscribedSound kPhilArgo = {
 	"phil argo",
 	_s("Oh another thing: that boat out there, the Argo, it's yours to get around on")
@@ -639,10 +642,18 @@ public:
 				playPhilVideo(kPhilOffToCrete, 1019024, Common::Point(40, 324)); // state 25
 				break;
 			case kTroyQuest:
-				playPhilVideo("phil hourly rates", 1019033, Common::Point(28, 312)); // state 30
+				playPhilVideo(TranscribedSound(
+						      "phil hourly rates",
+						      "You're off to Troy, kid. A very dark and violent place. "
+						      "It's so dangerous they've got hourly rates on life insurance"),
+					      1019033, Common::Point(28, 312)); // state 30
 				break;
 			case kMedusaQuest:
-				playPhilVideo("phil off to seriphos", kPhilBecomesIdle, Common::Point(14, 320)); // state 37
+				playPhilVideo(TranscribedSound(
+						      "phil off to seriphos",
+						      "You're off to Seriphos. Talk about a boring place. "
+						      "I've spent two weeks there in one afternoon"),
+					      kPhilBecomesIdle, Common::Point(14, 320)); // state 37
 			}
 			break;
 		case 1019024:
@@ -672,7 +683,10 @@ public:
 			if (!_philSaidDoingGreat && quest != kCreteQuest) {
 				_philSaidDoingGreat = true;
 				// state 50
-				playPhilVideo("phil doing great", kPhilJokeEventCleanup,
+				playPhilVideo(TranscribedSound(
+						      "phil doing great",
+						      "You're doing great but you could always use more practice. "
+						      "You can play the activity by clicking on the frieze"), kPhilJokeEventCleanup,
 					      Common::Point(14, 320));
 				break;
 			}
@@ -682,17 +696,24 @@ public:
 			switch(rnd) {
 			case 1:
 				// state 40
-				playPhilVideo("phil break time over", kPhilJokeEventCleanup,
+				playPhilVideo(TranscribedSound(
+						      "phil break time over",
+						      "The break time is just about over. You need to get back to your quest, kiddo"
+						      ), kPhilJokeEventCleanup,
 					      Common::Point(40, 320));
 				break;
 			case 2:
 				// state 41
-				playPhilVideo("phil back to work", kPhilJokeEventCleanup,
+				playPhilVideo(TranscribedSound("phil back to work",
+							       "We're not getting paid by the hour here, kid. "
+							       "Let's get back to work"),
+					      kPhilJokeEventCleanup,
 					Common::Point(14, 320));
 				break;
 			case 3:
 				// state 42
-				playPhilVideo("phil lets go", kPhilJokeEventCleanup,
+				playPhilVideo(TranscribedSound("phil lets go", "Hey, I'm not getting any younger here. Let's go"),
+					      kPhilJokeEventCleanup,
 					Common::Point(16, 320));
 				break;
 			case 4:
