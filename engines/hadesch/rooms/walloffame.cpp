@@ -483,7 +483,7 @@ public:
 			room->playVideo(kZeusVacationIsOver, kSoundOnlyZ, 19012);
 			break;
 		case 19012:
-			playPhilVideoSpeech(kPhilOfCourseIdo, 1019002, Common::Point(30, 304)); // state 5
+			playPhilVideo(kPhilOfCourseIdo, 1019002, Common::Point(30, 304)); // state 5
 			break;
 		case 1019002:
 			displayPhilIdle();
@@ -492,7 +492,7 @@ public:
 		case 19013:
 			room->playAnim(kZeusShaftOfLightLeft, kShaftOfLightLeftZ, PlayAnimParams::disappear().backwards().speed(500));
 			room->setLayerEnabled(kRope, false);
-			playPhilVideoSpeech(kPhilBasicInformation, 1019003, Common::Point(-4, 2)); // state 6
+			playPhilVideo(kPhilBasicInformation, 1019003, Common::Point(-4, 2)); // state 6
 			break;
 		case 19016:
 			room->addStaticLayer(kApplicationBurntHole, kApplicationButtonZ);
@@ -504,7 +504,7 @@ public:
 			applicationClose();
 			break;
 		case 19019:
-			playPhilVideoSpeech(kPhilWhatAHothead, 1019005, Common::Point(40, 327)); // state 7
+			playPhilVideo(kPhilWhatAHothead, 1019005, Common::Point(40, 327)); // state 7
 			break;
 		case 1019001:
 			cancelAllPhils();
@@ -523,11 +523,11 @@ public:
 			startApplication();
 			break;
 		case 1019005:
-			playPhilVideoSpeech(kPhilTimeToGetStarted, 1019006,
+			playPhilVideo(kPhilTimeToGetStarted, 1019006,
 					    Common::Point(36, 319)); // state 8
 			break;
 		case 1019006:
-			playPhilVideoSpeech(kPhilTreasuresOfHercules, 1019007,
+			playPhilVideo(kPhilTreasuresOfHercules, 1019007,
 				      Common::Point(40, 323)); // state 9
 			break;
 		case 1019007:
@@ -537,16 +537,16 @@ public:
 		case 1019008:
 			_philIsOnTheRight = true;
 			updatePhilHotzone();
-			playPhilVideoSpeech(kPhilFlakyPlaster, 1019009,
+			playPhilVideo(kPhilFlakyPlaster, 1019009,
 				      Common::Point(0, 0)); //state 10
 			break;
 		case 1019009:
-			playPhilVideoSpeech(kPhilGettinStarted, 1019010,
+			playPhilVideo(kPhilGettinStarted, 1019010,
 					Common::Point(14, 324)); //state 11
 			break;
 		case 1019010:
 			room->disableHeroBelt();
-			playPhilVideoSpeech(kPhilToolsOfTrade, 1019011,
+			playPhilVideo(kPhilToolsOfTrade, 1019011,
 				      Common::Point(40, 320)); //state 12
 			break;
 		case 1019011:
@@ -589,12 +589,12 @@ public:
 			break;
 		case 1019017:
 			room->enableHeroBelt();
-			playPhilVideoSpeech(kPhilEyeOfFates, 1019018,
+			playPhilVideo(kPhilEyeOfFates, 1019018,
 				      Common::Point(-8, 144)); // state 18
 			break;
 		case 1019018:
 			room->playSFX(kPanicAndPainSting);
-			playPhilVideoSpeech(kPhilBadNews, 1019019, Common::Point(14, 320)); // state 19
+			playPhilVideo(kPhilBadNews, 1019019, Common::Point(14, 320)); // state 19
 			break;
 		case 1019019:
 			displayPhilIdle();
@@ -608,7 +608,7 @@ public:
 					      19009, kOffsetRightRoom);
 			break;
 		case 19009:
-			playPhilVideoSpeech(kPhilFirstQuest, kPhilNewQuestScroll, Common::Point(40, 324)); // state 21
+			playPhilVideo(kPhilFirstQuest, kPhilNewQuestScroll, Common::Point(40, 324)); // state 21
 			break;
 		case kPhilNewQuestScroll:
 			room->selectFrame(kScroll, kScrollZ, 0, kOffsetRightRoom);
@@ -646,7 +646,7 @@ public:
 			}
 			break;
 		case 1019024:
-			playPhilVideoSpeech(kPhilArgo, kPhilBecomesIdle, Common::Point(40, 324)); // state 26
+			playPhilVideo(kPhilArgo, kPhilBecomesIdle, Common::Point(40, 324)); // state 26
 			break;
 		case kPhilBecomesIdle:
 			philBecomesIdle();
@@ -797,7 +797,7 @@ public:
 						AmbientAnim::KEEP_LOOP, kOffsetRightRoom,
 						AmbientAnim::PAN_ANY);
 			_hercules.start();
-			playPhilVideoSpeech(TranscribedSound(
+			playPhilVideo(TranscribedSound(
 					      "phil that was awesome",
 					      _s("That was awesome, kid."
 						 "You were brilliant. You're going to go down in history. "
@@ -830,11 +830,11 @@ public:
 			playPhilAnimSFX(kPhilWalksCenterToLeft, 1019032);
 			break;
 		case 1019032:
-			playPhilVideoSpeech(TranscribedSound("phil lots more to do", "Ok, we've got lots more to do"),
+			playPhilVideo(TranscribedSound("phil lots more to do", "Ok, we've got lots more to do"),
 				      kPhilNewQuestScroll, Common::Point(14, 312)); // state 28
 			break;
 		case 1019033:
-			playPhilVideoSpeech(persistent->_gender == kFemale
+			playPhilVideo(persistent->_gender == kFemale
 				      ? TranscribedSound(
 					      "phil go to it heroine", "Go to it, heroine")
 				      : TranscribedSound(
@@ -842,11 +842,11 @@ public:
 				      1019034, Common::Point(40, 324)); // state 32/31
 			break;
 		case 1019034:
-			playPhilVideoSpeech(TranscribedSound("phil off to troy", "You're off to Troy"),
+			playPhilVideo(TranscribedSound("phil off to troy", "You're off to Troy"),
 				      kPhilBecomesIdle, Common::Point(40, 324)); // state 33
 			break;
 		case 1019035:
-			playPhilVideoSpeech(TranscribedSound("phil sneaky devil", "He-he-he you, sneaky devil, you earned the power of stealth."
+			playPhilVideo(TranscribedSound("phil sneaky devil", "He-he-he you, sneaky devil, you earned the power of stealth."
 						       "You're making me proud, kid"),
 				      1019036, Common::Point(40, 324)); // state 34
 			break;
@@ -856,7 +856,7 @@ public:
 			playPhilAnimSFX(kPhilWalksCenterToLeft, 1019037);
 			break;
 		case 1019037:
-			playPhilVideoSpeech(TranscribedSound("phil good work", "Good work but we're not through yet"), kPhilNewQuestScroll, Common::Point(40, 324)); // state 35
+			playPhilVideo(TranscribedSound("phil good work", "Good work but we're not through yet"), kPhilNewQuestScroll, Common::Point(40, 324)); // state 35
 			break;
 		case 19900:
 			if (_gender != kUnknown && !_heroName.empty()) {
@@ -985,7 +985,7 @@ public:
 			switch (quest) {
 			case kTroyQuest:
 				_philWalkPhase = 1;
-				playPhilVideoSpeech(TranscribedSound(
+				playPhilVideo(TranscribedSound(
 						      "phil congrats trapped minotaur",
 						      "Way to go kid. I saw it all. When you trapped the Minotaur I got so excited. "
 						      "Phew. A couple more like that and we're going to have to throw you a party"),
@@ -1112,7 +1112,7 @@ private:
 		return v;
 	}
 
-	void playPhilVideoSpeech(TranscribedSound name, int callback, const Common::Point videoOffset) {
+	void playPhilVideo(TranscribedSound name, int callback, const Common::Point videoOffset) {
 		Persistent *persistent = g_vm->getPersistent();
 		cancelAllPhils();
 		if (persistent->_quest == kRescuePhilQuest)
