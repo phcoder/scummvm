@@ -140,7 +140,7 @@ void GfxContext8Bit::renderSubtitle(Common::U32String const& line, Common::Point
 }
 
 void HadeschEngine::wrapSubtitles(const Common::U32String &str, Common::Array<Common::U32String> &lines) {
-	const Graphics::Font &font(*FontMan.getFontByUsage(Graphics::FontManager::kBigGUIFont));
+	const Graphics::Font &font(*FontMan.getFontByUsage(Graphics::FontManager::kLocalizedFont));
 	font.wordWrapText(str, 500, lines);
 }
 }
