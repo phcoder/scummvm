@@ -366,7 +366,7 @@ public:
 			return;
 		}
 
-		for (unsigned i = 0; i < sizeof (herculesRoomElements) / sizeof(herculesRoomElements[0]); i++)
+		for (unsigned i = 0; i < ARRAYSIZE(herculesRoomElements); i++)
 			if (hotname == herculesRoomElements[i]) {
 				room->disableMouse();
 				room->playAnimKeepLastFrame(hotname + " glow", kGlowZ);
@@ -386,7 +386,7 @@ public:
 			}
 		}
 
-		for (unsigned i = 0; i < sizeof (zeusComments) / sizeof(zeusComments[0]); i++)
+		for (unsigned i = 0; i < ARRAYSIZE(zeusComments); i++)
 			if (hotname == zeusComments[i]) {
 				room->playSFX("click");
 				zeusCommentRight(Common::String("zeus ") + hotname);
@@ -685,7 +685,7 @@ public:
 			break;
 		case 1019026:
 			room->enableMouse();
-			for (unsigned i = 0; i < sizeof (herculesRoomElements) / sizeof(herculesRoomElements[0]); i++)
+			for (unsigned i = 0; i < ARRAYSIZE(herculesRoomElements); i++)
 				room->stopAnim(Common::String(herculesRoomElements[i]) + " glow");
 			break;
 		case 1019027:
@@ -998,7 +998,7 @@ public:
 		}
 
 		// Hercules room
-		for (unsigned i = 0; i < sizeof (herculesRoomElements) / sizeof(herculesRoomElements[0]); i++)
+		for (unsigned i = 0; i < ARRAYSIZE(herculesRoomElements); i++)
 			room->enableHotzone(herculesRoomElements[i]);
 
 		for (unsigned power = 0; power < sizeof(powerLevelNames) / sizeof(powerLevelNames[0]); power++) {
