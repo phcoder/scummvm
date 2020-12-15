@@ -209,20 +209,31 @@ static const char *kHeroBelt = "hero belt";
 static const char *kHeroBeltUpSound = "hero belt up sound";
 static const char *kHeroBeltDownSound = "hero belt down sound";
 
-static const char *herculesRoomElements[] = {
-	"mares",
-	"cattle",
-	"girdle",
-	"horns",
-	"hydra",
-	"bull",
-	"lion",
-	"apples",
-	"stables",
-	"boar",
-	"birds",
-	"cerberus",
-	"hercules",
+static struct {
+	const char *name;
+	TranscribedSound zeusComment;
+} herculesRoomElements[] = {
+	// TODO: fill these
+	{"mares", {"zeus mares", _s("")}},
+	{"cattle", {"zeus cattle", _s("")}},
+	{"girdle", {"zeus girdle", _s("")}},
+	{"horns", {"zeus horns", _s("")}},
+	{"hydra", {"zeus hydra", _s("")}},
+	{"bull", {"zeus bull", _s("")}},
+	{"lion", {"zeus lion", _s("")}},
+	{"apples", {"zeus apples", _s("")}},
+	{"stables", {"zeus stables", _s("")}},
+	{"boar", {"zeus boar", _s("")}},
+	{"birds", {"zeus birds", _s("")}},
+	{"cerberus", {"zeus cerberus", _s("")}},
+	{
+		"hercules",
+		{
+			"zeus hercules",
+			_s("Hercules, what a hero. King Euristias demanded he "
+			   "prove himself by performing twelve labors. As you can see he cam through with flying colors")
+		}
+	}
 };
 
 static const char *allPhils[] = {
@@ -469,11 +480,11 @@ public:
 		}
 
 		for (unsigned i = 0; i < ARRAYSIZE(herculesRoomElements); i++)
-			if (hotname == herculesRoomElements[i]) {
+			if (hotname == herculesRoomElements[i].name) {
 				room->disableMouse();
 				room->playAnimKeepLastFrame(hotname + " glow", kGlowZ);
 				room->playSFX("click");
-				room->playVideo("zeus " + hotname, kSoundOnlyZ, 1019026);
+				room->playVideoSpeech(herculesRoomElements[i].zeusComment, kSoundOnlyZ, 1019026);
 				return;
 			}
 
@@ -787,7 +798,7 @@ public:
 		case 1019026:
 			room->enableMouse();
 			for (unsigned i = 0; i < ARRAYSIZE(herculesRoomElements); i++)
-				room->stopAnim(Common::String(herculesRoomElements[i]) + " glow");
+				room->stopAnim(Common::String(herculesRoomElements[i].name) + " glow");
 			break;
 		case 1019027:
 			if (!_philIsBusy)
@@ -1100,7 +1111,7 @@ public:
 
 		// Hercules room
 		for (unsigned i = 0; i < ARRAYSIZE(herculesRoomElements); i++)
-			room->enableHotzone(herculesRoomElements[i]);
+			room->enableHotzone(herculesRoomElements[i].name);
 
 		for (unsigned power = 0; power < ARRAYSIZE(powerLevelNames); power++) {
 			int level = persistent->_powerLevel[power];
