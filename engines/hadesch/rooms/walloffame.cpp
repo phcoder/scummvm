@@ -252,6 +252,48 @@ static struct {
 	"owl", {"zeus owl", _s("You're wise beyond your ears. There is your owl and the power of wisdom to prove it")}
 };
 
+static struct {
+	const char *hotName;
+	TranscribedSound zeusComment;
+} zeusFriezeComments[] = {
+	{
+		"labyrinth frieze",
+		{
+			"zeus labyrinth frieze",
+			_s("You want to trap the Minotaur again? Click on the frieze")
+		}
+	},
+	{
+		"trojan horse frieze",
+		{
+			"zeus trojan horse frieze",
+			_s("You want to load trojan horse again? Click the frieze")
+		}
+	},
+	{
+		"medusa frieze",
+		{
+			"zeus medusa frieze",
+			_s("You want to slay medusa again? Click on the frieze")
+		}
+	},
+	{
+		"ferryman frieze",
+		{
+			"zeus ferryman frieze",
+			_s("You want to help Charon again? Click on that frieze")
+		}
+	},
+	{
+		"monster frieze",
+		{
+			"zeus monster frieze",
+			_s("You want to battle Hades' monsters again? Click on that frieze")
+		}
+	}
+};
+
+
 static const char *zeusComments[] = {
 	"minotaur",
 	"medusa",
@@ -492,11 +534,11 @@ public:
 			return;
 		}
 
-		if (hotname.hasSuffix(" frieze")) {
-			zeusCommentRight("zeus " + hotname, true);
-			return;
-		}
-
+		for (uint i = 0; i < ARRAYSIZE(zeusFriezeComments); i++)
+			if (hotname == zeusFriezeComments[i].hotName) {
+				zeusCommentRight(zeusFriezeComments[i].zeusComment, true);
+				return;
+			}
 	}
 
 	void handleMouseOut(const Common::String &hotname) override {
