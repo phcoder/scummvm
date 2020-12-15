@@ -243,10 +243,13 @@ static const char *allPhils[] = {
 	"phil scans left"
 };
 
-static const char *powerLevelNames[] = {
-	"thunderbolt",
-	"trojan horse",
-	"owl"
+static struct {
+	const char *powerName;
+	TranscribedSound zeusComment;
+} powerLevelNames[] = {
+	"thunderbolt", {"zeus thunderbolt", _s("Oh the mighty thunderbolt. The power of strength, my personal favourite")},
+	"trojan horse", {"zeus trojan horse", _s("A trojan horse and thepower of stealth. That's something to be proud of")},
+	"owl", {"zeus owl", _s("You're wise beyond your ears. There is your owl and the power of wisdom to prove it")}
 };
 
 static const char *zeusComments[] = {
@@ -392,12 +395,11 @@ public:
 			}
 
 		for (unsigned power = 0; power < ARRAYSIZE(powerLevelNames); power++) {
-			if (hotname.matchString(Common::String::format("%s#", powerLevelNames[power]))) {
-				Common::String pl(powerLevelNames[power]);
+			if (hotname.matchString(Common::String::format("%s#", powerLevelNames[power].powerName))) {
 				room->playSFX("click");
-				if (strcmp(powerLevelNames[power], "thunderbolt") == 0)
+				if (strcmp(powerLevelNames[power].powerName, "thunderbolt") == 0)
 					room->playSFX("thunder sound");
-				zeusCommentRight("zeus " + pl);
+				zeusCommentRight(powerLevelNames[power].zeusComment);
 				return;
 			}
 		}
@@ -1017,12 +1019,12 @@ public:
 		for (unsigned i = 0; i < ARRAYSIZE(herculesRoomElements); i++)
 			room->enableHotzone(herculesRoomElements[i]);
 
-		for (unsigned power = 0; power < sizeof(powerLevelNames) / sizeof(powerLevelNames[0]); power++) {
+		for (unsigned power = 0; power < ARRAYSIZE(powerLevelNames); power++) {
 			int level = persistent->_powerLevel[power];
 			if (level > 0) {
 				int off = (4 - level) * 30;
-				Common::String hz = Common::String::format("%s%d", powerLevelNames[power], level);
-				room->playAnim(powerLevelNames[power], kTrophyZ,
+				Common::String hz = Common::String::format("%s%d", powerLevelNames[power].powerName, level);
+				room->playAnim(powerLevelNames[power].powerName, kTrophyZ,
 					       PlayAnimParams::loop().partial(off, off + 29),
 					       -1, kOffsetRightRoom);
 				room->enableHotzone(hz);
