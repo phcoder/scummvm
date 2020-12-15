@@ -225,7 +225,15 @@ static struct {
 	{"stables", {"zeus stables", _s("")}},
 	{"boar", {"zeus boar", _s("")}},
 	{"birds", {"zeus birds", _s("")}},
-	{"cerberus", {"zeus cerberus", _s("")}},
+	// unclear
+	{
+		"cerberus",
+		{"zeus cerberus",
+		 _s("Cerberus, the three-headed dog, who guards the underworld. "
+		    "Hercules had to catch the beast without any weapons. But that didn't stop my boy. "
+		    "He has just grapped the hound with his bare hand and dragged him to the king.")
+		}
+	},
 	{
 		"hercules",
 		{
