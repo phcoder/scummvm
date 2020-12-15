@@ -286,6 +286,22 @@ enum {
 	kGlowZ = 0
 };
 
+static const TranscribedSound kPhilReread[] = {
+	{ "phil reread crete quest",
+	  _s("Some guy named Daedalus needs your help. Oh boy, does he. "
+	     "There is an awful beast named Minotaur and it's terrorizing "
+	     "the people of Crete. Good luck with this one, kid")
+	},
+	{ "phil reread troy quest",
+	  _s("Holy Hera. This one has a lot of dust on it. "
+	     "No wonder that they call this place the ancient world. "
+	     "The war is still raging in Troy all over the beautiful Helen who is being held captive there. "
+	     "Odysseus, the Greek general in charge, has a new plan that he needs some help with") },
+	{ "phil reread medusa quest",
+	  _s("Who writes these things? The penmanship. Oy, it's like reading the hieroglyphics. "
+	     "Perseus needs your help in Seriphos. So you're off to help slay the Medusa")}
+};
+
 Common::String nameQuest() {
 	Persistent *persistent = g_vm->getPersistent();
 	switch(persistent->_quest) {
@@ -403,7 +419,7 @@ public:
 
 		if (hotname == "phil" && quest >= kCreteQuest && quest <= kMedusaQuest) {
 			philBecomesListening();
-			playPhilVideo(Common::String("phil reread ") + nameQuest(), kPhilRereadDropScroll,
+			playPhilVideo(kPhilReread[quest-kCreteQuest], kPhilRereadDropScroll,
 				      Common::Point(22, 301));
 			return;
 		}
@@ -646,7 +662,7 @@ public:
 				playPhilVideo(kPhilDaedalusNeedsHelp, 1019022, Common::Point(28, 312)); // state 24
 				break;
 			case kTroyQuest:
-				playPhilVideo(TranscribedSound("phil holy hera", "Holy Hera. This one has a lot of dust on it. No wonder that they call this place the ancient world. The war is still raging in Troy all over the beautiful Helen who is held captive there. Odysseus, the big general in charge, has a new plan that he needs some help with"), 1019022, Common::Point(28, 312)); // state 29
+				playPhilVideo(TranscribedSound("phil holy hera", "Holy Hera. This one has a lot of dust on it. No wonder that they call this place the ancient world. The war is still raging in Troy all over the beautiful Helen who is being held captive there. Odysseus, the Greek general in charge, has a new plan that he needs some help with"), 1019022, Common::Point(28, 312)); // state 29
 				break;
 			case kMedusaQuest:
 				playPhilVideo(TranscribedSound("phil who writes these things", "Who writes these things? The penmanship. Oy, it's like reading the hieroglyphics. Perseus needs your help in Seriphos. So you're off to help slay the Medusa"), 1019022, Common::Point(28, 312)); // state 36
