@@ -31,12 +31,19 @@ static const char *kBackground = "background";
 static const char *kHotspots = "HallTrph.hot";
 static const char *kArgo = "argo";
 
-static const char *kZeusYooHoo = "zeus yoo-hoo";
+static const TranscribedSound kZeusYooHoo = {
+	"zeus yoo-hoo",
+	_s("Phil! Oh Phily-titty! Yoo-hoo! Hey!")
+};
 static const TranscribedSound kZeusYellsPhil = {
 	"zeus yells phil",
 	_s("Phil!")
 };
-static const char *kZeusVacationIsOver = "zeus vacation's over";
+static const TranscribedSound kZeusVacationIsOver = {
+	"zeus vacation's over",
+	_s("Ha-ha. Sorry, vacation's over. I need a new hero. "
+	   "Have you any new candidates?")
+};
 static const TranscribedSound kZeusFineChoiceHero = {
 	// unclear
 	"zeus fine choice hero",
@@ -171,7 +178,12 @@ static const TranscribedSound kPhilFirstQuest = {
 };
 #define kPhilTakesScroll "phil takes scroll"
 #define kPhilDropsScroll "phil drops scroll"
-static const char *kPhilDaedalusNeedsHelp = "phil daedalus needs help";
+static const TranscribedSound kPhilDaedalusNeedsHelp = {
+	"phil daedalus needs help",
+	_s("Some guy named Daedalus needs your help. Oh boy, does he. "
+	   "There is an awful beast named Minotaur and it's terrorizing "
+	   "the people of Crete. Good luck with this one, kid")
+};
 static const TranscribedSound kPhilOffToCrete = {
 	"phil off to crete",
 	_s("You're off to Crete. Make it there, you'll make it anywhere")
@@ -383,7 +395,9 @@ public:
 
 		if (hotname == "typhon") {
 			room->playSFX("click");
-			zeusCommentRight(persistent->_gender == kFemale ? "zeus typhon heroine" : "zeus typhon hero");
+			zeusCommentRight(persistent->_gender == kFemale
+					 ? TranscribedSound("zeus typhon heroine", "You faced the typhoon and lived to tell about it. Now that's what being a heroine is all about")
+					 : TranscribedSound("zeus typhon hero", "You faced the typhoon and lived to tell about it. Now that's what being a hero is all about"));
 			return;
 		}
 
@@ -408,7 +422,9 @@ public:
 			room->stopAnim("hades note text");
 			room->stopAnim("hades note");
 			if (persistent->_hintsAreEnabled) {
-				zeusCommentRight("zeus counting on ya");
+				zeusCommentRight(TranscribedSound(
+							 "zeus counting on ya",
+							 "Looks like your friend Phil is going to need your help. It's going to be dangerous but he's counting on you and so am I."));
 			}
 			room->setHotzoneEnabled("argo", true);
 			return;
@@ -447,9 +463,14 @@ public:
 				return;
 			_philIsBusy = true;
 			if (hotname == "labyrinth frieze")
-				playPhilVideo("phil labyrinth frieze", kPhilBecomesIdle, Common::Point(40, 324)); // state 51
+				playPhilVideo(TranscribedSound(
+						      "phil labyrinth frieze",
+						      "You want to trap the Minotaur again? Click on that frieze"), kPhilBecomesIdle, Common::Point(40, 324)); // state 51
 			else
-				playPhilVideo("phil trojan horse frieze", kPhilBecomesIdle, Common::Point(14, 320)); // state 52
+				playPhilVideo(TranscribedSound(
+						      "phil trojan horse frieze",
+						      "You want to load trojan horse again? Click that frieze"),
+					      kPhilBecomesIdle, Common::Point(14, 320)); // state 52
 			return;
 		}
 
@@ -477,13 +498,13 @@ public:
 			g_vm->addSkippableTimer(19005, 7000);
 			room->playAnim(kZeusShaftOfLightLeft, kShaftOfLightLeftZ,
 				       PlayAnimParams::keepLastFrame().speed(500));
-			room->playVideo(kZeusYooHoo, kSoundOnlyZ, 19701); // zeus yoo-hoo
+			room->playVideoSpeech(kZeusYooHoo, kSoundOnlyZ, 19701); // zeus yoo-hoo
 			break;
 		case 19005:
 			playPhilAnimSFX(kPhilRollsOver, 1019001, Common::Point(-26, 2)); // state 1
 			break;
 		case 19011:
-			room->playVideo(kZeusVacationIsOver, kSoundOnlyZ, 19012);
+			room->playVideoSpeech(kZeusVacationIsOver, kSoundOnlyZ, 19012);
 			break;
 		case 19012:
 			playPhilVideo(kPhilOfCourseIdo, 1019002, Common::Point(30, 304)); // state 5
@@ -625,10 +646,10 @@ public:
 				playPhilVideo(kPhilDaedalusNeedsHelp, 1019022, Common::Point(28, 312)); // state 24
 				break;
 			case kTroyQuest:
-				playPhilVideo("phil holy hera", 1019022, Common::Point(28, 312)); // state 29
+				playPhilVideo(TranscribedSound("phil holy hera", "Holy Hera. This one has a lot of dust on it. No wonder that they call this place the ancient world. The war is still raging in Troy all over the beautiful Helen who is held captive there. Odysseus, the big general in charge, has a new plan that he needs some help with"), 1019022, Common::Point(28, 312)); // state 29
 				break;
 			case kMedusaQuest:
-				playPhilVideo("phil who writes these things", 1019022, Common::Point(28, 312)); // state 36
+				playPhilVideo(TranscribedSound("phil who writes these things", "Who writes these things? The penmanship. Oy, it's like reading the hieroglyphics. Perseus needs your help in Seriphos. So you're off to help slay the Medusa"), 1019022, Common::Point(28, 312)); // state 36
 				break;
 			}
 			break;
