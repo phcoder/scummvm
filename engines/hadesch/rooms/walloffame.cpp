@@ -294,13 +294,54 @@ static struct {
 };
 
 
-static const char *zeusComments[] = {
-	"minotaur",
-	"medusa",
-	"trojan armor",
-	"cyclops",
-	kHeroStatue,
-	kHeroineStatue
+static struct {
+	const char *hotName;
+	TranscribedSound zeusComment;
+} zeusComments[] = {
+	{
+		"minotaur",
+		{
+			"zeus minotaur",
+			_s("The Minotaur, a ratchid beast. "
+			   "Without your help he'd still be devouring people of Crete")
+		}
+	},
+	{
+		"medusa",
+		{
+			"zeus medusa",
+			_s("The Gorgon Medusa. Without your help she'd still be growing her rock "
+			   "garden with Perseus as a centerpiece.")
+		}
+	},
+	{
+		"trojan armor",
+		{
+			"zeus trojan armor",
+			_s("Ten long year of work with the Trojans and you have brought it to the end. Great Work")
+		}
+	},
+	{
+		"cyclops",
+		{
+			"zeus cyclops",
+			_s("You sure got by old one-eye. They'll be writing about that one for centuries")
+		}
+	},
+	{
+		kHeroStatue,
+		{
+			"zeus hero statue",
+			_s("That's just the greatest hero of all time")
+		}
+	},
+	{
+		kHeroineStatue,
+		{
+			"zeus heroine statue",
+			_s("Fantastic work! Now, that's what being the heroine is all about")
+		}
+	}
 };
 
 enum {
@@ -447,9 +488,9 @@ public:
 		}
 
 		for (unsigned i = 0; i < ARRAYSIZE(zeusComments); i++)
-			if (hotname == zeusComments[i]) {
+			if (hotname == zeusComments[i].hotName) {
 				room->playSFX("click");
-				zeusCommentRight(Common::String("zeus ") + hotname);
+				zeusCommentRight(zeusComments[i].zeusComment);
 				return;
 			}
 
