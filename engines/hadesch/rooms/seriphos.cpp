@@ -97,10 +97,15 @@ public:
 		Persistent *persistent = g_vm->getPersistent();
 		Quest quest = persistent->_quest;
 		if (name == "Apollo") {
-			Common::Array<Common::String> videos;
-			videos.push_back("c7400na0");
-			videos.push_back("c7400nb0");
-			videos.push_back("c7400nc0");
+			static const TranscribedSound videos[] = {
+				{"c7400na0", _s("I'm Apollo, Artemis' twin brother. I'm the god of light and music, "
+						"prophecy and the arts") },
+				{"c7400nb0", _s("They've built many shrines to me but the Oracle of Delphi is the most important. "
+						"People travel to Delphi to have the oracle tell their future.") },
+				{"c7400nc0", _s("Daedalus, the craftsman, who built the labyrinth, constructed a temple in my honor. "
+						"He hanged his famous wings there.")},
+				{nullptr, nullptr}
+			};
 
 			room->playStatueSMK(kApolloStatue,
 					    kApolloHighlight,
@@ -109,9 +114,12 @@ public:
 			return;
 		}
 		if (name == "Artemis") {
-			Common::Array<Common::String> videos;
-			videos.push_back("c7410na0");
-			videos.push_back("c7410nb0");
+			static const TranscribedSound videos[] = {
+				{"c7410na0", _s("I'm Artemis, goddess of wild animals and the hunt. Apollo is my twin brother")},
+				// unclear
+				{"c7410nb0", _s("I always travel with my hunting hounds and the fleet of nymphs as my companions")},
+				{nullptr, nullptr}
+			};
 
 			room->playStatueSMK(kArtemisStatue,
 					    kArtemisHighlight,
@@ -120,9 +128,12 @@ public:
 			return;
 		}
 		if (name == "Demeter") {
-			Common::Array<Common::String> videos;
-			videos.push_back("c7420na0");
-			videos.push_back("c7420nb0");
+			static const TranscribedSound videos[] = {
+				{"c7420na0", _s("I'm Demeter, he goddess of agriculture and the harvest.")},
+				{"c7420nb0", _s("My beautiful daughter, Persephone, has been kidnapped by Hades. "
+						"But thanks to Zeus he has agreed to release her")},
+				{nullptr, nullptr}
+			};
 
 			room->playStatueSMK(kDemeterStatue,
 					    kDemeterHighlight,
@@ -137,7 +148,9 @@ public:
 			    && persistent->_hintsAreEnabled) {
 				room->disableMouse();
 				persistent->_seriphosPhilWarnedAthena = true;
-				room->playVideo("c7300ba0", 0, 26022, Common::Point(0, 216));
+				room->playVideoSpeech(TranscribedSound("c7300ba0", "Perseus wants you to get gifts from Athena, not see the rest "
+								       "of the ancient world"),
+						0, 26022, Common::Point(0, 216));
 				return;
 			}
 			g_vm->moveToRoom(kArgoRoom);
@@ -166,7 +179,10 @@ public:
 			&& !persistent->_seriphosPhilCurtainsItems)) {
 			room->disableMouse();
 			persistent->_seriphosPhilCurtainsItems = true;
-			room->playVideo("c7370ba0", 0, 26023, Common::Point(0, 216));
+			// unclear
+			room->playVideoSpeech(TranscribedSound("c7370ba0", "Hey kid, let's get the wed out. "
+							       "Perseus is over on Medusa Isle and if we don't rack, he's goingto be one"),
+					      0, 26023, Common::Point(0, 216));
 			return;
 		}
 
