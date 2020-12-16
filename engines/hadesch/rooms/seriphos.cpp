@@ -225,20 +225,29 @@ public:
 			break;
 		case 26009:
 			room->playMusic("c7290ma0", 26012);
-			room->playVideo("c7290ba0", 111, 26010, Common::Point(90, 76));
+			room->playVideoSpeech(TranscribedSound("c7290ba0", "Perseus, as your king, I command you to kill "
+							       "the hideous gorgon Medusa. If you fail, I will enslave "
+							       "everyone in the kingdom and force your mother Demeia to marry me. "
+							       "Gee, no pressure. All right, your majesty, I'll take the job."),
+					      111, 26010, Common::Point(90, 76));
 			break;
 		case 26010:
 			room->playSFX("c7160ea0", 26013);
 			break;
 		case 26013:
-			room->playVideo("c7290bd0", 111, 26014, Common::Point(92, 76));
+			room->playVideoSpeech(TranscribedSound("c7290bd0", "I need your help. Athena hates Medusa and has some gifts "
+							       "that I can use to destroy her. Go to the temple of Athena and then meet me "
+							       "at Medusa Isle"),
+					      111, 26014, Common::Point(92, 76));
 			break;
 		case 26014:
 			room->enableMouse();
 			startIdles();
 			break;
 		case kStrawTaken:
-			room->playVideo("c7380ba0", kPhilZ, kStrawTakenCleanup, Common::Point(0, 216));
+			room->playVideoSpeech(TranscribedSound("c7380ba0", "You know that Minotaur really loves people. "
+							       "Especially with salt and pepper. Better get going"),
+					kPhilZ, kStrawTakenCleanup, Common::Point(0, 216));
 			break;
 		case 26022:
 		case 26023:
