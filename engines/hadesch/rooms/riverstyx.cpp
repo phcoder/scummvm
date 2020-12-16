@@ -35,6 +35,12 @@ enum {
 	kDeadManEndAnim = 28014
 };
 
+static const TranscribedSound kAlchemistIntro = {
+	"alchemist intro",
+	_s("In Crete they call me the great alchemist. You see, that was my name, Alchemist. "
+	   "I came up with the famous death potion. You splash it on someone and they think youre dead")
+};
+
 struct StyxShadeInternal {
 	StyxShadeInternal(Common::String name) {
 		_name = name;
@@ -50,7 +56,7 @@ struct StyxShadeInternal {
 	Common::String _name;
 	int _counter;
 	AmbientAnim _ambient;
-	Common::Array<Common::String> _sounds;
+	Common::Array<TranscribedSound> _sounds;
 };
 
 class StyxShadeEndSound : public EventHandler {
@@ -99,13 +105,13 @@ public:
 		if (_internal->_sounds.empty())
 			return;
 		_internal->_ambient.pause();
-		room->playVideo(_internal->_sounds[_internal->_counter % _internal->_sounds.size()],
+		room->playVideoSpeech(_internal->_sounds[_internal->_counter % _internal->_sounds.size()],
 				800, EventHandlerWrapper(Common::SharedPtr<EventHandler>(new StyxShadeEndSound(_internal))));
 		_internal->_counter++;
 		room->disableMouse();
 	}
 
-	void addSound(const Common::String &snd) {
+	void addSound(TranscribedSound snd) {
 		_internal->_sounds.push_back(snd);
 	}
 private:
@@ -133,10 +139,19 @@ public:
 		if (name == "charon") {
 			// Originally it goes through event 28002, 1
 			if (persistent->_styxCharonUsedPotion) {
-				room->playVideo("charon assumes you have gold sound", 0, 28004);
+				room->playVideoSpeech(TranscribedSound(
+							      "charon assumes you have gold sound",
+							      "Charon assumes you have a gold death coin to pay for your journey"
+							      ), 0, 28004);
 			} else {
 				
-				room->playVideo(_charonSound ? "charon says away 2 sound" : "charon says away 1 sound", 0, 28004);
+				room->playVideoSpeech(_charonSound
+						? TranscribedSound(
+							"charon says away 2 sound", "Charon said Charon only ferries dead people")
+						: TranscribedSound(
+							"charon says away 1 sound",
+							"Away! Charon only ferries the dead"), 0, 28004);
+				_charonSound = !_charonSound;
 			}
 			return;
 		}
@@ -190,7 +205,7 @@ public:
 			room->disableMouse();
 			g_vm->getHeroBelt()->removeFromInventory(item);
 			_charon.hide();
-			room->playVideo("charon glow", 549, 28005, Common::Point(516, 93));
+			room->playVideoSFX("charon glow", 549, 28005, Common::Point(516, 93));
 			g_vm->addTimer(28006, 2000, 1);
 			persistent->_styxCharonUsedPotion = true;
 			return true;
@@ -200,7 +215,7 @@ public:
 			room->disableMouse();
 			g_vm->getHeroBelt()->removeFromInventory(item);
 			_charon.hide();
-			room->playVideo("change purse", 549, 28010, Common::Point(524, 100));
+			room->playVideoSFX("change purse", 549, 28010, Common::Point(524, 100));
 			g_vm->addTimer(28008, 1000, 1);
 			persistent->_styxCharonUsedCoin = true;
 			return true;
@@ -217,13 +232,19 @@ public:
 			stopCharonTalk();
 			if (persistent->_styxCharonUsedPotion && persistent->_styxCharonUsedCoin) {
 				_charon.hide();
-				room->playVideo("charon asks for help", 549, 28011, Common::Point(452, 96));
+				room->playVideoSpeech(TranscribedSound(
+							      "charon asks for help",
+							      "Charon's got a beastly mess to cleanup before Charon can go across. "
+							      "Charon can use your help"
+							      ), 549, 28011, Common::Point(452, 96));
 			} else {
 				room->enableMouse();
 			}
 			break;
 		case 28005:
-			playCharonTalk("charon says quite dead sound", 28004);
+			playCharonTalk(TranscribedSound(
+					       "charon says quite dead sound",
+					       "Yes, you're quite dead"), 28004);
 			break;
 		case 28006:
 			room->playMusic("charon glow sting", 28007);
@@ -235,7 +256,10 @@ public:
 			if (persistent->_styxCharonUsedPotion && persistent->_styxCharonUsedCoin) {
 				handleEvent(28004);
 			} else {
-				playCharonTalk("charon takes an advance sound", 28004);
+				playCharonTalk(TranscribedSound(
+						       "charon takes an advance sound",
+						       "Charon will take this as an advance. Come back when you're dead"
+						       ), 28004);
 			}
 			break;
 		case 28010:
@@ -301,69 +325,109 @@ public:
 
 		room->playMusicLoop(quest == kRescuePhilQuest ? "V4010eB0" : "V4010eA0");
 		_axHead = StyxShade("ax head", 800, 5000, 10000);
-		_axHead.addSound("ax head click sound 1");
-		_axHead.addSound("ax head click sound 2");
-		_axHead.addSound("ax head click sound 3");
+		_axHead.addSound(TranscribedSound(
+					 "ax head click sound 1", "My uncle was lying in the bed dying. "
+					 "So he confessed to his business partner that he had stolen 15000 drachmas. "
+					 "His partner said: \"I know, that's why I poisoned you\""));
+		_axHead.addSound(TranscribedSound("ax head click sound 2", "I don't know about you but I've got a splitting headache."));
+		_axHead.addSound(TranscribedSound("ax head click sound 3", "We were having an argument and I suggested we just burry the hatchet."));
 		_axHead.start();
 
 		if (quest == kRescuePhilQuest || quest == kCreteQuest) {
 			_pillar = StyxShade("pillar", 550, 8000, 12000);
 			if (quest == kRescuePhilQuest)
-				_pillar.addSound("pillar quest speech");
-			_pillar.addSound("pillar click sound");
+				_pillar.addSound(TranscribedSound(
+							 "pillar quest speech", "You know it was some goat-man who came trough earlier "
+							 "kicking and screaming and saying he had a friend who'd come save him. "
+							 "Yeah, alright"));
+			_pillar.addSound(TranscribedSound(
+						 "pillar click sound", "There is a soldier down here who was black belt in karate. "
+						 "He killed himself saluting. Ouch"));
 			_pillar.start();
 		}
 
 		if (quest == kCreteQuest || quest == kTroyQuest || quest == kMedusaQuest) {
 			_dog = StyxShade("dog", 600, 5000, 10000);
 			if (quest == kCreteQuest)
-				_dog.addSound("dog quest speech");
-			_dog.addSound("dog click sound 1");
-			_dog.addSound("dog click sound 2");
+				_dog.addSound(TranscribedSound("dog quest speech", "Woof! It was a chicken bone, alright. "
+							       "I choked on a lousy chicken bone. It was a ferocious beast. "
+							       "The biggest chicken I ever saw"));
+			_dog.addSound(TranscribedSound("dog click sound 1", "Ergh. The underworld is not so bad. Everybody's dying to get in"));
+			_dog.addSound(TranscribedSound("dog click sound 2", "Woof! Woof! Woof! Woof! Woof! Woof! Woof!"));
 			_dog.start();
 		}
 
 		if (quest == kCreteQuest || quest == kTroyQuest) {
 			_greekSoldier = StyxShade("greek soldier", 550, 5000, 10000);
 			if (quest == kTroyQuest)
-				_greekSoldier.addSound("greek soldier quest speech");
-			_greekSoldier.addSound("greek soldier click sound");
+				_greekSoldier.addSound(TranscribedSound(
+							       "greek soldier quest speech",
+							       "I had a tought job in the Greek army. They made me an arrow-catcher"));
+			_greekSoldier.addSound(TranscribedSound(
+						       "greek soldier click sound",
+						       "I don't mind being dead. It's like being in a math class"
+						       ));
 			_greekSoldier.start();
 		}
 
 		if (quest == kTroyQuest) {
 			_trojanSoldier = StyxShade("trojan soldier", 650, 5000, 10000);
-			_trojanSoldier.addSound("trojan soldier quest speech");
+			// unclear
+			_trojanSoldier.addSound(TranscribedSound(
+							"trojan soldier quest speech",
+							"Yeah when I was on the top of the cat. When the flaming arrow landed next to us. "
+							"Without blinking I pointed at it and screamed \"Fire!\""
+							));
 			_trojanSoldier.start();
 		}
 
 		if (quest == kMedusaQuest) {
 			_statue = StyxShade("statue", 700, 5000, 10000);
-			_statue.addSound("statue quest speech");
+			_statue.addSound(TranscribedSound(
+						 "statue quest speech",
+						 "You know what I hated most about being turned to stone by Medusa? "
+						 "Blasted pigeons"));
 			_statue.start();
 
 			_drownedMan = StyxShade("drowned man", 550, 5000, 10000);
-			_drownedMan.addSound("drowned man click sound 1");
-			_drownedMan.addSound("drowned man click sound 2");
+			_drownedMan.addSound(TranscribedSound(
+						     "drowned man click sound 1",
+						     "You want to know how I drowned? My swimming instructor told me to "
+						     "take a deep breath and then jump in the pool. I got it mixed up. "
+						     "I jumped into the pool and then I took a deep breath"
+						     ));
+			_drownedMan.addSound(TranscribedSound(
+						     "drowned man click sound 2",
+						     "One fellow here died when he rolled out of bed. "
+						     "He lived in a treehouse"
+						     ));
 			_drownedMan.start();
 		}
 
 		if (quest == kRescuePhilQuest) {
 			_alchemist = StyxShade("alchemist", 750, 5000, 10000, "alchemist");
                         if (!persistent->_styxAlchemistSaidIntro)
-				_alchemist.addSound("alchemist intro");
+				_alchemist.addSound(kAlchemistIntro);
 			if (persistent->_hintsAreEnabled) {
 				if ((persistent->isInInventory(kCoin) || persistent->_styxCharonUsedCoin)
 				    && (persistent->isInInventory(kPotion) || persistent->_styxCharonUsedPotion)) {
-					_alchemist.addSound("alchemist hint 2");
-					_alchemist.addSound("alchemist hint 3");
+					_alchemist.addSound(TranscribedSound(
+								    "alchemist hint 2", "Charon is not going to take you across that river "
+								    "unless he has a goldcoin from you and he thinks yo're dead"));
+					// unclear
+					_alchemist.addSound(TranscribedSound("alchemist hint 3", "Gove the death potion and coin to Charon"));
 				} else if (persistent->_creteVisitedAfterAlchemistIntro) {
-					_alchemist.addSound("alchemist hint 1");
+					_alchemist.addSound(TranscribedSound(
+								    "alchemist hint 1",
+								    "The box, look inside the box to find the death potion and the gold coin. "
+								    "If you can figure out how to open it"));
 				}
 			}
                         if (persistent->_styxAlchemistSaidIntro)
-				_alchemist.addSound("alchemist intro");
-			_alchemist.addSound("alchemist click");
+				_alchemist.addSound(kAlchemistIntro);
+			_alchemist.addSound(TranscribedSound("alchemist click",
+							     "Splash a lit bit of death potion on somebody, bang-bang, "
+							     "they're going to think you're dead"));
 			_alchemist.start();
 			if (!persistent->_styxAlchemistSaidIntro)
 				room->disableMouse();
@@ -401,9 +465,9 @@ public:
 	}
 
 private:
-	void playCharonTalk(const Common::String &name, int event) {
+	void playCharonTalk(TranscribedSound name, int event) {
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
-		room->playVideo(name, 0, event);
+		room->playVideoSpeech(name, 0, event);
 		_charon.hide();
 		room->playAnimLoop("charon talks", 550);
 	}
