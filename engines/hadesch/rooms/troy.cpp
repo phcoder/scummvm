@@ -34,7 +34,19 @@ static const char *kHephaestusHighlight = "t2330ba0";
 static const char *kHeraHighlight = "t2300ba0";
 static const char *kOdysseusIdle = "t2150ba0";
 static const char *kOdysseusWithMessage = "t2140bb0";
-static const char *kOdysseusFateOfGreece = "t2150bb0";
+static const TranscribedSound kOdysseusFateOfGreece = {
+	"t2150bb0",
+	_s("Remember: the fate of Greece and all her people is resting on your shoulders. But no pressure")
+};
+static const TranscribedSound kPrettyDark = {
+	"t1290ba0",
+	_s("Hey it looks pretty dark down there. "
+	   "Are you sure you've got everything you need from that prisonner?")
+};
+static const TranscribedSound kGetGrateUnlocked = {
+	"t1290bd0",
+	_s("Looks like you've got to find the way to get this grate unlocked")
+};
 static const char *kPrisoner = "t2130ba0";
 static const char *kKeyAndDecreeImage = "g0150ob0";
 static const char *kKeyAndDecreePopup = "t2010of0";
@@ -93,7 +105,10 @@ public:
 		if (name == "Argo") {
 			if (quest == kTroyQuest && !_philWarnedFishing) {
 				room->disableMouse();
-				room->playVideo("t1030ba0", 0, 10015, Common::Point(0, 216));
+				room->playVideoSpeech(TranscribedSound(
+							      "t1030ba0", "Kid, this is no time for fishing. "
+							      "You've got to warn Helen"),
+						      0, 10015, Common::Point(0, 216));
 				return;
 			}
 			g_vm->moveToRoom(kArgoRoom);
@@ -105,7 +120,7 @@ public:
 			g_vm->getHeroBelt()->placeToInventory(kBricks, 10069);
 			room->disableHotzone("Bricks");
 			room->disableMouse();
-			room->playVideo("t1270ma0", 0);
+			room->playVideoMusic("t1270ma0", 0);
 			return;
 		}
 
@@ -146,9 +161,11 @@ public:
 
 		if (name == "Background2") {
 			if (_philUseSecondInsistance)
-				room->playVideo("t2140bi0", 0, 10072, Common::Point(640, 216));
+				room->playVideoSpeech(TranscribedSound("t2140bi0", "Kid, trust me: take the note"),
+						      0, 10072, Common::Point(640, 216));
 			else
-				room->playVideo("t2150bc0", 0, 10071, Common::Point(640, 216));
+				room->playVideoSpeech(TranscribedSound("t2150bc0", "Put the note in your belt so we can get going"),
+						      0, 10071, Common::Point(640, 216));
 			_philUseSecondInsistance = true;
 			room->disableMouse();
 			return;
@@ -294,7 +311,10 @@ public:
 		if (name == "Catacomb") {
 			if (quest == kCreteQuest) {
 				room->disableMouse();
-				room->playVideo("t1280ba0", 0, 10017, Common::Point(0, 217));
+				// unclear
+				room->playVideoSpeech(TranscribedSound("t1280ba0", "This place gives me the creeps. "
+								       "Better we get the heck out of there"),
+						      0, 10017, Common::Point(0, 217));
 				return;
 			}
 
@@ -306,7 +326,9 @@ public:
 			}
 
 			if (quest > kTroyQuest) {
-				room->playVideo("T1280BD0", 0, 10016, Common::Point(0, 216));
+				room->playVideoSpeech(TranscribedSound("T1280BD0", "Hey, don't you remember? The catacombs caved in. "
+								       "You can't get in that way now"),
+						      0, 10016, Common::Point(0, 216));
 				return;
 			}
 
@@ -339,9 +361,9 @@ public:
 
 		if (name == "Catacomb PopUp Grate") {
 			room->disableMouse();
-			room->playVideo(
-				!persistent->isInInventory(kKey) && _prisonerTouched ? "t1290ba0"
-				: "t1290bd0", 0, 10020,
+			room->playVideoSpeech(
+				!persistent->isInInventory(kKey) && _prisonerTouched ? kPrettyDark
+				: kGetGrateUnlocked, 0, 10020,
 				Common::Point(0, 216));
 			return;
 		}
@@ -364,8 +386,8 @@ public:
 
 			if (!_prisonerTouched || !persistent->isInInventory(kKey)) {
 				room->disableMouse();
-				room->playVideo(
-					_prisonerTouched ? "t1290ba0" : "t1290bd0", 0, 10020,
+				room->playVideoSpeech(
+					_prisonerTouched ? kPrettyDark : kGetGrateUnlocked, 0, 10020,
 					Common::Point(0, 216));
 				return true;
 			}
@@ -425,7 +447,11 @@ public:
 			break;
 		case 10045:
 			hideOdysseus();
-			room->playVideo("t2140ba0", kOdysseusZ, 10046, Common::Point(649, 17));
+			room->playVideoSpeech(TranscribedSound(
+						      "t2140ba0", "I'm Odysseus and we're about to invade the city of Troy. "
+						      "I need you to sneak into the city and deliver this message to Helen warning "
+						      "her about our plans"),
+					      kOdysseusZ, 10046, Common::Point(649, 17));
 			break;
 		case 10046:
 			room->playAnimLoop(kOdysseusWithMessage, kOdysseusZ, Common::Point(800, 0));
@@ -439,7 +465,8 @@ public:
 		case 10047:
 			if (room->isMouseEnabled()) {
 				room->stopAnim(kOdysseusWithMessage);
-				room->playVideo("t2140bc0", kOdysseusZ, 10048, Common::Point(650, 17));
+				room->playVideoSpeech(TranscribedSound("t2140bc0", "I haven't got all day. Take the message and move out"),
+						      kOdysseusZ, 10048, Common::Point(650, 17));
 			} 
 			break;
 		case 10048:
@@ -448,12 +475,18 @@ public:
 		case 10049:
 			room->enableHotzone("Scroll PopUp");
 			room->enableHotzone("Background2");
-			room->playVideo("t2150xb0", 0, 10050);
+			room->playVideoSpeech(TranscribedSound(
+						      "t2150xb0", "Helen, we plan to rescue you soon. "
+						      "Greek soldiers will be hidden in a giant wooden horse "
+						      "that will be rolled into the city. When you receive this "
+						      "message hang a red scarf from your balcony. Odysseus.\n"
+						      "P.S. Your husband Menelaus anxiously awaits your return"),
+					      0, 10050);
 			break;
 			// 10050 is cleanup
 		case 10052:
 			hideOdysseus();
-			room->playVideo(kOdysseusFateOfGreece, kOdysseusZ, 10053, Common::Point(640, 8));
+			room->playVideoSpeech(kOdysseusFateOfGreece, kOdysseusZ, 10053, Common::Point(640, 8));
 			break;
 		case 10053:
 			room->enableMouse();
@@ -461,7 +494,10 @@ public:
 			break;
 		case 10055:
 			hideOdysseus();
-			room->playVideo("T2340BB0", kOdysseusZ, 10056, Common::Point(649, 18));
+			room->playVideoSpeech(TranscribedSound("T2340BB0", "You did it. Well done. "
+							       "There will be time to celebrate after this war is won. "
+							       "But right now you must help me to load the trojan horse"),
+					      kOdysseusZ, 10056, Common::Point(649, 18));
 			break;
 		case 10056:
 			showIdleOdysseus();
@@ -505,7 +541,10 @@ public:
 			break;
 		case 10069:
 			// TODO: check this
-			room->playVideo("T1270BA0", 0, 10070, Common::Point(0, 216));
+			room->playVideoSpeech(TranscribedSound("T1270BA0", "Nice job, kid. But no time to hang out. "
+							       "That Minotaur has got the people of Crete dropping like flies. "
+							       "We've got to get back"),
+					0, 10070, Common::Point(0, 216));
 			break;
 		case 10070:
 		case 10071:
@@ -572,7 +611,7 @@ public:
 			persistent->_troyPlayAttack = false;
 			persistent->_troyShowBricks = true;
 			persistent->_troyWallDamaged = true;
-			room->playVideo("t1060ba0", 0, 10022,
+			room->playVideoSFX("t1060ba0", 0, 10022,
 					   Common::Point(0, 201));
 		}
 
@@ -696,14 +735,17 @@ public:
 
 		if (persistent->_previousRoomId == kCatacombsRoom) {
 			room->disableMouse();
-			room->playVideo(selectReturnFromCatacombs(), 0, 10013, Common::Point(0, 216));
+			room->playVideoSpeech(selectReturnFromCatacombs(), 0, 10013, Common::Point(0, 216));
 		}
 
 		if (persistent->_previousRoomId == kPriamRoom
 		    && !persistent->_troyMessageIsDelivered
 		    && quest == kTroyQuest) {
-			room->playVideo("t1290bc0", 0, 10018,
-					Common::Point(0, 216));
+			room->playVideoSpeech(TranscribedSound(
+						      "t1290bc0",
+						      "What are you doing here? You've got to get that message to Helen. "
+						      "You have to go back to the catacombs, pal"), 0, 10018,
+					      Common::Point(0, 216));
 		}
 
 		if (persistent->_previousRoomId == kPriamRoom
@@ -721,7 +763,12 @@ public:
 			room->disableMouse();
 			_horseCounter = 2;
 			room->playMusic("T1350mA0", kHorseCounter);
-			room->playVideo("t1350ba0", 501, kHorseCounter, Common::Point(288, 211));
+			room->playVideoSpeech(TranscribedSound(
+						  "t1350ba0",
+						  "We hid soldiers inside the trojan horse while rest of us pretended to leave. "
+						  "Late at night after the Trojans brought the horse inside the city walls the "
+						  "soldiers slipped out and cut through the city"),
+					      501, kHorseCounter, Common::Point(288, 211));
 
 			room->playAnimLoop("t1090ba0", 501);
 			room->playAnimLoop("t1090bb0", 501);
@@ -729,24 +776,35 @@ public:
 	}
 
 private:
-	Common::String selectReturnFromCatacombs() const {
+	TranscribedSound selectReturnFromCatacombs() const {
 		Persistent *persistent = g_vm->getPersistent();
 		if (persistent->_catacombLastLevel == 2) {
-			return "t1310bg0";
+			return TranscribedSound("t1310bg0", "Ouch, that's now what I can whack'n'roll. "
+						"You're gonna have hard time getting that tune out of your head. "
+						"You've almost made it, don't quit now");
 		}
 
 		switch (g_vm->getRnd().getRandomNumberRng(0, 4)) {
 		case 0:
-			return "t1310ba0";
+			return TranscribedSound("t1310ba0", "Hey, come on, kid. Don't let yourself get fooled by those two yo-yos. "
+						"You're smarter than they are. So use your head. Now come on, get back in there");
 		case 1:
-			return persistent->_gender == kMale ? "t1310bb0" : "t1310bc0";
+			return persistent->_gender == kMale
+				? TranscribedSound("t1310bb0", "Ouch, bad break. But you can do it. "
+						   "You're a hero, right? And I'm your trainer. So try it again")
+				: TranscribedSound("t1310bc0", "Ouch, bad break. But you can do it. "
+						   "You're a heroine, right? And I'm your trainer. So try it again");
 		case 2:
-			return "t1310bd0";
+			return TranscribedSound("t1310bd0", "You're going to be ok, kid. Get back into fight and give them "
+						"a dose of their own medecine");
 		case 3:
-			return persistent->_gender == kMale ? "t1310be0" : "t1310bf0";
+			return persistent->_gender == kMale
+				? TranscribedSound("t1310be0", "Keep your eyes open, a hero's always gotta be on the lookout")
+				: TranscribedSound("t1310bf0", "Keep your eyes open, a heroine's always gotta be on the lookout");
 		case 4:
 		default:
-			return "t1310bh0";
+			// unclear
+			return TranscribedSound("t1310bh0", "Don't sweat it. If at first you don't succeed, get back in there and kick some");
 		}
 	}
 	void showCatacombStones() const {
