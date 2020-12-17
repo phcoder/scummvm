@@ -125,10 +125,17 @@ public:
 		}
 
 		if (name == "Hephaestus' Statue") {
-			Common::Array<Common::String> videos;
-			videos.push_back("t2330na0");
-			videos.push_back("t2330nb0");
-			videos.push_back("t2330nc0");
+			static const TranscribedSound videos[] = {
+				{"t2330na0", _s("I'm Hephaestus, the god of millwork. "
+						"I made all sorts of things: chariots for the gods, jewels for my wife Aphrodite"
+						" and even armor for Hercules")},
+				// unclear
+				{"t2330nb0", _s("Did I mention that I married Aphrodite and let me tell you it was easy to "
+						"fall for the goddess of love")},
+				// unclear
+				{"t2330nc0", _s("Aphrodite is jealous of my mother Hera. Zeus, my father has his hands full of her")},
+				{ nullptr, nullptr }
+			};
 
 			room->playStatueSMK(kHephaestusStatue,
 					    kHephaestusHighlight,
@@ -140,14 +147,24 @@ public:
 		}
 
 		if (name == "Hera's Statue") {
-			Common::Array<Common::String> videos;
-			videos.push_back("t2300na0");
+			Common::Array<TranscribedSound> videos;
+			videos.push_back(TranscribedSound(
+						 "t2300na0",
+						 "I'm Hera, the most powerful goddess on mount Olympus and wife of Zeus. "
+						 "My favourite bird is the peacock"));
 			if (quest > kTroyQuest || (quest == kTroyQuest && persistent->_troyIsDefeated)) {
-				videos.push_back("t2320na0");
+				videos.push_back(TranscribedSound(
+							 "t2320na0", "You have helped the Greeks to victory and "
+							 "reunited Helen with her husband Meneleas. I wholeheartedly thank you"));
 			} else if (quest == kTroyQuest) {
-				videos.push_back("t2310na0");
-				videos.push_back("t2310nb0");
-				videos.push_back("t2310nc0");
+				videos.push_back(TranscribedSound("t2310na0", "The trojan prince, Paris, kidnapped Helen from Greece "
+								  "ten years ago. The Greeks have been fighting trying to get her back ever since. "
+								  "As a goddess of marriage I must see to it that Helen and her husband Meneleas "
+								  "are reunited"));
+				videos.push_back(TranscribedSound("t2310nb0", "I do help the Greeks win the war. To help the Greeks my "
+								  "son Hephaestus made Hercules a powerful shield"));
+				videos.push_back(TranscribedSound("t2310nc0", "Do be careful, there are traps awaiting you in the catacombs. "
+								  "You must choose wisely"));
 			}
 
 			room->playStatueSMK(kHeraStatue,
