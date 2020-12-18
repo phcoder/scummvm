@@ -79,11 +79,26 @@ static const char *hadesIntroVideos[] = {
 	"H0020bF0"
 };
 
+// TODO: fill this
+static const TranscribedSound tableTranscripts[] = {
+	{"H0170bA0", _s("Who was known as the messenger of the gods?")}
+};
+
+static const TranscribedSound hadesLikeVideos[] = {
+	{"H0040bA0", _s("Ah, what a shame! Hi-hi")},
+	{"H0040bB0", _s("Boy, you're just a regular genius, aren't you?")},
+	{"H0040bC0", _s("You know, I was wondering why you have that stupid look on your face. "
+			"Could it be because you're stupid? He-hey")},
+	{"H0040bD0", _s("Don't feel bad. Brains aren't everything. In fact, in your case, really, they are nothing.")},
+	// unclear
+	{"H0040bE0", _s("You can trim the trophy like this and its height is going to equal your IQ. Badaboom")}
+};
+
 static const TranscribedSound h0090_names[] = {
 	{ "H0090wF0", _s("Congratulations. You've shown Mr Sour Grapes") },
 	{ "H0090wA0", _s("The enveloppe, please. And the winner is ... you. Hey, good job. That's showing him") },
 	{ "H0090wB0", _s("Way to go") },
-	// Difficult to hear. Please someone check after me
+	// Unclear. Difficult to hear. Please someone check after me
 	{ "H0090wE0", _s("You're amazing. Or Hades is hard under the gollar") }
 };
 
@@ -182,10 +197,10 @@ public:
 			renderQuestion();
 			room->enableMouse();
 			_hadesCancelableVideo = true;
-			playHadesVideo(getQuestionAttribute("HQuestion"), kHadesQuestionVideoFinished);
+			playHadesTabledVideo(getQuestionAttribute("HQuestion"), kHadesQuestionVideoFinished);
 			break;
 		case kHadesQuestionVideoFinished:
-			playHadesVideo(getQuestionAttribute("HJoke"), kHadesJokeVideoFinished);
+			playHadesTabledVideo(getQuestionAttribute("HJoke"), kHadesJokeVideoFinished);
 			break;
 		case kHadesJokeVideoFinished:
 			room->selectFrame(kHadesEyes, kHadesEyesZ, 0);
@@ -221,7 +236,11 @@ public:
 			break;
 
 		case 30021:
-			playHadesVideo("HadesInstructions", 30022);
+			playHadesVideo(TranscribedSound("HadesInstructions",
+							"Well, excuse me. Listen up, kid because I'm going to say it just once. "
+							"Here is how the challenge works: each time you get an answer wrong I make "
+							"your trophy smaller. You get it? "
+							"No more freebies, so let's start again"), 30022);
 			break;
 
 		case 30022:
@@ -242,9 +261,9 @@ public:
 					      PlayAnimParams::disappear());
 			_shrinkLevel++;
 			if (_wrongAnswerCount == 0) {
-				playHadesVideo("HadesLaugh", kHadesFirstLaugh);
+				playHadesVideo(TranscribedSound("HadesLaugh", "Ha-ha"), kHadesFirstLaugh);
 			} else {
-				playHadesVideo(Common::String::format("H0040b%c0", 'A' + (_hades_like_counter % 5)),
+				playHadesVideo(hadesLikeVideos[_hades_like_counter % 5],
 					       kNextQuestionAfterFail);
 				_hades_like_counter++;
 			}
@@ -284,6 +303,12 @@ public:
 		room->addStaticLayer("Background", kBackgroundZ);
 		room->disableHeroBelt();
 		room->disableMouse();
+
+		for (uint i = 0; i < ARRAYSIZE(tableTranscripts); i++) {
+			Common::String sName(tableTranscripts[i].soundName);
+			sName.toLowercase();
+			_transcripts[sName] = tableTranscripts[i].transcript;
+		}
 		_questName = questNames[quest];
 		_hcQuest = TextTable(
 			Common::SharedPtr<Common::SeekableReadStream>(room->openFile("HcQuest.txt")), 5);
@@ -296,7 +321,7 @@ public:
 		_zeusGreat = _hcQuest.get(_questName, "ZeusGreat");
 		room->playAnim(_bigItem, kBigItemZ,
 			       PlayAnimParams::keepLastFrame().partial(0, 4), kBigItemSwitchToLoop);
-		room->playVideo("ZeusStingerSnd", 0, kZeusStingerFinished);
+		room->playVideoMusic("ZeusStingerSnd", 0, kZeusStingerFinished);
 		Common::HashMap<Common::String, bool> touchedStatues;
 		for (int statue = kBacchusStatue; statue < kNumStatues;
 		     statue++)
@@ -397,17 +422,23 @@ private:
 		return _hcQList.get(_chosenQuestions[_currentQuestion], name);
 	}
 
-	void playHadesVideo(const Common::String &name, int eventId) {
+	void playHadesVideo(TranscribedSound name, int eventId) {
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
 		int x = 0;
-		if (name == "HadesInstructions" || name == "HadesLaugh") {
+		if (strcmp(name.soundName, "HadesInstructions") == 0 || strcmp(name.soundName, "HadesLaugh") == 0) {
 			x = 110;
 		} else
-			x = _hchadesx.get(name, "X").asUint64();
+			x = _hchadesx.get(name.soundName, "X").asUint64();
 		room->stopAnim(kHadesEyes);
 		room->stopAnim("HadesAndZeusAnim");
-		room->playVideo(name, kHadesEyesZ, eventId, Common::Point(x, 0));
+		room->playVideoSpeech(name, kHadesEyesZ, eventId, Common::Point(x, 0));
 		_hadesIsFree = false;
+	}
+
+	void playHadesTabledVideo(const Common::String &name, int eventId) {
+		Common::String key = name;
+		key.toLowercase();
+		playHadesVideo(TranscribedSound(name.c_str(), _transcripts[key].c_str()), eventId);
 	}
 
 	int getRightAnswer() {
@@ -469,6 +500,7 @@ private:
 	int _naggingCounter;
 	Common::String _questName;
 	Common::String _bigItem, _smallItem, _zeusGreat;
+	Common::HashMap<Common::String, Common::String> _transcripts;
 };
 
 Common::SharedPtr<Hadesch::Handler> makeQuizHandler() {
