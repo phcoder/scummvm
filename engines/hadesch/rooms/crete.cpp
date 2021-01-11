@@ -290,7 +290,7 @@ public:
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
 		Persistent *persistent = g_vm->getPersistent();
 		if (name == kTalusHotzone) {
-			room->playVideo(kTalusMovie, kTalusZ, kTalueMovieCompleted,
+			room->playVideoSFX(kTalusMovie, kTalusZ, kTalueMovieCompleted,
 					Common::Point(54, 29));
 			room->setLayerEnabled(kTalusImageWithShip, false);
 			return;
