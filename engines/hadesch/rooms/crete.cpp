@@ -714,7 +714,7 @@ TODO:
 
 			room->playAnim("r1220ba0", 500,
 				       PlayAnimParams::disappear().partial(0, 17), 12206);
-			room->playVideo("r1220mb0", 0);
+			room->playVideoMusic("r1220mb0", 0);
 			room->playSFX("r1220ea0");
 			room->disableMouse();
 			break;
@@ -814,7 +814,7 @@ TODO:
 			redrawStrongBox();
 			break;
 		case 12414:
-			room->playVideo("v4190ma0", 0, 12415);
+			room->playVideoMusic("v4190ma0", 0, 12415);
 			break;
 		case 12204:
 		case 12415:
@@ -829,13 +829,16 @@ TODO:
 			break;
 		case 12125:
 			room->stopAnim("r2035ba0");
-			room->playVideo("R2035BE0", 1200, 12127);
+			room->playVideoSpeech(TranscribedSound::make("R2035BE0",
+						      "I told you to get rid of the bull statue. I thought you got rid of it. Let's get out of here"),
+					      1200, 12127);
 			break;
 		case 12127:
 			g_vm->moveToRoom(kDaedalusRoom);
 			break;
 		case kSandalsPlaced:
-			room->playVideo("r1220bb0", 0, 12204);
+			room->playVideoSpeech(TranscribedSound::make("r1220bb0",
+						      "Nice go but don't slow down now, Perseus needs your help and so do people of Seriphos"), 0, 12204);
 			break;
 		}
 	}
@@ -1297,7 +1300,7 @@ TODO:
 			if (persistent->_creteIntroAtlantisBoat) {
 				persistent->_creteIntroAtlantisBoat = false;
 				room->disableMouse();
-				room->playVideo("r1180ba0", 0, 12134, Common::Point(640, 216));
+				room->playVideoSpeech(TranscribedSound::make("r1180ba0", "I think you should check out that new boat over there in the port"), 0, 12134, Common::Point(640, 216));
 			}
 
 		}
@@ -1325,22 +1328,22 @@ TODO:
 		switch (persistent->_quest) {
 		case kCreteQuest:
 			if (!persistent->_roomVisited[kMinosPalaceRoom]) {
-				room->playVideo("r1260ma0", 0);
+				room->playVideoMusic("r1260ma0", 0);
 				break;
 			}
 
 			if (persistent->_creteShowMerchant) {
-				room->playVideo("g0261ma0", 0);
+				room->playVideoSFX("g0261ma0", 0);
 				break;
 			}
 			break;
 		case kMedusaQuest:
 			if (persistent->_medisleShowFates && persistent->_creteSandalsState == Persistent::SANDALS_NOT_SOLVED)
-				room->playVideo("r1220ma0", 0);
+				room->playVideoMusic("r1220ma0", 0);
 			break;
 		case kRescuePhilQuest:
 			if (persistent->_creteStrongBoxState == Persistent::BOX_CLOSED || persistent->_creteStrongBoxState == Persistent::BOX_OPEN)
-				room->playVideo("r2230ma0", 0);
+				room->playVideoMusic("r2230ma0", 0);
 			break;
 		// To silence warning
 		case kTroyQuest:
@@ -1353,7 +1356,10 @@ TODO:
 		if (!persistent->_creteSaidHelenPermanentResident && persistent->_quest == kTroyQuest) {
 			persistent->_creteSaidHelenPermanentResident = true;
 			room->disableMouse();
-			room->playVideo("r1250ba0", 0, 12134, Common::Point(0, 216));
+			room->playVideoSpeech(TranscribedSound::make(
+						      "r1250ba0",
+						      "Helen is going to wind up a permanent resident of Troy if you don't get the lead out."),
+					      0, 12134, Common::Point(0, 216));
 		}
 	}
 
