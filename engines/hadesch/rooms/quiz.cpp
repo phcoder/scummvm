@@ -215,7 +215,7 @@ public:
 			break;
 
 		case kHadesFirstLaugh:
-			hadesAndZeus(TranscribedSound("ZeusNotFair", "Hold on, Hades. That's not fair. You've never explained the rules. That doesn't count"),
+			hadesAndZeus(TranscribedSound::make("ZeusNotFair", "Hold on, Hades. That's not fair. You've never explained the rules. That doesn't count"),
 				     kHadesInstructions);
 			_hadesIsFree = false;
 			break;
@@ -236,7 +236,7 @@ public:
 			break;
 
 		case 30021:
-			playHadesVideo(TranscribedSound("HadesInstructions",
+			playHadesVideo(TranscribedSound::make("HadesInstructions",
 							"Well, excuse me. Listen up, kid because I'm going to say it just once. "
 							"Here is how the challenge works: each time you get an answer wrong I make "
 							"your trophy smaller. You get it? "
@@ -438,7 +438,7 @@ private:
 	void playHadesTabledVideo(const Common::String &name, int eventId) {
 		Common::String key = name;
 		key.toLowercase();
-		playHadesVideo(TranscribedSound(name.c_str(), _transcripts[key].c_str()), eventId);
+		playHadesVideo(TranscribedSound::make(name.c_str(), _transcripts[key].c_str()), eventId);
 	}
 
 	int getRightAnswer() {

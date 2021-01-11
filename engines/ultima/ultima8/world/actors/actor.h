@@ -84,6 +84,10 @@ public:
 		return (_actorFlags & ACT_INCOMBAT) != 0;
 	}
 
+	bool isKneeling() const {
+		return (_actorFlags & ACT_KNEELING) != 0;
+	}
+
 	CombatProcess *getCombatProcess(); 	// in U8
 	AttackProcess *getAttackProcess();	// in Crusader
 	virtual void setInCombat(int activity);
@@ -200,9 +204,6 @@ public:
 
 	//! check if NPCs are near which are in combat mode and hostile
 	bool areEnemiesNear();
-
-	//! check if NPCs are near which are in combat mode and hostile
-	void notifyNearbyItems();
 
 	//! starts an activity
 	//! \return processID of process handling the activity or zero

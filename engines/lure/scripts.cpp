@@ -95,7 +95,7 @@ void Script::setHotspotFlagMask(uint16 maskVal, uint16 v2, uint16 v3) {
 // Clears the sequence delay list
 
 void Script::clearSequenceDelayList(uint16 v1, uint16 scriptIndex, uint16 v3) {
-	Resources::getReference().delayList().clear();
+	Resources::getReference().delayList().clear(true);
 }
 
 // Deactivates a set of predefined of hotspots in a given list index
@@ -1240,6 +1240,19 @@ bool HotspotScript::execute(Hotspot *h) {
 		h->hotspotId(), offset);
 
 	while (!breakFlag) {
+		// WORKAROUND In the castle cellar, when you pull the bung out of the
+		// wine cask, a running wine sound is started. However, when the cask
+		// runs empty, the sound is not stopped. Also, when the Skorl starts
+		// drinking the wine, the sound is not restarted when you enter the
+		// room, and it also is not stopped when the wine runs out.
+		if (room.roomNumber() == 0x002A) {
+			if (offset == 0x0CA2)		 // start of drinking Skorl script
+				Sound.addSound2(0x2B);
+			else if (offset == 0x0D12	 // end of cask script
+					|| offset == 0x0CC4) // wine running out in drinking Skorl script
+				Sound.stopSound(0x2B);
+		}
+
 		opcode = nextVal(scriptData, offset);
 
 		switch (opcode) {

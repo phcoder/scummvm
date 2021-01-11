@@ -117,7 +117,7 @@ public:
 		if (g_vm->getPreviousRoomId() == kOptionsRoom) {
 			room->playSFX("o1010ea0", 21002);
 		} else {
-			room->playVideoSpeech(TranscribedSound("movie",
+			room->playVideoSpeech(TranscribedSound::make("movie",
 							       "Well hello, Hermes. What's the hurry? You're racing around like your wings are on fire, heh. "
 							       "Well Zeus, my sources tell me Hades is stirring up trouble."
 							       "With Hercules off battling the giants we're a little short-handed "

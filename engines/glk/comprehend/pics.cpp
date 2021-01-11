@@ -101,7 +101,7 @@ void Pics::ImageContext::lineFixes() {
 
 /*-------------------------------------------------------*/
 
-Pics::ImageFile::ImageFile(const Common::String &filename) {
+Pics::ImageFile::ImageFile(const Common::String &filename, bool isSingleImage) {
 	Common::File f;
 	uint16 version;
 	int i;
@@ -110,19 +110,15 @@ Pics::ImageFile::ImageFile(const Common::String &filename) {
 	if (!f.open(filename))
 		error("Could not open file - %s", filename.c_str());
 
-	/*
-	 * In earlier versions of Comprehend the first word is 0x1000 and
-	 * the image offsets start four bytes in. In newer versions the
-	 * image offsets start at the beginning of the image file.
-	 */
-	version = f.readUint16LE();
-	if (version == 0x6300 /* Single image file */
-			|| version == 0x81f3 /* OO-Topos title - t0 */) {
+	if (isSingleImage) {
+		// It's a title image file, which has only a single image with no
+		// table of image offsets
 		_imageOffsets.resize(1);
 		_imageOffsets[0] = 4;
 		return;
 	}
 
+	version = f.readUint16LE();
 	if (version == 0x1000)
 		f.seek(4);
 	else
@@ -283,7 +279,7 @@ bool Pics::ImageFile::doImageOp(Pics::ImageContext *ctx) const {
 			ctx->_drawSurface->floodFill(a, b, ctx->_fillColor);
 		break;
 
-	case OPCODE_SPECIAL:
+	case OPCODE_RESET:
 		a = imageGetOperand(ctx);
 		doResetOp(ctx, a);
 		break;
@@ -323,6 +319,8 @@ uint16 Pics::ImageFile::imageGetOperand(ImageContext *ctx) const {
 Pics::Pics() : _font(nullptr) {
 	if (Common::File::exists("charset.gda"))
 		_font = new CharSet();
+	else if (g_comprehend->getGameID() == "talisman")
+		_font = new TalismanFont();
 }
 
 Pics::~Pics() {
@@ -345,7 +343,7 @@ void Pics::load(const Common::StringArray &roomFiles,
 		_items.push_back(ImageFile(itemFiles[idx]));
 
 	if (!titleFile.empty())
-		_title = ImageFile(titleFile);
+		_title = ImageFile(titleFile, true);
 }
 
 int Pics::getPictureNumber(const Common::String &filename) const {

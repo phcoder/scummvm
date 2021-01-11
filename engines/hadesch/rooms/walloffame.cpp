@@ -516,8 +516,8 @@ public:
 		if (hotname == "typhon") {
 			room->playSFX("click");
 			zeusCommentRight(persistent->_gender == kFemale
-					 ? TranscribedSound("zeus typhon heroine", "You faced the typhoon and lived to tell about it. Now that's what being a heroine is all about")
-					 : TranscribedSound("zeus typhon hero", "You faced the typhoon and lived to tell about it. Now that's what being a hero is all about"));
+					 ? TranscribedSound::make("zeus typhon heroine", "You faced the typhoon and lived to tell about it. Now that's what being a heroine is all about")
+					 : TranscribedSound::make("zeus typhon hero", "You faced the typhoon and lived to tell about it. Now that's what being a hero is all about"));
 			return;
 		}
 
@@ -542,7 +542,7 @@ public:
 			room->stopAnim("hades note text");
 			room->stopAnim("hades note");
 			if (persistent->_hintsAreEnabled) {
-				zeusCommentRight(TranscribedSound(
+				zeusCommentRight(TranscribedSound::make(
 							 "zeus counting on ya",
 							 "Looks like your friend Phil is going to need your help. It's going to be dangerous but he's counting on you and so am I."));
 			}
@@ -583,11 +583,11 @@ public:
 				return;
 			_philIsBusy = true;
 			if (hotname == "labyrinth frieze")
-				playPhilVideo(TranscribedSound(
+				playPhilVideo(TranscribedSound::make(
 						      "phil labyrinth frieze",
 						      "You want to trap the Minotaur again? Click on that frieze"), kPhilBecomesIdle, Common::Point(40, 324)); // state 51
 			else
-				playPhilVideo(TranscribedSound(
+				playPhilVideo(TranscribedSound::make(
 						      "phil trojan horse frieze",
 						      "You want to load trojan horse again? Click that frieze"),
 					      kPhilBecomesIdle, Common::Point(14, 320)); // state 52
@@ -766,10 +766,10 @@ public:
 				playPhilVideo(kPhilDaedalusNeedsHelp, 1019022, Common::Point(28, 312)); // state 24
 				break;
 			case kTroyQuest:
-				playPhilVideo(TranscribedSound("phil holy hera", "Holy Hera. This one has a lot of dust on it. No wonder that they call this place the ancient world. The war is still raging in Troy all over the beautiful Helen who is being held captive there. Odysseus, the Greek general in charge, has a new plan that he needs some help with"), 1019022, Common::Point(28, 312)); // state 29
+				playPhilVideo(TranscribedSound::make("phil holy hera", "Holy Hera. This one has a lot of dust on it. No wonder that they call this place the ancient world. The war is still raging in Troy all over the beautiful Helen who is being held captive there. Odysseus, the Greek general in charge, has a new plan that he needs some help with"), 1019022, Common::Point(28, 312)); // state 29
 				break;
 			case kMedusaQuest:
-				playPhilVideo(TranscribedSound("phil who writes these things", "Who writes these things? The penmanship. Oy, it's like reading the hieroglyphics. Perseus needs your help in Seriphos. So you're off to help slay the Medusa"), 1019022, Common::Point(28, 312)); // state 36
+				playPhilVideo(TranscribedSound::make("phil who writes these things", "Who writes these things? The penmanship. Oy, it's like reading the hieroglyphics. Perseus needs your help in Seriphos. So you're off to help slay the Medusa"), 1019022, Common::Point(28, 312)); // state 36
 				break;
 			}
 			break;
@@ -783,14 +783,14 @@ public:
 				playPhilVideo(kPhilOffToCrete, 1019024, Common::Point(40, 324)); // state 25
 				break;
 			case kTroyQuest:
-				playPhilVideo(TranscribedSound(
+				playPhilVideo(TranscribedSound::make(
 						      "phil hourly rates",
 						      "You're off to Troy, kid. A very dark and violent place. "
 						      "It's so dangerous they've got hourly rates on life insurance"),
 					      1019033, Common::Point(28, 312)); // state 30
 				break;
 			case kMedusaQuest:
-				playPhilVideo(TranscribedSound(
+				playPhilVideo(TranscribedSound::make(
 						      "phil off to seriphos",
 						      "You're off to Seriphos. Talk about a boring place. "
 						      "I've spent two weeks there in one afternoon"),
@@ -824,7 +824,7 @@ public:
 			if (!_philSaidDoingGreat && quest != kCreteQuest) {
 				_philSaidDoingGreat = true;
 				// state 50
-				playPhilVideo(TranscribedSound(
+				playPhilVideo(TranscribedSound::make(
 						      "phil doing great",
 						      "You're doing great but you could always use more practice. "
 						      "You can play the activity by clicking on the frieze"), kPhilJokeEventCleanup,
@@ -837,7 +837,7 @@ public:
 			switch(rnd) {
 			case 1:
 				// state 40
-				playPhilVideo(TranscribedSound(
+			    playPhilVideo(TranscribedSound::make(
 						      "phil break time over",
 						      "The break time is just about over. You need to get back to your quest, kiddo"
 						      ), kPhilJokeEventCleanup,
@@ -845,7 +845,7 @@ public:
 				break;
 			case 2:
 				// state 41
-				playPhilVideo(TranscribedSound("phil back to work",
+			    playPhilVideo(TranscribedSound::make("phil back to work",
 							       "We're not getting paid by the hour here, kid. "
 							       "Let's get back to work"),
 					      kPhilJokeEventCleanup,
@@ -853,7 +853,7 @@ public:
 				break;
 			case 3:
 				// state 42
-				playPhilVideo(TranscribedSound("phil lets go", "Hey, I'm not getting any younger here. Let's go"),
+			    playPhilVideo(TranscribedSound::make("phil lets go", "Hey, I'm not getting any younger here. Let's go"),
 					      kPhilJokeEventCleanup,
 					Common::Point(16, 320));
 				break;
@@ -943,7 +943,7 @@ public:
 			room->enableHotzone("hades note popup background2");
 			room->selectFrame("hades note popup", 150, 0, kOffsetRightRoom);
 			room->selectFrame("hades note text", 149, 0, kOffsetRightRoom);
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						"hades reads note",
 						"Dear victim, forget about Phil. "
 						"He's mine now and he's going to stay that way. "
@@ -959,7 +959,7 @@ public:
 						AmbientAnim::KEEP_LOOP, kOffsetRightRoom,
 						AmbientAnim::PAN_ANY);
 			_hercules.start();
-			playPhilVideo(TranscribedSound(
+			playPhilVideo(TranscribedSound::make(
 					      "phil that was awesome",
 					      _s("That was awesome, kid."
 						 "You were brilliant. You're going to go down in history. "
@@ -992,23 +992,23 @@ public:
 			playPhilAnimSFX(kPhilWalksCenterToLeft, 1019032);
 			break;
 		case 1019032:
-			playPhilVideo(TranscribedSound("phil lots more to do", "Ok, we've got lots more to do"),
+		    playPhilVideo(TranscribedSound::make("phil lots more to do", "Ok, we've got lots more to do"),
 				      kPhilNewQuestScroll, Common::Point(14, 312)); // state 28
 			break;
 		case 1019033:
 			playPhilVideo(persistent->_gender == kFemale
-				      ? TranscribedSound(
+				      ? TranscribedSound::make(
 					      "phil go to it heroine", "Go to it, heroine")
-				      : TranscribedSound(
+				      : TranscribedSound::make(
 					      "phil go to it hero", "Go to it, hero"),
 				      1019034, Common::Point(40, 324)); // state 32/31
 			break;
 		case 1019034:
-			playPhilVideo(TranscribedSound("phil off to troy", "You're off to Troy"),
+		    playPhilVideo(TranscribedSound::make("phil off to troy", "You're off to Troy"),
 				      kPhilBecomesIdle, Common::Point(40, 324)); // state 33
 			break;
 		case 1019035:
-			playPhilVideo(TranscribedSound("phil sneaky devil", "He-he-he you, sneaky devil, you earned the power of stealth."
+		    playPhilVideo(TranscribedSound::make("phil sneaky devil", "He-he-he you, sneaky devil, you earned the power of stealth."
 						       "You're making me proud, kid"),
 				      1019036, Common::Point(40, 324)); // state 34
 			break;
@@ -1018,21 +1018,21 @@ public:
 			playPhilAnimSFX(kPhilWalksCenterToLeft, 1019037);
 			break;
 		case 1019037:
-			playPhilVideo(TranscribedSound("phil good work", "Good work but we're not through yet"), kPhilNewQuestScroll, Common::Point(40, 324)); // state 35
+		    playPhilVideo(TranscribedSound::make("phil good work", "Good work but we're not through yet"), kPhilNewQuestScroll, Common::Point(40, 324)); // state 35
 			break;
 		case 19900:
 			if (_gender != kUnknown && !_heroName.empty()) {
 				break;
 			}
 			if (!_heroName.empty()) {
-				room->playVideoSpeech(TranscribedSound("phil pick a statue", "What are you waiting for? Pick a statue"), 0, 19901);
+			    room->playVideoSpeech(TranscribedSound::make("phil pick a statue", "What are you waiting for? Pick a statue"), 0, 19901);
 				break;
 			}
 
 			if (g_vm->getRnd().getRandomBit()) {
-				room->playVideoSpeech(TranscribedSound("phil not a mind reader", "Hey kid, I'm not a mind-reader"), 0, 19901);
+			    room->playVideoSpeech(TranscribedSound::make("phil not a mind reader", "Hey kid, I'm not a mind-reader"), 0, 19901);
 			} else {
-				room->playVideoSpeech(TranscribedSound("phil type in your name", "So type in your name"), 0, 19901);
+			    room->playVideoSpeech(TranscribedSound::make("phil type in your name", "So type in your name"), 0, 19901);
 			}
 			break;
 		case 19901:
@@ -1147,7 +1147,7 @@ public:
 			switch (quest) {
 			case kTroyQuest:
 				_philWalkPhase = 1;
-				playPhilVideo(TranscribedSound(
+				playPhilVideo(TranscribedSound::make(
 						      "phil congrats trapped minotaur",
 						      "Way to go kid. I saw it all. When you trapped the Minotaur I got so excited. "
 						      "Phew. A couple more like that and we're going to have to throw you a party"),
@@ -1177,7 +1177,7 @@ public:
 			case kNoQuest:
 				_philWalkPhase = 1;
 				philBecomesListening();
-				room->playVideoSpeech(TranscribedSound(
+				room->playVideoSpeech(TranscribedSound::make(
 						    "herc congratulates",
 						    "Sorry I wasn't able to help you out. But look at you, you did it all on your own. You proved that being a true hero isn't about the size of your strength but the strength of your heart. Congrats, kid. You're all heart"),
 						0, 19051, kOffsetRightRoom);

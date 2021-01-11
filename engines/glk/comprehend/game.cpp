@@ -116,7 +116,8 @@ void Sentence::format() {
 
 
 ComprehendGame::ComprehendGame() : _gameStrings(nullptr), _ended(false),
-		_nounState(NOUNSTATE_INITIAL), _inputLineIndex(0), _currentRoomCopy(-1) {
+		_functionNum(0), _specialOpcode(0), _nounState(NOUNSTATE_INITIAL),
+		_inputLineIndex(0), _currentRoomCopy(-1), _redoLine(REDO_NONE) {
 	Common::fill(&_inputLine[0], &_inputLine[INPUT_LINE_SIZE], 0);
 }
 
@@ -158,6 +159,8 @@ void ComprehendGame::synchronizeSave(Common::Serializer &s) {
 
 	for (i = 0; i < _items.size(); ++i)
 		_items[i].synchronize(s);
+
+	_redoLine = REDO_NONE;
 }
 
 Common::String ComprehendGame::stringLookup(uint16 index) {
@@ -448,6 +451,15 @@ void ComprehendGame::describe_objects_in_current_room() {
 	}
 }
 
+void ComprehendGame::updateRoomDesc() {
+	Room *room = get_room(_currentRoom);
+	uint room_desc_string = room->_stringDesc;
+	roomIsSpecial(_currentRoom, &room_desc_string);
+
+	Common::String desc = stringLookup(room_desc_string);
+	g_comprehend->printRoomDesc(desc);
+}
+
 void ComprehendGame::update() {
 	Room *room = get_room(_currentRoom);
 	unsigned room_type, room_desc_string;
@@ -459,8 +471,11 @@ void ComprehendGame::update() {
 	room_type = roomIsSpecial(_currentRoom,
 	                                &room_desc_string);
 
-	if (_updateFlags & UPDATE_ROOM_DESC)
-		console_println(stringLookup(room_desc_string).c_str());
+	if (_updateFlags & UPDATE_ROOM_DESC) {
+		Common::String desc = stringLookup(room_desc_string);
+		console_println(desc.c_str());
+		g_comprehend->printRoomDesc(desc.c_str());
+	}
 
 	if ((_updateFlags & UPDATE_ITEM_LIST) && room_type == ROOM_IS_NORMAL)
 		describe_objects_in_current_room();
@@ -607,9 +622,6 @@ void ComprehendGame::skip_non_whitespace(const char **p) {
 }
 
 bool ComprehendGame::handle_sentence(Sentence *sentence) {
-	if (sentence->empty())
-		return false;
-
 	if (sentence->_nr_words == 1 && !strcmp(sentence->_words[0]._word, "quit")) {
 		g_comprehend->quitGame();
 		return true;
@@ -691,7 +703,6 @@ bool ComprehendGame::handle_sentence(Sentence *sentence) {
 			return true;
 	}
 
-	console_println(stringLookup(STRING_DONT_UNDERSTAND).c_str());
 	return false;
 }
 
@@ -708,13 +719,27 @@ bool ComprehendGame::handle_sentence(uint tableNum, Sentence *sentence, Common::
 
 		if (isMatch) {
 			// Match
-			eval_function(action._function, sentence);
+			_functionNum = action._function;
 			return true;
 		}
 	}
 
 	// No matching action
 	return false;
+}
+
+void ComprehendGame::handleAction(Sentence *sentence) {
+	_specialOpcode = 0;
+
+	if (_functionNum == 0) {
+		console_println(stringLookup(STRING_DONT_UNDERSTAND).c_str());
+	} else {
+		eval_function(_functionNum, sentence);
+		_functionNum = 0;
+		eval_function(0, nullptr);
+	}
+
+	handleSpecialOpcode();
 }
 
 void ComprehendGame::read_sentence(Sentence *sentence) {
@@ -810,6 +835,7 @@ void ComprehendGame::read_input() {
 	Sentence tempSentence;
 	bool handled;
 
+turn:
 	doBeforeTurn();
 	if (_ended)
 		return;
@@ -819,27 +845,33 @@ void ComprehendGame::read_input() {
 	if (!g_comprehend->isGraphicsEnabled())
 		g_comprehend->print("\n");
 
-	for (;;) {
-		beforePrompt();
+	beforePrompt();
 
+	for (;;) {
+		_redoLine = REDO_NONE; 
 		g_comprehend->print("> ");
 		g_comprehend->readLine(_inputLine, INPUT_LINE_SIZE);
 		if (g_comprehend->shouldQuit())
 			return;
 
+		_inputLineIndex = 0;
+		if (strlen(_inputLine) == 0) {
+			// Empty line, so toggle picture window visibility
+			if (!g_comprehend->toggleGraphics())
+				updateRoomDesc();
+			g_comprehend->print(_("Picture window toggled\n"));
+
+			_updateFlags |= UPDATE_GRAPHICS;
+			update_graphics();
+			continue;
+		}
+
 		afterPrompt();
 
-		_inputLineIndex = 0;
-		if (strlen(_inputLine) != 0)
+		if (_redoLine == REDO_NONE)
 			break;
-
-		// Empty line, so toggle picture window visibility
-		g_comprehend->toggleGraphics();
-		g_comprehend->print(_("Picture window toggled\n"));
-
-		_updateFlags |= UPDATE_GRAPHICS;
-		update_graphics();
-		continue;
+		else if (_redoLine == REDO_TURN)
+			goto turn;
 	}
 
 	for (;;) {
@@ -850,6 +882,8 @@ void ComprehendGame::read_input() {
 		_sentence.copyFrom(tempSentence, tempSentence._formattedWords[0] || prevNounState != NOUNSTATE_STANDARD);
 
 		handled = handle_sentence(&_sentence);
+		handleAction(&_sentence);
+
 		if (!handled)
 			return;
 

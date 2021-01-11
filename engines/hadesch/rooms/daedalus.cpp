@@ -72,7 +72,7 @@ public:
 		}
 
 		if (name == "daedalus") {
-			playDaedalusVideo(TranscribedSound(
+			playDaedalusVideo(TranscribedSound::make(
 						  "daedalus no materials",
 						  "You have your shopping list. Get going"
 						  ), 13005, Common::Point(76, 0));
@@ -80,7 +80,7 @@ public:
 		}
 
 		if (name == "wings") {
-			playDaedalusVideo(TranscribedSound(
+			playDaedalusVideo(TranscribedSound::make(
 						  "daedalus wings",
 						  "Once I've trapped the minotaur I'm going to escape this place once and for all "
 						  "by using these wings I made out of wax. Keep that under your hat, by the way"),
@@ -90,7 +90,7 @@ public:
 
 		if (name == "labyrinth" && persistent->_quest != kCreteQuest) {
 			room->disableMouse();
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						      "phil navigation help",
 						      "The only way out to the labyrinth is through your hall of trophees"
 						      ),
@@ -128,7 +128,7 @@ public:
 		}
 		
 		if ((name == "daedalus" || name == "chute") && labItem < 0) {
-			playDaedalusVideo(TranscribedSound(
+			playDaedalusVideo(TranscribedSound::make(
 						  "daedalus what to do with that",
 						  "What am I going to do with that?"),
 					  13005, Common::Point(10, 40));
@@ -136,7 +136,7 @@ public:
 		}
 
 		if (name == "daedalus" && labItem >= 0) {
-			playDaedalusVideo(TranscribedSound(
+			playDaedalusVideo(TranscribedSound::make(
 						  "daedalus put that in the chute",
 						  "Put that in the chute"), 4009, Common::Point(64, 48));
 			return true;
@@ -159,15 +159,15 @@ public:
 			room->playAnimWithSFX("dust cloud", "dust cloud sound", 850, PlayAnimParams::disappear());
 
 			if (hasAll) 
-				playDaedalusVideo(TranscribedSound("daedalus exclaims", "At last! Now we can finish the maze!"),
+				playDaedalusVideo(TranscribedSound::make("daedalus exclaims", "At last! Now we can finish the maze!"),
 						  13008, Common::Point(0, 2));
 			else {
 				// Original goes to event 4009
 				if (g_vm->getRnd().getRandomBit())
-					playDaedalusVideo(TranscribedSound("daedalus congrats 1", "Ah magnificient. We're getting there"),
+					playDaedalusVideo(TranscribedSound::make("daedalus congrats 1", "Ah magnificient. We're getting there"),
 							  4009, Common::Point(70, 30));
 				else
-					playDaedalusVideo(TranscribedSound("daedalus congrats 2", "Fabulous. We're almost ready"),
+					playDaedalusVideo(TranscribedSound::make("daedalus congrats 2", "Fabulous. We're almost ready"),
 							  4009, Common::Point(68, 32));
 			}
 
@@ -181,7 +181,7 @@ public:
 		Common::SharedPtr<VideoRoom> room = g_vm->getVideoRoom();
 		switch(eventId) {
 		case kIntroStep1:
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						"phil intro 1",
 						"Tell Daedalus if that Minotaur finds him first it will be the last thing he'll ever do"),
 					kPhilZ, kIntroStep2,
@@ -189,14 +189,14 @@ public:
 			room->selectFrame(kDaedalusAmbient, kDaedalusZ, 0);
 			break;
 		case kIntroStep2:
-			playDaedalusVideo(TranscribedSound(
+			playDaedalusVideo(TranscribedSound::make(
 						  "daedalus intro 2",
 						  "I cannot finish the maze without certain materials. "
 						  "Here, I've made a list. Go and get them for me. I need stone, wood, straw and bricks"),
 					  kIntroStep3, Common::Point(76, 55));
 			break;
 		case kIntroStep3:
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						      "phil intro 2",
 						      "You've got that kid? Go find the stuff he needs and bring it back to him. "
 						      "We're on a deadline here"
@@ -206,7 +206,7 @@ public:
 			break;
 
 		case kIntroStep4:
-			playDaedalusVideo(TranscribedSound(
+			playDaedalusVideo(TranscribedSound::make(
 						  "daedalus intro 3",
 						  "I need stron from Medusa isle. I need special wood that is shipped from "
 						  "Atlantis to the harbour in Crete. From Troy I need bricks that have "
@@ -232,7 +232,7 @@ public:
 				break;
 			}
 			room->disableMouse();
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 					    "phil coerces", "The Minotaur is not getting any friendlier but he is getting closer. "
 					    "No time to waste"
 					    ), 0, 13007, Common::Point(0, 216));
@@ -318,8 +318,8 @@ public:
 				room->selectFrame(persistent->_gender == kMale ? "daedalus note text male"
 						  : "daedalus note text female", 799, 0);
 				room->playSpeech(persistent->_gender == kMale ?
-						 TranscribedSound("daedalus note vo male", "Dear hero, now that we've brought peace to the people of Crete, I've used the wings that I've built for myself and my son Icarus to escape. I'm forever grateful for your help. Your friend, Daedalus") :
-						 TranscribedSound("daedalus note vo female", "Dear heroine, now that we've brought peace to the people of Crete, I've used the wings that I've built for myself and my son Icarus to escape. I'm forever grateful for your help. Your friend, Daedalus. Au revoir. Salaam. Good bye."),
+						 TranscribedSound::make("daedalus note vo male", "Dear hero, now that we've brought peace to the people of Crete, I've used the wings that I've built for myself and my son Icarus to escape. I'm forever grateful for your help. Your friend, Daedalus") :
+						 TranscribedSound::make("daedalus note vo female", "Dear heroine, now that we've brought peace to the people of Crete, I've used the wings that I've built for myself and my son Icarus to escape. I'm forever grateful for your help. Your friend, Daedalus. Au revoir. Salaam. Good bye."),
 						 13004);
 			}
 		}
@@ -334,7 +334,7 @@ public:
 			persistent->_creteShowAtlantisBoat = true;
 			persistent->_creteIntroAtlantisWood = true;
 			persistent->_troyPlayAttack = true;
-			playDaedalusVideo(TranscribedSound(
+			playDaedalusVideo(TranscribedSound::make(
 					      "daedalus intro 1",
 					      // unclear
 					      "That Minotaur, what a monster. He's leaving dead bodies everywhere. "

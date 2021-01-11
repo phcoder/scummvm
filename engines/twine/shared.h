@@ -27,6 +27,17 @@
 
 namespace TwinE {
 
+struct Vec3 {
+	int32 x = 0;
+	int32 y = 0;
+	int32 z = 0;
+};
+
+struct BoundingBox {
+	Vec3 mins;
+	Vec3 maxs;
+};
+
 struct ActorBoundingBox {
 	/** Bottom left X coordinate */
 	int16 bottomLeftX = 0;
@@ -160,13 +171,21 @@ enum class ExtraSpecialType {
 };
 
 #define ANGLE_360 1024
+#define ANGLE_351 1000
+#define ANGLE_334 950
+#define ANGLE_315 896
 #define ANGLE_270 768
+#define ANGLE_225 640
+#define ANGLE_210 600
 #define ANGLE_180 512
+#define ANGLE_140 400
 #define ANGLE_135 384
 #define ANGLE_90 256
 #define ANGLE_70 200
 #define ANGLE_63 180
 #define ANGLE_45 128
+#define ANGLE_17 50
+#define ANGLE_1 5 // 1.75
 #define ANGLE_0 0
 
 inline int32 NormalizeAngle(int32 angle) {
@@ -200,6 +219,11 @@ inline constexpr double AngleToRadians(int32 angle) {
 
 inline constexpr int32 ClampAngle(int32 angle) {
 	return angle & (ANGLE_360 - 1);
+}
+
+template<typename T>
+inline constexpr T bits(T value, uint8 offset, uint8 bits) {
+	return (((1 << bits) - 1) & (value >> offset));
 }
 
 }

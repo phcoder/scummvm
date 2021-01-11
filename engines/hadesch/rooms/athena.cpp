@@ -87,7 +87,7 @@ public:
 				    && _playAreYouForgetting) {
 					_playAreYouForgetting = false;
 					room->disableMouse();
-					room->playVideoSpeech(TranscribedSound(
+					room->playVideoSpeech(TranscribedSound::make(
 								      "c8020ba0",
 								      "Hey, aren't you forgetting something?"), 0,
 							kPhilForgettingEnd,
@@ -107,7 +107,7 @@ public:
 					   && persistent->_hintsAreEnabled) {
 					_playAthenaTempleHardware = false;
 					room->disableMouse();
-					room->playVideoSpeech(TranscribedSound(
+					room->playVideoSpeech(TranscribedSound::make(
 								"c8160ba0", "Hey, you don't want to face Medusa with just your looks. "
 								"You're going to need some hardware, pal"
 								), 0,
@@ -124,14 +124,14 @@ public:
 			Common::Array<TranscribedSound> videos;
 			if (quest == kMedusaQuest && !persistent->_athenaPuzzleSolved) {
 				videos.push_back(persistent->_gender == kMale
-						 ? TranscribedSound("c8060wa0", "I assure you that the items you need for are here. "
+						 ? TranscribedSound::make("c8060wa0", "I assure you that the items you need for are here. "
 							 "Don't give up. Never give up. A true hero can do it")
-						 : TranscribedSound("c8060wb0", "I assure you that the items you need for are here. "
+						 : TranscribedSound::make("c8060wb0", "I assure you that the items you need for are here. "
 							 "Don't give up. A true heroine can do it. And you're a true heroine"));
 			} else {
-				videos.push_back(TranscribedSound(
+				videos.push_back(TranscribedSound::make(
 							 "c8060wc0", "I'm Athena, the goddess of wisdom, crafts and warfare"));
-				videos.push_back(TranscribedSound(
+				videos.push_back(TranscribedSound::make(
 							 "c8060wd0", "I was born from the head of my father Zeus. "
 							 "Full grown and in full armor"));
 			}
@@ -155,7 +155,7 @@ public:
 			room->stopAnim("c8130bf0");
 			room->disableHotzone("Sword");
 			room->disableMouse();
-			room->playSpeech(TranscribedSound(
+			room->playSpeech(TranscribedSound::make(
 					     "c8140wa0",
 					     "The magic sword will never leave Perseus' hand, "
 					     "so he can successfully cut off Medusa's head"),
@@ -169,7 +169,7 @@ public:
 			room->stopAnim("c8130be0");
 			room->disableHotzone("Shield");
 			room->disableMouse();
-			room->playSpeech(TranscribedSound(
+			room->playSpeech(TranscribedSound::make(
 					     "c8150wa0",
 					     "Medusa can only turn Perseus to stone if he looks directly at her. "
 					     "He'll use this shield to block her gaze"),
@@ -180,7 +180,7 @@ public:
 		if (name == "Athena's Sword") {
 			room->disableMouse();
 			room->playAnimLoop("c8010oc0", 2101);
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						  "c8080wa0",
 						  "This is my sword. If you want one just like it, "
 						  "you will have to proof yourself worthy by solving this puzzle"), 0, 23043);
@@ -191,7 +191,7 @@ public:
 		if (name == "Athena's Shield") {
 			room->disableMouse();
 			room->playAnimLoop("c8010ob0", 2101);
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						  "c8070wa0",
 						  "This is my trusty shield. If you want one of your own, "
 						  "you will have to earn it by solving this puzzle"), 0, 23044);
@@ -232,7 +232,7 @@ public:
 		case 23010:
 			if (persistent->_hintsAreEnabled && room->isMouseEnabled()) {
 				room->disableMouse();
-				room->playVideoSpeech(TranscribedSound("c8170ba0",
+				room->playVideoSpeech(TranscribedSound::make("c8170ba0",
 								       "Click on the statues to change the direction of the lightbeam"),
 						      0, 23011, Common::Point(0, 216));
 			}
@@ -263,18 +263,18 @@ public:
 			room->addStaticLayer("c8180pa0", 9000);
 			room->playSFX("g0261ma0", 23031);
 			room->playSpeech(persistent->_gender == kMale
-					? TranscribedSound(
+					? TranscribedSound::make(
 					    "c8180wa0",
 					    "Oh no. Why did I shine that light in Athena's temple. "
 					    "I was just trying to see what the hero was doing")
-					 : TranscribedSound(
+					 : TranscribedSound::make(
 					     "c8180wb0",
 					     "Oh no. Why did I shine that light in Athena's temple. "
 					     "I was just trying to see what the heroine was doing"),
 					 23029);
 			break;
 		case 23029:
-			room->playSpeech(TranscribedSound("c8180wc0", "Well now you can see what I'm doing: tomato heads"), 23030);
+			room->playSpeech(TranscribedSound::make("c8180wc0", "Well now you can see what I'm doing: tomato heads"), 23030);
 			break;
 		case 23030:
 			room->playVideoSFX("c8180ba0", 0, 23032);
@@ -338,11 +338,11 @@ public:
 			persistent->_athenaIntroPlayed = true;
 			room->disableMouse();
 			room->playVideoSpeech(persistent->_gender == kMale
-					      ? TranscribedSound("c8040wa0", "Welcome, great hero. "
+					      ? TranscribedSound::make("c8040wa0", "Welcome, great hero. "
 								 "You and Perseus must slay the Gorgon Medusa. "
 								 "I have the weapons neeeded to battle this creature hidden in my temple. "
 								 "Only the wisest will find them")
-					      : TranscribedSound("c8040wb0", "Welcome, great heroine. "
+					      : TranscribedSound::make("c8040wb0", "Welcome, great heroine. "
 								 "You and Perseus must slay the Gorgon Medusa. "
 								 "I have the weapons neeeded to battle this creature hidden in my temple. "
 								 "Only the wisest will find them"),

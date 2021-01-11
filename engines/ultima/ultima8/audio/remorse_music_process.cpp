@@ -20,13 +20,8 @@
  *
  */
 
-#include "ultima/ultima8/misc/pent_include.h"
 #include "ultima/ultima8/ultima8.h"
 #include "ultima/ultima8/audio/remorse_music_process.h"
-#include "ultima/ultima8/games/game_data.h"
-#include "ultima/ultima8/audio/music_flex.h"
-#include "ultima/ultima8/audio/midi_player.h"
-#include "ultima/ultima8/audio/audio_mixer.h"
 #include "ultima/ultima8/filesys/file_system.h"
 #include "audio/mods/mod_xm_s3m.h"
 
@@ -108,7 +103,7 @@ void RemorseMusicProcess::playMusic(int track) {
 }
 
 void RemorseMusicProcess::playCombatMusic(int track) {
-	playMusic_internal(track);
+	// Only U8 has combat music.. ignore it.
 }
 
 void RemorseMusicProcess::queueMusic(int track) {
@@ -149,7 +144,7 @@ void RemorseMusicProcess::playMusic_internal(int track) {
 	Audio::Mixer *mixer = Ultima8Engine::get_instance()->_mixer;
 	assert(mixer);
 
-	if (track == _currentTrack && mixer->isSoundHandleActive(_soundHandle))
+	if (track == _currentTrack && (track == 0 || mixer->isSoundHandleActive(_soundHandle)))
 		// Already playing what we want.
 		return;
 

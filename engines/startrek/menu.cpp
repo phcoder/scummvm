@@ -446,7 +446,7 @@ int StarTrekEngine::showActionMenu() {
 		}
 	}
 
-	_sound->playSoundEffectIndex(SND_SELECTION);
+	_sound->playSoundEffectIndex(kSfxSelection);
 
 	menuSprite.dontDrawNextFrame();
 	_gfx->drawAllSprites();
@@ -584,19 +584,21 @@ void StarTrekEngine::enableMenuButtons(uint32 bits) {
 
 int StarTrekEngine::leftClickEvent() {
 	if (_activeMenu->selectedButton != -1) {
-		_sound->playSoundEffectIndex(SND_SELECTION);
+		_sound->playSoundEffectIndex(kSfxSelection);
 		return _activeMenu->retvals[_activeMenu->selectedButton];
 	} else {
 		Common::Point mouse = _gfx->getMousePos();
 		if (getMenuButtonAt(_activeMenu->sprites, _activeMenu->numButtons, mouse.x, mouse.y) == -1) {
-			_sound->playSoundEffectIndex(SND_SELECTION);
+			_sound->playSoundEffectIndex(kSfxSelection);
 			return MENUEVENT_LCLICK_OFFBUTTON;
 		}
 	}
+
+	return MENUEVENT_LCLICK_OFFBUTTON;
 }
 
 int StarTrekEngine::rightClickEvent() {
-	_sound->playSoundEffectIndex(SND_SELECTION);
+	_sound->playSoundEffectIndex(kSfxSelection);
 	if (_activeMenu->selectedButton == -1)
 		return MENUEVENT_RCLICK_OFFBUTTON;
 	else
@@ -718,13 +720,13 @@ int StarTrekEngine::handleMenuEvents(uint32 ticksUntilClickingEnabled, bool inTe
 					case Common::KEYCODE_RETURN:
 					case Common::KEYCODE_KP_ENTER:
 					case Common::KEYCODE_F1:
-						_sound->playSoundEffectIndex(SND_SELECTION);
+						_sound->playSoundEffectIndex(kSfxSelection);
 						return TEXTBUTTON_CONFIRM;
 
 					case Common::KEYCODE_SPACE:
 						if (!(_activeMenu->disabledButtons & (1 << TEXTBUTTON_NEXTCHOICE))
 						        && _activeMenu->sprites[TEXTBUTTON_NEXTCHOICE].drawMode == 2) {
-							_sound->playSoundEffectIndex(SND_SELECTION);
+							_sound->playSoundEffectIndex(kSfxSelection);
 							return TEXTBUTTON_NEXTCHOICE;
 						}
 						break;
@@ -733,7 +735,7 @@ int StarTrekEngine::handleMenuEvents(uint32 ticksUntilClickingEnabled, bool inTe
 					case Common::KEYCODE_KP7:
 						if (!(_activeMenu->disabledButtons & (1 << TEXTBUTTON_SCROLLUP))
 						        && _activeMenu->sprites[TEXTBUTTON_SCROLLUP].drawMode == 2) {
-							_sound->playSoundEffectIndex(SND_SELECTION);
+							_sound->playSoundEffectIndex(kSfxSelection);
 							return TEXTBUTTON_GOTO_TOP;
 						}
 						break;
@@ -742,7 +744,7 @@ int StarTrekEngine::handleMenuEvents(uint32 ticksUntilClickingEnabled, bool inTe
 					case Common::KEYCODE_KP8:
 						if (!(_activeMenu->disabledButtons & (1 << TEXTBUTTON_SCROLLUP))
 						        && _activeMenu->sprites[TEXTBUTTON_SCROLLUP].drawMode == 2) {
-							_sound->playSoundEffectIndex(SND_SELECTION);
+							_sound->playSoundEffectIndex(kSfxSelection);
 							return TEXTBUTTON_SCROLLUP_ONELINE;
 						}
 						break;
@@ -751,7 +753,7 @@ int StarTrekEngine::handleMenuEvents(uint32 ticksUntilClickingEnabled, bool inTe
 					case Common::KEYCODE_KP9:
 						if (!(_activeMenu->disabledButtons & (1 << TEXTBUTTON_SCROLLUP))
 						        && _activeMenu->sprites[TEXTBUTTON_SCROLLUP].drawMode == 2) {
-							_sound->playSoundEffectIndex(SND_SELECTION);
+							_sound->playSoundEffectIndex(kSfxSelection);
 							return TEXTBUTTON_SCROLLUP;
 						}
 						break;
@@ -760,7 +762,7 @@ int StarTrekEngine::handleMenuEvents(uint32 ticksUntilClickingEnabled, bool inTe
 					case Common::KEYCODE_KP4:
 						if (!(_activeMenu->disabledButtons & (1 << TEXTBUTTON_PREVCHOICE))
 						        && _activeMenu->sprites[TEXTBUTTON_PREVCHOICE].drawMode == 2) {
-							_sound->playSoundEffectIndex(SND_SELECTION);
+							_sound->playSoundEffectIndex(kSfxSelection);
 							return TEXTBUTTON_PREVCHOICE;
 						}
 						break;
@@ -769,7 +771,7 @@ int StarTrekEngine::handleMenuEvents(uint32 ticksUntilClickingEnabled, bool inTe
 					case Common::KEYCODE_KP6:
 						if (!(_activeMenu->disabledButtons & (1 << TEXTBUTTON_NEXTCHOICE))
 						        && _activeMenu->sprites[TEXTBUTTON_NEXTCHOICE].drawMode == 2) {
-							_sound->playSoundEffectIndex(SND_SELECTION);
+							_sound->playSoundEffectIndex(kSfxSelection);
 							return TEXTBUTTON_NEXTCHOICE;
 						}
 						break;
@@ -778,7 +780,7 @@ int StarTrekEngine::handleMenuEvents(uint32 ticksUntilClickingEnabled, bool inTe
 					case Common::KEYCODE_KP1:
 						if (!(_activeMenu->disabledButtons & (1 << TEXTBUTTON_SCROLLDOWN))
 						        && _activeMenu->sprites[TEXTBUTTON_SCROLLDOWN].drawMode == 2) {
-							_sound->playSoundEffectIndex(SND_SELECTION);
+							_sound->playSoundEffectIndex(kSfxSelection);
 							return TEXTBUTTON_GOTO_BOTTOM;
 						}
 						break;
@@ -787,7 +789,7 @@ int StarTrekEngine::handleMenuEvents(uint32 ticksUntilClickingEnabled, bool inTe
 					case Common::KEYCODE_KP2:
 						if (!(_activeMenu->disabledButtons & (1 << TEXTBUTTON_SCROLLDOWN))
 						        && _activeMenu->sprites[TEXTBUTTON_SCROLLDOWN].drawMode == 2) {
-							_sound->playSoundEffectIndex(SND_SELECTION);
+							_sound->playSoundEffectIndex(kSfxSelection);
 							return TEXTBUTTON_SCROLLDOWN_ONELINE;
 						}
 						break;
@@ -796,7 +798,7 @@ int StarTrekEngine::handleMenuEvents(uint32 ticksUntilClickingEnabled, bool inTe
 					case Common::KEYCODE_KP3:
 						if (!(_activeMenu->disabledButtons & (1 << TEXTBUTTON_SCROLLDOWN))
 						        && _activeMenu->sprites[TEXTBUTTON_SCROLLDOWN].drawMode == 2) {
-							_sound->playSoundEffectIndex(SND_SELECTION);
+							_sound->playSoundEffectIndex(kSfxSelection);
 							return TEXTBUTTON_SCROLLDOWN;
 						}
 						break;
@@ -1057,7 +1059,7 @@ void StarTrekEngine::showRepublicMap(int16 arg0, int16 turbolift) {
 	bool spriteLoaded = false;
 	int16 clickedArea = 0;
 
-	actorFunc1();
+	removeDrawnActorsFromScreen();
 	_gfx->pushSprites();
 
 	if (!_awayMission.veng.showedRepublicMapFirstTime) {

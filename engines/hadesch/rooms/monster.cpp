@@ -50,8 +50,8 @@ static const TranscribedSound kSneakPastCyclops = {
 
 TranscribedSound revitalisedSound() {
 	return g_vm->getRnd().getRandomBit()
-		? TranscribedSound("v7150wd0", "Your branch of life is revitalized")
-		: TranscribedSound("v7150we0", "You're back to full strength");
+		? TranscribedSound::make("v7150wd0", "Your branch of life is revitalized")
+		: TranscribedSound::make("v7150we0", "You're back to full strength");
 }
 
 class MonsterHandler : public Handler {
@@ -99,7 +99,7 @@ public:
 						15379); // 15379(anim), 15381(-1), 15359(sound)
 			break;
 		case 15352:
-			room->playVideoSpeech(TranscribedSound("V7190BA0", "That's way to go, kid. You're awesome"),
+			room->playVideoSpeech(TranscribedSound::make("V7190BA0", "That's way to go, kid. You're awesome"),
 					      0, 15386, Common::Point(0, 216));
 			break;
 		case 15353:
@@ -108,7 +108,7 @@ public:
 				       15358);
 			break;
 		case 15355:
-			room->playSpeech(TranscribedSound("V7100WC0",
+			room->playSpeech(TranscribedSound::make("V7100WC0",
 							  "I'm giving you these thunderbolts to "
 							  "use against Hades' monsters."),
 					 15364);
@@ -120,8 +120,8 @@ public:
 			break;
 		case 15357:
 			room->playSpeech(g_vm->getRnd().getRandomBit()
-					 ? TranscribedSound("V7150WC0", "Get back in there. Here is another branch")
-					 : TranscribedSound("V7150WB0", "Here's another branch. Keep going"),
+					 ? TranscribedSound::make("V7150WC0", "Get back in there. Here is another branch")
+					 : TranscribedSound::make("V7150WB0", "Here's another branch. Keep going"),
 					 15353);
 			break;
 		case 15358:
@@ -144,7 +144,7 @@ public:
 			g_vm->addTimer(15391, 100);
 			break;
 		case 15364:
-			room->playSpeech(TranscribedSound(
+			room->playSpeech(TranscribedSound::make(
 					     "V7100WD0",
 					     "Ah, and this branch of life will let "
 					     "you to remain in the underworld until "
@@ -155,7 +155,7 @@ public:
 			g_vm->addTimer(524, 5000);
 			break;
 		case 15365:
-			room->playSpeech(TranscribedSound(
+			room->playSpeech(TranscribedSound::make(
 						 "V7100WE0",
 						 "Use your thunderbolts and your hero powers "
 						 "to battle the monsters of the underworld"), 15366);
@@ -163,14 +163,14 @@ public:
 			introLightning();
 			break;
 		case 15366:
-			room->playSpeech(TranscribedSound(
+			room->playSpeech(TranscribedSound::make(
 						 "V7100WF0",
 						 "Move your mouse to aim and click to fire your thunderbolts. "
 						 "And don't forget: you can now use your hero powers"),
 					 15367);
 			break;
 		case 15367:
-			room->playSpeech(TranscribedSound(
+			room->playSpeech(TranscribedSound::make(
 						 "V7100WH0",
 						 "And remember to keep an eye on your branch. "
 						 "When the last leaf drops, you'll be "
@@ -178,7 +178,7 @@ public:
 					 15368);
 			break;
 		case 15368:
-			room->playSpeech(TranscribedSound(
+			room->playSpeech(TranscribedSound::make(
 						 "V7100WI0",
 						 "This is the ultimate test but I know you can do it"),
 					 15369);
@@ -239,12 +239,12 @@ public:
 			// unclear
 			room->playSpeech(
 				persistent->_gender == kMale
-				? TranscribedSound(
+				? TranscribedSound::make(
 					"V7190WB0",
 					"One more word out of your goat-brain "
 					"and I'm gonna have your face for lambchops, alright? "
 					"This kid's gonna have to make it on his own, ok?")
-				: TranscribedSound(
+				: TranscribedSound::make(
 					"V7190WC0",
 					"One more word out of your goat-brain "
 					"and I'm gonna have your face for lambchops, ok? "
@@ -254,13 +254,13 @@ public:
 		case 15387:
 			room->playSpeech(
 				persistent->_gender == kMale
-				? TranscribedSound(
+				? TranscribedSound::make(
 					"V7210WB0",
 					"Oh, you want to be a hero? "
 					"Well you're gonna die a hero's death. "
 					"Typhoon's gonna chew you up in little "
 					"pieces and spit you out like a meatgrinder, kid")
-				: TranscribedSound(
+				: TranscribedSound::make(
 					"V7210WC0",
 					"Oh, you want to be a heroine? "
 					"Well you're gonna die a gruesome death. "
@@ -269,7 +269,7 @@ public:
 				15378);
 			break;
 		case 15388:
-			room->playSpeech(TranscribedSound(
+			room->playSpeech(TranscribedSound::make(
 						 "V7220WB1",
 						 "You dare to think you can outwit me? "
 						 "You, my little friend, will be ripped to shreads and slowly digested for eternity "
@@ -279,7 +279,7 @@ public:
 			break;
 		case 15389:
 			// unclear
-			room->playSpeech(TranscribedSound(
+			room->playSpeech(TranscribedSound::make(
 						 "V7180WB0",
 						 "Hey, there. Hi, there. Hoi, there. "
 						 "And welcome to my world. "

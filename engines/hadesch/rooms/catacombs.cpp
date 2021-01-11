@@ -203,13 +203,13 @@ public:
 			break;
 		}
 		case 22009:
-			room->playVideoSpeech(TranscribedSound("PhilQuickNameThatTune",
+			room->playVideoSpeech(TranscribedSound::make("PhilQuickNameThatTune",
 							       "Well, kid, name that melody. "
 							       "And make it quick. This place sounds like it's "
 							       "gonna collapse"), 0);
 			break;			
 		case 22012:
-			room->playVideoSpeech(TranscribedSound("PhilWowLowOnTroops",
+			room->playVideoSpeech(TranscribedSound::make("PhilWowLowOnTroops",
 							       "Don't you hear that? Battle is on. "
 							       "Odysseus is already low on troups"), 0);
 			break;
@@ -217,7 +217,7 @@ public:
 			room->playSFX("SndGuardTrapDoorOpen", 22017);
 			break;
 		case 22017:
-			room->playSpeech(TranscribedSound("SndGuardLaugh", "[laughter]"), 22018);
+			room->playSpeech(TranscribedSound::make("SndGuardLaugh", "[laughter]"), 22018);
 			break;
 		case 22018:
 			room->playSpeech(
@@ -421,7 +421,7 @@ private:
 
 		if (level == 0 && !_philWarnedTorch && !persistent->isInInventory(kTorch) && persistent->_hintsAreEnabled) {
 			_philWarnedTorch = true;
-			room->playVideoSpeech(TranscribedSound("PhilGrabTheTorch", "Grab the torch"), 0, 22003);
+			room->playVideoSpeech(TranscribedSound::make("PhilGrabTheTorch", "Grab the torch"), 0, 22003);
 			return;
 		}
 

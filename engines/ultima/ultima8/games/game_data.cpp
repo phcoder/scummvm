@@ -24,8 +24,6 @@
 #include "ultima/ultima8/misc/util.h"
 #include "ultima/ultima8/games/game_data.h"
 #include "ultima/ultima8/filesys/file_system.h"
-#include "ultima/ultima8/filesys/raw_archive.h"
-#include "ultima/ultima8/filesys/idata_source.h"
 #include "ultima/ultima8/usecode/usecode_flex.h"
 #include "ultima/ultima8/graphics/main_shape_archive.h"
 #include "ultima/ultima8/graphics/fonts/font_shape_archive.h"
@@ -37,14 +35,12 @@
 #include "ultima/ultima8/graphics/palette_manager.h"
 #include "ultima/ultima8/graphics/shape.h"
 #include "ultima/ultima8/graphics/wpn_ovlay_dat.h"
-#include "ultima/ultima8/kernel/core_app.h"
-#include "ultima/ultima8/conf/config_file_manager.h"
 #include "ultima/ultima8/graphics/fonts/font_manager.h"
 #include "ultima/ultima8/games/game_info.h"
+#include "ultima/ultima8/gumps/weasel_dat.h"
 #include "ultima/ultima8/conf/setting_manager.h"
 #include "ultima/ultima8/convert/crusader/convert_shape_crusader.h"
 #include "ultima/ultima8/audio/music_flex.h"
-#include "ultima/ultima8/audio/sound_flex.h"
 #include "ultima/ultima8/audio/speech_flex.h"
 
 namespace Ultima {
@@ -504,6 +500,13 @@ const CombatDat *GameData::getCombatDat(uint16 entry) const {
 	return nullptr;
 }
 
+const WeaselDat *GameData::getWeaselDat(uint16 entry) const {
+	if (entry < _weaselData.size()) {
+		return _weaselData[entry];
+	}
+	return nullptr;
+}
+
 const FireType *GameData::getFireType(uint16 type) const {
 	return FireTypeTable::get(type);
 }
@@ -671,6 +674,10 @@ void GameData::loadRemorseData() {
 	// 14 blocks of 323 bytes, references like W01 and I07
 	// (presumably weapon and inventory)
 	// shop data?
+	while (!stuffds->eos()) {
+		WeaselDat *data = new WeaselDat(stuffds);
+		_weaselData.push_back(data);
+	}
 
 	delete stuffds;
 

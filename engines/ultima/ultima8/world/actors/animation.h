@@ -112,8 +112,8 @@ enum Sequence {
 	halfStep = 37,
 	startRun = 38,
 	stopRunningAndDrawWeapon = 39,
-	kneelStart = 40,
-	kneelEnd = 41,
+	kneelStartCru = 40,
+	kneelEndCru = 41,
 	kneelAndFireSmallWeapon = 42,
 	kneelAndFireLargeWeapon = 43,
 	advanceWithLargeWeapon = 44,
@@ -136,8 +136,10 @@ enum Sequence {
 	slowCombatRollLeft = 61,
 	slowCombatRollRight = 62,
 	finishFiring = 63,
-	teleportInReplacement = 0x1020,	//!< See notes in Actor::receiveHitCru
-	teleportOutReplacement = 0x1021	//!< See notes in Actor::receiveHitCru
+
+	crusaderAbsoluteAnimFlag = 0x1000, //!< Bit mask magic to say we want an exact number, don't do mapping from U8 animation numbers
+	teleportInReplacement = crusaderAbsoluteAnimFlag | teleportIn,	//!< See notes in Actor::receiveHitCru
+	teleportOutReplacement = crusaderAbsoluteAnimFlag | teleportOut	//!< See notes in Actor::receiveHitCru
 };
 
 enum Result {
@@ -147,6 +149,8 @@ enum Result {
 };
 
 bool isCombatAnim(const Sequence anim);
+bool isCombatAnimU8(const Sequence anim);
+bool isCombatAnimCru(const Sequence anim);
 Sequence checkWeapon(const Sequence nextanim, const Sequence lastanim);
 
 } // End of namespace Animation

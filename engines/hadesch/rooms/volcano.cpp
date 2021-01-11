@@ -129,7 +129,7 @@ public:
 			    && persistent->_hintsAreEnabled) {
 				persistent->_volcanoHeyKid = true;
 				// unclear
-				room->playVideoSpeech(TranscribedSound("eye of fates hey kid",
+				room->playVideoSpeech(TranscribedSound::make("eye of fates hey kid",
 								       "Hey, kid. Are you thinking what I'm thinking? "
 								       "Push that boulder, quick"),
 						0, 16011, Common::Point(0, 216));
@@ -147,7 +147,7 @@ public:
 			break;
 		case 16024:
 			if (persistent->_hintsAreEnabled)
-				room->playVideoSpeech(TranscribedSound("eye of fates on ta something",
+				room->playVideoSpeech(TranscribedSound::make("eye of fates on ta something",
 								       "You seem to be onto something with that boulder trick. "
 								       "Give it another try"), 0, 16011, Common::Point(0, 216));
 			else
@@ -194,7 +194,7 @@ public:
 		room->enableHotzone("argo");
 		if (quest == kMedusaQuest && persistent->_medisleShowFates && !persistent->_volcanoPainAndPanicIntroDone) {
 			persistent->_volcanoPainAndPanicIntroDone = true;
-			room->playVideoSpeech(TranscribedSound("pain and panic intro movie",
+			room->playVideoSpeech(TranscribedSound::make("pain and panic intro movie",
 							       "Sorry, pal. This aren't the spot. "
 							       "Volcano's here but the helmet is not"),
 					425, 16016, Common::Point(422, 165));
@@ -202,7 +202,7 @@ public:
 
 		if (quest < kMedusaQuest) {
 			if (!persistent->isRoomVisited(kVolcanoRoom)) {
-				room->playVideoSpeech(TranscribedSound("eye of fates we're rich", "Do you see what I see? "
+				room->playVideoSpeech(TranscribedSound::make("eye of fates we're rich", "Do you see what I see? "
 								       "We're gonna be rich. Eureka"),
 						      0, 16010, Common::Point(0, 216));
 			}

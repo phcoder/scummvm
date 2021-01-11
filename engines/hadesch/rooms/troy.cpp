@@ -105,7 +105,7 @@ public:
 		if (name == "Argo") {
 			if (quest == kTroyQuest && !_philWarnedFishing) {
 				room->disableMouse();
-				room->playVideoSpeech(TranscribedSound(
+				room->playVideoSpeech(TranscribedSound::make(
 							      "t1030ba0", "Kid, this is no time for fishing. "
 							      "You've got to warn Helen"),
 						      0, 10015, Common::Point(0, 216));
@@ -148,22 +148,22 @@ public:
 
 		if (name == "Hera's Statue") {
 			Common::Array<TranscribedSound> videos;
-			videos.push_back(TranscribedSound(
+			videos.push_back(TranscribedSound::make(
 						 "t2300na0",
 						 "I'm Hera, the most powerful goddess on mount Olympus and wife of Zeus. "
 						 "My favourite bird is the peacock"));
 			if (quest > kTroyQuest || (quest == kTroyQuest && persistent->_troyIsDefeated)) {
-				videos.push_back(TranscribedSound(
+				videos.push_back(TranscribedSound::make(
 							 "t2320na0", "You have helped the Greeks to victory and "
 							 "reunited Helen with her husband Meneleas. I wholeheartedly thank you"));
 			} else if (quest == kTroyQuest) {
-				videos.push_back(TranscribedSound("t2310na0", "The trojan prince, Paris, kidnapped Helen from Greece "
+				videos.push_back(TranscribedSound::make("t2310na0", "The trojan prince, Paris, kidnapped Helen from Greece "
 								  "ten years ago. The Greeks have been fighting trying to get her back ever since. "
 								  "As a goddess of marriage I must see to it that Helen and her husband Meneleas "
 								  "are reunited"));
-				videos.push_back(TranscribedSound("t2310nb0", "I do help the Greeks win the war. To help the Greeks my "
+				videos.push_back(TranscribedSound::make("t2310nb0", "I do help the Greeks win the war. To help the Greeks my "
 								  "son Hephaestus made Hercules a powerful shield"));
-				videos.push_back(TranscribedSound("t2310nc0", "Do be careful, there are traps awaiting you in the catacombs. "
+				videos.push_back(TranscribedSound::make("t2310nc0", "Do be careful, there are traps awaiting you in the catacombs. "
 								  "You must choose wisely"));
 			}
 
@@ -178,10 +178,10 @@ public:
 
 		if (name == "Background2") {
 			if (_philUseSecondInsistance)
-				room->playVideoSpeech(TranscribedSound("t2140bi0", "Kid, trust me: take the note"),
+				room->playVideoSpeech(TranscribedSound::make("t2140bi0", "Kid, trust me: take the note"),
 						      0, 10072, Common::Point(640, 216));
 			else
-				room->playVideoSpeech(TranscribedSound("t2150bc0", "Put the note in your belt so we can get going"),
+				room->playVideoSpeech(TranscribedSound::make("t2150bc0", "Put the note in your belt so we can get going"),
 						      0, 10071, Common::Point(640, 216));
 			_philUseSecondInsistance = true;
 			room->disableMouse();
@@ -329,7 +329,7 @@ public:
 			if (quest == kCreteQuest) {
 				room->disableMouse();
 				// unclear
-				room->playVideoSpeech(TranscribedSound("t1280ba0", "This place gives me the creeps. "
+				room->playVideoSpeech(TranscribedSound::make("t1280ba0", "This place gives me the creeps. "
 								       "Better we get the heck out of there"),
 						      0, 10017, Common::Point(0, 217));
 				return;
@@ -343,7 +343,7 @@ public:
 			}
 
 			if (quest > kTroyQuest) {
-				room->playVideoSpeech(TranscribedSound("T1280BD0", "Hey, don't you remember? The catacombs caved in. "
+				room->playVideoSpeech(TranscribedSound::make("T1280BD0", "Hey, don't you remember? The catacombs caved in. "
 								       "You can't get in that way now"),
 						      0, 10016, Common::Point(0, 216));
 				return;
@@ -464,7 +464,7 @@ public:
 			break;
 		case 10045:
 			hideOdysseus();
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						      "t2140ba0", "I'm Odysseus and we're about to invade the city of Troy. "
 						      "I need you to sneak into the city and deliver this message to Helen warning "
 						      "her about our plans"),
@@ -482,7 +482,7 @@ public:
 		case 10047:
 			if (room->isMouseEnabled()) {
 				room->stopAnim(kOdysseusWithMessage);
-				room->playVideoSpeech(TranscribedSound("t2140bc0", "I haven't got all day. Take the message and move out"),
+				room->playVideoSpeech(TranscribedSound::make("t2140bc0", "I haven't got all day. Take the message and move out"),
 						      kOdysseusZ, 10048, Common::Point(650, 17));
 			} 
 			break;
@@ -492,7 +492,7 @@ public:
 		case 10049:
 			room->enableHotzone("Scroll PopUp");
 			room->enableHotzone("Background2");
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						      "t2150xb0", "Helen, we plan to rescue you soon. "
 						      "Greek soldiers will be hidden in a giant wooden horse "
 						      "that will be rolled into the city. When you receive this "
@@ -511,7 +511,7 @@ public:
 			break;
 		case 10055:
 			hideOdysseus();
-			room->playVideoSpeech(TranscribedSound("T2340BB0", "You did it. Well done. "
+			room->playVideoSpeech(TranscribedSound::make("T2340BB0", "You did it. Well done. "
 							       "There will be time to celebrate after this war is won. "
 							       "But right now you must help me to load the trojan horse"),
 					      kOdysseusZ, 10056, Common::Point(649, 18));
@@ -528,7 +528,7 @@ public:
 			break;
 		case 10057:
 			room->playSpeech(
-				TranscribedSound("T2240wA0", "Official orders from king Priam: messenger is granted permissions to leave the city walls"), 10058);
+				TranscribedSound::make("T2240wA0", "Official orders from king Priam: messenger is granted permissions to leave the city walls"), 10058);
 			break;
 		case 10058:
 			room->enableMouse();
@@ -558,7 +558,7 @@ public:
 			break;
 		case 10069:
 			// TODO: check this
-			room->playVideoSpeech(TranscribedSound("T1270BA0", "Nice job, kid. But no time to hang out. "
+			room->playVideoSpeech(TranscribedSound::make("T1270BA0", "Nice job, kid. But no time to hang out. "
 							       "That Minotaur has got the people of Crete dropping like flies. "
 							       "We've got to get back"),
 					0, 10070, Common::Point(0, 216));
@@ -758,7 +758,7 @@ public:
 		if (persistent->_previousRoomId == kPriamRoom
 		    && !persistent->_troyMessageIsDelivered
 		    && quest == kTroyQuest) {
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						      "t1290bc0",
 						      "What are you doing here? You've got to get that message to Helen. "
 						      "You have to go back to the catacombs, pal"), 0, 10018,
@@ -780,7 +780,7 @@ public:
 			room->disableMouse();
 			_horseCounter = 2;
 			room->playMusic("T1350mA0", kHorseCounter);
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						  "t1350ba0",
 						  "We hid soldiers inside the trojan horse while rest of us pretended to leave. "
 						  "Late at night after the Trojans brought the horse inside the city walls the "
@@ -796,32 +796,32 @@ private:
 	TranscribedSound selectReturnFromCatacombs() const {
 		Persistent *persistent = g_vm->getPersistent();
 		if (persistent->_catacombLastLevel == 2) {
-			return TranscribedSound("t1310bg0", "Ouch, that's now what I can whack'n'roll. "
+			return TranscribedSound::make("t1310bg0", "Ouch, that's now what I can whack'n'roll. "
 						"You're gonna have hard time getting that tune out of your head. "
 						"You've almost made it, don't quit now");
 		}
 
 		switch (g_vm->getRnd().getRandomNumberRng(0, 4)) {
 		case 0:
-			return TranscribedSound("t1310ba0", "Hey, come on, kid. Don't let yourself get fooled by those two yo-yos. "
+			return TranscribedSound::make("t1310ba0", "Hey, come on, kid. Don't let yourself get fooled by those two yo-yos. "
 						"You're smarter than they are. So use your head. Now come on, get back in there");
 		case 1:
 			return persistent->_gender == kMale
-				? TranscribedSound("t1310bb0", "Ouch, bad break. But you can do it. "
+				? TranscribedSound::make("t1310bb0", "Ouch, bad break. But you can do it. "
 						   "You're a hero, right? And I'm your trainer. So try it again")
-				: TranscribedSound("t1310bc0", "Ouch, bad break. But you can do it. "
+				: TranscribedSound::make("t1310bc0", "Ouch, bad break. But you can do it. "
 						   "You're a heroine, right? And I'm your trainer. So try it again");
 		case 2:
-			return TranscribedSound("t1310bd0", "You're going to be ok, kid. Get back into fight and give them "
+			return TranscribedSound::make("t1310bd0", "You're going to be ok, kid. Get back into fight and give them "
 						"a dose of their own medecine");
 		case 3:
 			return persistent->_gender == kMale
-				? TranscribedSound("t1310be0", "Keep your eyes open, a hero's always gotta be on the lookout")
-				: TranscribedSound("t1310bf0", "Keep your eyes open, a heroine's always gotta be on the lookout");
+				? TranscribedSound::make("t1310be0", "Keep your eyes open, a hero's always gotta be on the lookout")
+				: TranscribedSound::make("t1310bf0", "Keep your eyes open, a heroine's always gotta be on the lookout");
 		case 4:
 		default:
 			// unclear
-			return TranscribedSound("t1310bh0", "Don't sweat it. If at first you don't succeed, get back in there and kick some");
+			return TranscribedSound::make("t1310bh0", "Don't sweat it. If at first you don't succeed, get back in there and kick some");
 		}
 	}
 	void showCatacombStones() const {

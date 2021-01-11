@@ -148,7 +148,7 @@ public:
 			    && persistent->_hintsAreEnabled) {
 				room->disableMouse();
 				persistent->_seriphosPhilWarnedAthena = true;
-				room->playVideoSpeech(TranscribedSound("c7300ba0", "Perseus wants you to get gifts from Athena, not see the rest "
+				room->playVideoSpeech(TranscribedSound::make("c7300ba0", "Perseus wants you to get gifts from Athena, not see the rest "
 								       "of the ancient world"),
 						0, 26022, Common::Point(0, 216));
 				return;
@@ -180,7 +180,7 @@ public:
 			room->disableMouse();
 			persistent->_seriphosPhilCurtainsItems = true;
 			// unclear
-			room->playVideoSpeech(TranscribedSound("c7370ba0", "Hey kid, let's get the wed out. "
+			room->playVideoSpeech(TranscribedSound::make("c7370ba0", "Hey kid, let's get the wed out. "
 							       "Perseus is over on Medusa Isle and if we don't rack, he's goingto be one"),
 					      0, 26023, Common::Point(0, 216));
 			return;
@@ -241,7 +241,7 @@ public:
 			break;
 		case 26009:
 			room->playMusic("c7290ma0", 26012);
-			room->playVideoSpeech(TranscribedSound("c7290ba0", "Perseus, as your king, I command you to kill "
+			room->playVideoSpeech(TranscribedSound::make("c7290ba0", "Perseus, as your king, I command you to kill "
 							       "the hideous gorgon Medusa. If you fail, I will enslave "
 							       "everyone in the kingdom and force your mother Demeia to marry me. "
 							       "Gee, no pressure. All right, your majesty, I'll take the job."),
@@ -251,7 +251,7 @@ public:
 			room->playSFX("c7160ea0", 26013);
 			break;
 		case 26013:
-			room->playVideoSpeech(TranscribedSound("c7290bd0", "I need your help. Athena hates Medusa and has some gifts "
+			room->playVideoSpeech(TranscribedSound::make("c7290bd0", "I need your help. Athena hates Medusa and has some gifts "
 							       "that I can use to destroy her. Go to the temple of Athena and then meet me "
 							       "at Medusa Isle"),
 					      111, 26014, Common::Point(92, 76));
@@ -261,7 +261,7 @@ public:
 			startIdles();
 			break;
 		case kStrawTaken:
-			room->playVideoSpeech(TranscribedSound("c7380ba0", "You know that Minotaur really loves people. "
+		    room->playVideoSpeech(TranscribedSound::make("c7380ba0", "You know that Minotaur really loves people. "
 							       "Especially with salt and pepper. Better get going"),
 					kPhilZ, kStrawTakenCleanup, Common::Point(0, 216));
 			break;

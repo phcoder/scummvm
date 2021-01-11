@@ -13,10 +13,17 @@ Programmcodes finden Sie auf Englisch unter:
    - Unterstützung für Little Big Adventure hinzugefügt.
    - Unterstützung für Red Comrades 1: Save the Galaxy hinzugefügt.
    - Unterstützung für Red Comrades 2: For the Great Justice hinzugefügt.
+   - Unterstützung für Transylvania hinzugefügt.
+   - Unterstützung für Crimson Crown hinzugefügt.
+   - Unterstützung für OO-Topos hinzugefügt.
+   - Unterstptzung für die Glulx interactive fiction-Spiele hinzugefügt.
 
  Allgemein:
    - Die ScummVM-Benutzeroberfläche unterstützt nun UTF-32.
    - Code der Roland MT-32-Emulation auf Munt 2.4.1 aktualisiert.
+
+ Dreamweb:
+   - Darstellungsfehler in der russischen Fan-Übersetzung behoben.
 
  Glk:
    - Probleme mit Spielständen in mehreren Sub-Engines behoben.
@@ -34,6 +41,7 @@ Programmcodes finden Sie auf Englisch unter:
 
  Kyra:
    - Unterstützung für die japanische Sega-CD-Version von Eye of the Beholder hinzugefügt.
+   - Unterstützung für die hebräische Fan-Übersetzung von Legend of Kyrandia hinzugefügt.
 
  Lure:
    - Die Feuer-Animation im ersten Raum wird nun auch nach dem Laden eines Spielstands abgespielt.
@@ -61,6 +69,8 @@ Programmcodes finden Sie auf Englisch unter:
    - Darstellung des Pause- und Neustart-Dialogs in der chinesischen, japanischen und koreanischen Version
      der Benutzeroberfläche korrigiert.
    - Unterstützung für zahlreiche koreanische Übersetzungen des scummkor-Projektes hinzugefügt.
+   - Unterstützung für die Russobit-M-Versionen von Pajama2 und SpyOzone hinzugefügt.
+   - Sprachausgabe in der Akella-Version von COMI korrigiert.
 
  Tinsel:
    - Unterstützung für die Rückkehr zur ScummVM-Benutzeroberfläche hinzugefügt.

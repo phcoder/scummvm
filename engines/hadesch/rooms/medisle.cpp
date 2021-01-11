@@ -351,7 +351,7 @@ public:
 						return;
 					}
 					persistent->_medislePlayedPhilFatesDesc = true;
-					room->playVideoSpeech(TranscribedSound(
+					room->playVideoSpeech(TranscribedSound::make(
 								      "m2210ba0",
 								      "House of the Fates. These three know all: "
 								      "past, present and future"), 0, 11049, Common::Point(640, 216));
@@ -362,25 +362,25 @@ public:
 
 				switch (quest) {
 				case kCreteQuest:
-					hints.push_back(TranscribedSound("m2220wa0", "The Minotaur's is where you need to be. Trapping him sets Daedalus free."));
-					hints.push_back(TranscribedSound("m2220wb0", "King Minos is the king of Crete. He's not the nicest man you meet."));
-					hints.push_back(TranscribedSound("m2220wc0", "The Minotaur is hard to beat. The one who's trying lives in Crete"));
+					hints.push_back(TranscribedSound::make("m2220wa0", "The Minotaur's is where you need to be. Trapping him sets Daedalus free."));
+					hints.push_back(TranscribedSound::make("m2220wb0", "King Minos is the king of Crete. He's not the nicest man you meet."));
+					hints.push_back(TranscribedSound::make("m2220wc0", "The Minotaur is hard to beat. The one who's trying lives in Crete"));
 					break;
 				case kTroyQuest:
-					hints.push_back(TranscribedSound("m2230wa0", "If Helen gets this note, our friend, the trojan war will quickly end."));
-					hints.push_back(TranscribedSound("m2230wb0", "Helen was a husband's joy but she's a prisonner inside Troy."));
-					hints.push_back(TranscribedSound("m2230wc0", "The trojan horse you cannot ride bust beware what's found inside"));
+					hints.push_back(TranscribedSound::make("m2230wa0", "If Helen gets this note, our friend, the trojan war will quickly end."));
+					hints.push_back(TranscribedSound::make("m2230wb0", "Helen was a husband's joy but she's a prisonner inside Troy."));
+					hints.push_back(TranscribedSound::make("m2230wc0", "The trojan horse you cannot ride bust beware what's found inside"));
 					break;
 				case kMedusaQuest:
 					if (persistent->_medisleShowFates) {
 						hints.push_back(kMedusaOnceBeauty);
-						hints.push_back(TranscribedSound("m2250wa0", "Medusa's curse is quite well known: she looks at you and you turn to stone"));
-						hints.push_back(TranscribedSound("m2250wb0", "So be forewarned, it isn't wise to gaze into Medusa's eyes."));
+						hints.push_back(TranscribedSound::make("m2250wa0", "Medusa's curse is quite well known: she looks at you and you turn to stone"));
+						hints.push_back(TranscribedSound::make("m2250wb0", "So be forewarned, it isn't wise to gaze into Medusa's eyes."));
 					}
 					break;
 				case kRescuePhilQuest:
-					hints.push_back(TranscribedSound("m2240wa0", "To rescue Phil's an easy fix: just go across the river Styx"));
-					hints.push_back(TranscribedSound("m2240wb0", "You know Phil, he loves the ladies. He'd be best beware of the evil ladies"));
+					hints.push_back(TranscribedSound::make("m2240wa0", "To rescue Phil's an easy fix: just go across the river Styx"));
+					hints.push_back(TranscribedSound::make("m2240wb0", "You know Phil, he loves the ladies. He'd be best beware of the evil ladies"));
 					break;
 				// To silence warning
 				case kNoQuest:
@@ -459,7 +459,7 @@ TODO (medusa quest):
 		if (name == "Perseus" && (
 			    item >= kShield && item <= kSandals)) {
 			room->disableMouse();
-			playPerseusAnimSpeech("m1240ba0", TranscribedSound("m1240na0", "No, you've got to put it in the frieze above me, hurry!"), 11053);
+			playPerseusAnimSpeech("m1240ba0", TranscribedSound::make("m1240na0", "No, you've got to put it in the frieze above me, hurry!"), 11053);
 		}
 
 		return false;
@@ -473,21 +473,21 @@ TODO (medusa quest):
 			if (!room->isMouseEnabled() || !room->isPanRight())
 				break;
 			room->disableMouse();
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						      "m2100ba0",
 						      "Hey, Perseus must be around here somewhere. "
 						      "You'd better find him. I have a creepy feeling about this place."),
 					      0, 11003, Common::Point(640, 216));
 			break;
 		case 11003:
-			room->playSpeech(TranscribedSound(
+			room->playSpeech(TranscribedSound::make(
 							  "m2100wa0",
 							  "Someone help! I'm over here"),
 						  11004);
 			room->enableMouse();
 			break;
 		case kStoneTaken:
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						      "m1360ba0",
 						      "That Minotaur is planning to eat the entire population of Athens next. "
 						      "I guess he loves Greek food. Come on, you've got to hurry"),
@@ -506,13 +506,13 @@ TODO (medusa quest):
 			}
 			break;
 		case 11601:
-			fatesShadowSpeech(TranscribedSound("m2120wa0", "Now it's time, the eyeball's mine"), 11602);
+			fatesShadowSpeech(TranscribedSound::make("m2120wa0", "Now it's time, the eyeball's mine"), 11602);
 			break;
 		case 11602:
-			fatesShadowSpeech(TranscribedSound("m2120wb0", "I can't see, so give it to me"), 11603);
+			fatesShadowSpeech(TranscribedSound::make("m2120wb0", "I can't see, so give it to me"), 11603);
 			break;
 		case 11603:
-			fatesShadowSpeech(TranscribedSound("m2120wc0", "You stupid lout. Let's go, look out"), 11604);
+			fatesShadowSpeech(TranscribedSound::make("m2120wc0", "You stupid lout. Let's go, look out"), 11604);
 			break;
 		case 11604:
 			fatesShadowSpeechEnd();
@@ -537,7 +537,7 @@ TODO (medusa quest):
 		case 11065: // Left pan
 			if (persistent->_seriphosPlayedMedusa && !persistent->_medislePlayedPerseusIntro) {
 				room->disableMouse();
-				room->playVideoSpeech(TranscribedSound(
+				room->playVideoSpeech(TranscribedSound::make(
 							      "m1140ba0", "Perseus looks a little tied up right now, "
 							      "don't you think, kid?"),
 						      0, 11005, Common::Point(0, 216));
@@ -545,7 +545,7 @@ TODO (medusa quest):
 			break;
 		case 11005:
 			playPerseusAnimSpeech("m1140bb0",
-					      TranscribedSound(
+					      TranscribedSound::make(
 						      "m1140nb0",
 						      "This is what happens when you don't follow instructions. "
 						      "I should have listened to Athena's warning"),
@@ -557,13 +557,13 @@ TODO (medusa quest):
 			room->enableMouse();
 			break;
 		case 11007:
-			playPerseusAnimSpeech("m1140bc0", TranscribedSound(
+			playPerseusAnimSpeech("m1140bc0", TranscribedSound::make(
 						      "m1140nc0",
 						      "Without that stuff, I'm gonna wind up as part of Medusa's latest rock collection"),
 					      11008);
 			break;
 		case 11008:
-			playPerseusAnimSpeech("m1140bd0", TranscribedSound("m1140nd0", "You gotta help me"), 11006);
+			playPerseusAnimSpeech("m1140bd0", TranscribedSound::make("m1140nd0", "You gotta help me"), 11006);
 			break;
 		case 11009:
 			room->playSpeech(itemClickSounds[_lastClickedItem], 11010);
@@ -614,9 +614,9 @@ TODO (medusa quest):
 		case 11015:
 			renderPerseus();
 			if (_lastPlacedItem == kSword)
-				playPerseusAnimSpeech("m1180bc0", TranscribedSound("m1180nb0", "Thanks for the sword. Did you bring anything else?"), 11016);
+				playPerseusAnimSpeech("m1180bc0", TranscribedSound::make("m1180nb0", "Thanks for the sword. Did you bring anything else?"), 11016);
 			else
-				playPerseusAnimSpeech("m1190bc0", TranscribedSound("m1190nb0", "Thanks for the shield. Did you bring anything else?"), 11016);
+				playPerseusAnimSpeech("m1190bc0", TranscribedSound::make("m1190nb0", "Thanks for the shield. Did you bring anything else?"), 11016);
 			break;
 		case 11016:
 		case 11025:
@@ -626,7 +626,7 @@ TODO (medusa quest):
 			break;
 		case 11017:
 			renderPerseus();
-			playPerseusAnimSpeech("m1200ba0", TranscribedSound("m1200na0", "You're doing great but I still need three other weapons. The fates will know where they are. Go ask them. They're somewhere on the isle"), 11018);
+			playPerseusAnimSpeech("m1200ba0", TranscribedSound::make("m1200na0", "You're doing great but I still need three other weapons. The fates will know where they are. Go ask them. They're somewhere on the isle"), 11018);
 			break;
 		case 11018:
 			finishPerseusAnim();
@@ -649,7 +649,7 @@ TODO (medusa quest):
 			_perseusAnim.hide();
 			room->stopAnim("m1010oi0");
 			// Mix of SFX and speech, classify as speech
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						      "m1260bh0", "Great work! Now you fly above and direct "
 						      "me while I take on the snake-headed lady"),
 					      900, 11023, Common::Point(2, 60));
@@ -664,15 +664,15 @@ TODO (medusa quest):
 			break;
 		case 11024:
 			renderPerseus();
-			playPerseusAnimSpeech("m1250bb0", TranscribedSound("m1250nb0", "What about the last item?"), 11025);
+			playPerseusAnimSpeech("m1250bb0", TranscribedSound::make("m1250nb0", "What about the last item?"), 11025);
 			break;
 		case 11020:
 			renderPerseus();
 			playPerseusAnimSpeech("m1250ba0",
-					      TranscribedSound("m1250na0", "What about the other items?"), 11025);
+					      TranscribedSound::make("m1250na0", "What about the other items?"), 11025);
 			break;
 		case 11027:
-			room->playVideoSpeech(TranscribedSound(
+		    room->playVideoSpeech(TranscribedSound::make(
 						      "m2130ba0", "You want to take Medusa's head? "
 						      "You want her gone? You want her dead?"),
 					      kFatesZ, 11609, Common::Point(756, 0));
@@ -682,7 +682,7 @@ TODO (medusa quest):
 			break;
 		case 11621:
 			renderFatesExcept(kLachesis);
-			room->playVideoSpeech(TranscribedSound("m2160ba0", "The helmet's not that hard to spot. "
+			room->playVideoSpeech(TranscribedSound::make("m2160ba0", "The helmet's not that hard to spot. "
 							       "Volcano, hiding, right on top"),
 					      kFatesZ, _isFirstFates ? 11622 : 11627, Common::Point(854, 0));
 			break;
@@ -691,7 +691,7 @@ TODO (medusa quest):
 			break;
 		case 11623:
 			renderFatesExcept(kAtropos);
-			room->playVideoSpeech(TranscribedSound("m2170ba0", "The magic bag's under the pile. Right here, on Medusa's isle."),
+			room->playVideoSpeech(TranscribedSound::make("m2170ba0", "The magic bag's under the pile. Right here, on Medusa's isle."),
 					      kFatesZ, _isFirstFates ? 11624 : 11627, Common::Point(1002, 96));
 			break;
 		case 11624:
@@ -705,7 +705,7 @@ TODO (medusa quest):
 			break;
 		case 11626:
 			renderFatesExcept(kClotho);
-			room->playVideoSpeech(TranscribedSound("m2180ba0", "Magic sandals for your feet. "
+			room->playVideoSpeech(TranscribedSound::make("m2180ba0", "Magic sandals for your feet. "
 							       "Look at pottery, out in Crete"),
 					      kFatesZ, 11627, Common::Point(1090, 68));
 			break;
@@ -718,20 +718,20 @@ TODO (medusa quest):
 			break;
 		case 11044:
 			if (room->isMouseEnabled() && !_eyeIsGivenBack) {
-				room->playVideoSpeech(TranscribedSound("m2130bd0", "Kid, you want the information, they want their eye. "
+			    room->playVideoSpeech(TranscribedSound::make("m2130bd0", "Kid, you want the information, they want their eye. "
 								       "So give it to them and let's get out of here"),
 						      0, 11045, Common::Point(640, 216));
 			}
 			break;
 		case 11609:
 			renderFatesExcept(kAtropos, kClotho);
-			room->playVideoSpeech(TranscribedSound("m2130bb0", "You want to know the way to do it? "
+			room->playVideoSpeech(TranscribedSound::make("m2130bb0", "You want to know the way to do it? "
 							       "Well, my friend, there is nothing to it"),
 					      kFatesZ, 11610, Common::Point(922, 0));
 			break;
 		case 11610:
 			renderFatesExcept(kClotho);
-			room->playVideoSpeech(TranscribedSound("m2130bc0", "We're the ones can tell you how. "
+			room->playVideoSpeech(TranscribedSound::make("m2130bc0", "We're the ones can tell you how. "
 							       "Just give us back our eyeball now"),
 					      kFatesZ, 11611, Common::Point(1024, 0));
 			break;
@@ -845,17 +845,17 @@ TODO (medusa quest):
 		case 11038:
 			persistent->_medisleBagPuzzleState = Persistent::BAG_SOLVED;
 			showMagicBag();
-			room->playVideoSpeech(TranscribedSound("m1270bd0", "Great work!"), 0, 11039, Common::Point(0, 216));
+			room->playVideoSpeech(TranscribedSound::make("m1270bd0", "Great work!"), 0, 11039, Common::Point(0, 216));
 			break;
 		case 11039:
 		case 11040:
-			playPerseusAnimSpeech("m1290ba0", TranscribedSound("m1290na0", "Hey, that's the magic bag. Put it in the frieze above me"), 11041);
+			playPerseusAnimSpeech("m1290ba0", TranscribedSound::make("m1290na0", "Hey, that's the magic bag. Put it in the frieze above me"), 11041);
 			break;
 		case 11041:
 			finishPerseusAnim();
 			room->playVideoSpeech(persistent->_gender == kMale
-					      ? TranscribedSound("m1290bb0", "Hey, not bad, kid. Yo're going to become a hero yet")
-					      : TranscribedSound("m1290bc0", "Hey, not bad, kid. Yo're going to become a heroine yet"),
+					      ? TranscribedSound::make("m1290bb0", "Hey, not bad, kid. Yo're going to become a hero yet")
+					      : TranscribedSound::make("m1290bc0", "Hey, not bad, kid. Yo're going to become a heroine yet"),
 					      0, 11042);
 			break;
 		case 11036:
@@ -864,7 +864,7 @@ TODO (medusa quest):
 			if (_depProblemState == 1
 			    && persistent->_hintsAreEnabled) {
 				room->disableMouse();
-				room->playVideoSpeech(TranscribedSound("m1270bb0", "Try working from the ground up"),
+				room->playVideoSpeech(TranscribedSound::make("m1270bb0", "Try working from the ground up"),
 						      0, 11037, Common::Point(0, 216));
 				_depProblemState = 2;
 			}

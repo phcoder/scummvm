@@ -12,10 +12,17 @@ For a more comprehensive changelog of the latest experimental code, see:
    - Added support for Little Big Adventure.
    - Added support for Red Comrades 1: Save the Galaxy.
    - Added support for Red Comrades 2: For the Great Justice.
+   - Added support for Transylvania
+   - Added support for Crimson Crown
+   - Added support for OO-Topos
+   - Added support for Glulx interactive fiction games
 
  General:
    - Switched ScummVM GUI output to UTF-32.
    - Updated the Roland MT-32 emulation code to Munt 2.4.1.
+
+ Dreamweb:
+   - Rendering fixes for Russian fan translation.
 
  Glk:
    - Fixed savegame issues with several subengines.
@@ -33,6 +40,7 @@ For a more comprehensive changelog of the latest experimental code, see:
 
  Kyra:
    - Added support for the Japanese Sega-CD version of Eye of the Beholder.
+   - Added support for the Hebrew fan translation of Legend of Kyrandia.
 
  Lure:
    - Fixed fire animation in first room when loading saves.
@@ -59,6 +67,7 @@ For a more comprehensive changelog of the latest experimental code, see:
    - Fixed display of Chinese, Japanese and Korean pause and restart dialogs.
    - Added support for numerous Korean translations from scummkor project.
    - Added support for Russobit-M versions of Pajama2 and SpyOzone.
+   - Fixed speech playback in Akella version of COMI.
 
  Tinsel:
    - Enabled the Return to Launcher feature.

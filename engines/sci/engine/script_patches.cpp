@@ -121,6 +121,7 @@ static const char *const selectorNameTable[] = {
 	"startText",    // King's Quest 6 CD / Laura Bow 2 CD for audio+text support
 	"startAudio",   // King's Quest 6 CD / Laura Bow 2 CD for audio+text support
 	"modNum",       // King's Quest 6 CD / Laura Bow 2 CD for audio+text support
+	"handle",       // King's Quest 6 / Laura Bow 2 / RAMA
 	"add",          // King's Quest 6
 	"givePoints",   // King's Quest 6
 	"has",          // King's Quest 6, GK1
@@ -177,7 +178,6 @@ static const char *const selectorNameTable[] = {
 	"points",       // PQ4
 	"select",       // PQ4
 	"addObstacle",  // QFG4
-	"handle",       // RAMA
 	"saveFilePtr",  // RAMA
 	"priority",     // RAMA
 	"plane",        // RAMA
@@ -244,6 +244,7 @@ enum ScriptPatcherSelectors {
 	SELECTOR_startText,
 	SELECTOR_startAudio,
 	SELECTOR_modNum,
+	SELECTOR_handle,
 	SELECTOR_add,
 	SELECTOR_givePoints,
 	SELECTOR_has,
@@ -301,7 +302,6 @@ enum ScriptPatcherSelectors {
 	SELECTOR_points,
 	SELECTOR_select,
 	SELECTOR_addObstacle,
-	SELECTOR_handle,
 	SELECTOR_saveFilePtr,
 	SELECTOR_priority,
 	SELECTOR_plane,
@@ -5998,9 +5998,47 @@ static const uint16 kq6CDPatchAudioTextMenuSupport[] = {
 	PATCH_END
 };
 
+// When caught by guard dogs in the castle, sometimes their music doesn't stop.
+//  Sound 710 continues playing in the dungeon and afterwards, drowning out the
+//  real room music. This script bug also occurs in the original. It's a
+//  regression in the CD version and subsequent localized floppy versions.
+//
+// When changing rooms, CastleRoom:newRoom fades out sound 710 if it's already
+//  playing, which it detects by testing if globalSound2:prevSignal != -1.
+//  This worked in the original floppy versions but the CD version introduced a
+//  newer Sound class with different behavior. prevSignal is no longer reset to
+//  0 by every Sound:play. This prevents CastleRoom:newRoom from detecting and
+//  stopping the music when globalSound2:prevSignal is -1 from an earlier sound.
+//
+// We fix this by testing globalSound2:handle instead of prevSignal. handle is
+//  always set while a sound is being played and always cleared afterwards. This
+//  is the same bug as in LB2CD's Act 5 finale music, and the same fix.
+//
+// Applies to: PC CD, Italian PC Floppy, Spanish PC Floppy
+// Responsible method: CastleRoom:newRoom
+// Fixes bug: #11746
+static const uint16 kq6SignatureGuardDogMusic[] = {
+	SIG_MAGICDWORD,
+	0x38, SIG_UINT16(0x00ac),           // pushi prevSignal [ hard-coded for affected versions ]
+	0x76,                               // push0
+	0x81, 0x67,                         // lag 67  [ globalSound2 ]
+	0x4a, 0x04,                         // send 04 [ globalSound2 prevSignal? ]
+	0x36,                               // push
+	0x35, 0xff,                         // ldi ff
+	SIG_END
+};
+
+static const uint16 kq6PatchGuardDogMusic[] = {
+	0x38, PATCH_SELECTOR16(handle),     // pushi handle
+	PATCH_ADDTOOFFSET(+6),
+	0x35, 0x00,                         // ldi 00
+	PATCH_END
+};
+
 //          script, description,                                      signature                                 patch
 static const SciScriptPatcherEntry kq6Signatures[] = {
 	{  true,    52, "CD: Girl In The Tower playback",                 1, kq6CDSignatureGirlInTheTowerPlayback,     kq6CDPatchGirlInTheTowerPlayback },
+	{  true,    80, "fix guard dog music",                            1, kq6SignatureGuardDogMusic,                kq6PatchGuardDogMusic },
 	{  true,    87, "fix Drink Me bottle",                            1, kq6SignatureDrinkMeFix,                   kq6PatchDrinkMeFix },
 	{ false,    87, "Mac: Drink Me pic",                              1, kq6SignatureMacDrinkMePic,                kq6PatchMacDrinkMePic },
 	{  true,   281, "fix pawnshop genie eye",                         1, kq6SignaturePawnshopGenieEye,             kq6PatchPawnshopGenieEye },
@@ -7162,6 +7200,34 @@ static const SciScriptPatcherEntry larry2Signatures[] = {
 // ===========================================================================
 // Leisure Suit Larry 3
 
+// Disable the LSL3 speed test by always setting the machine speed to 40 (PC AT)
+//  so that all graphics are enabled and the weight room behaves reasonably.
+//  40 is the minimum value that enables everything such as incrementing the
+//  score and the lighting effects in rooms 390, 430, and 431. The weight room
+//  (room 380) uses the machine speed to calculate how many exercises are
+//  required and the results would be much too high (in the thousands) if the
+//  speed test were to run unthrottled at modern speeds.
+//
+// Applies to: All versions
+// Responsible method: rm290:doit
+// Fixes bug: #11967
+static const uint16 larry3SignatureSpeedTest[] = {
+	SIG_MAGICDWORD,
+	0x8b, 0x00,                      // lsl 00
+	0x76,                            // push0
+	0x43, SIG_ADDTOOFFSET(+1), 0x00, // callk GetTime 00
+	0x22,                            // lt? [ is speed test complete? ]
+	0x30,                            // bnt
+	SIG_END
+};
+
+static const uint16 larry3PatchSpeedTest[] = {
+	0x35, 0x28,                      // ldi 28
+	0xa1, 0x7b,                      // sag 7b [ machine speed = 40 ]
+	0x33, 0x04,                      // jmp 04 [ complete speed test ]
+	PATCH_END
+};
+
 // The LSL3 volume dialog initialize its slider to the current volume by calling
 //  kDoSoundMasterVolume, but it passes an uninitialized variable as an extra
 //  parameter. This changes the volume instead of just querying it, leaving the
@@ -7195,6 +7261,7 @@ static const uint16 larry3PatchVolumeSlider[] = {
 
 //          script, description,                                      signature                     patch
 static const SciScriptPatcherEntry larry3Signatures[] = {
+	{  true,   290, "disable speed test",                          1, larry3SignatureSpeedTest,     larry3PatchSpeedTest },
 	{  true,   997, "fix volume slider",                           1, larry3SignatureVolumeSlider,  larry3PatchVolumeSlider },
 	SCI_SIGNATUREENTRY_TERMINATOR
 };
@@ -8789,7 +8856,7 @@ static const uint16 laurabow2CDSignatureFixAct5FinaleMusic[] = {
 };
 
 static const uint16 laurabow2CDPatchFixAct5FinaleMusic[] = {
-	0x38, PATCH_UINT16(0x005a),         // pushi 005a [ handle ]
+	0x38, PATCH_SELECTOR16(handle),     // pushi handle
 	PATCH_ADDTOOFFSET(+7),
 	0x35, 0x00,                         // ldi 00
 	PATCH_END

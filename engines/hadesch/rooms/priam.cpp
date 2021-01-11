@@ -79,7 +79,7 @@ public:
 		if (name == "DoorGuard") {
 			room->disableMouse();
 			_ambients.hide("AmbSmallGuard");
-			room->playVideoSpeech(TranscribedSound(
+			room->playVideoSpeech(TranscribedSound::make(
 						      "MovDoorGuardNoPass",
 						      "Only royal messengers on official business can leave the city. King Priam's orders"
 						      ), 700, 20018, Common::Point(508, 414));
@@ -95,12 +95,12 @@ public:
 			room->disableMouse();
 			if (_bigGuardCounter) {
 				// unclear
-				playPhilVideo(TranscribedSound(
+				playPhilVideo(TranscribedSound::make(
 						      "PhilTowerGuard",
 						      "You can't get up with that guard calling the place. That'll never happen. You've got to find another way to get that note to Helen"));
 			} else {
 				_ambients.hide("AmbBigGuard");
-				room->playVideoSpeech(TranscribedSound(
+				room->playVideoSpeech(TranscribedSound::make(
 							      "MovTowerGuard",
 							      "Noone sees Helen of Troy. Forget about it"),
 						      200, 20017, Common::Point(0, 58));
@@ -110,7 +110,7 @@ public:
 		}
 
 		if (name == "Helen") {
-			playPhilVideo(TranscribedSound(
+			playPhilVideo(TranscribedSound::make(
 					      "PhilSheCantHearYou",
 					      "Sorry, kid. She can't hear you from there"));
 			return;
@@ -124,25 +124,25 @@ public:
 			room->disableMouse();
 			if (!persistent->_troyMessageIsDelivered && _philExitWarning < (persistent->_hintsAreEnabled ? 2 : 1)) {
 				playPhilVideo(_philExitWarning
-					      ? TranscribedSound(
+					      ? TranscribedSound::make(
 						      "PhilHint",
 						      "Hey, I've got an idea: why don't you use the pigeons to fly the message up to Helen?")
-					      : TranscribedSound(
+					      : TranscribedSound::make(
 						      "PhilNoDuckingOut",
 						      "You're not ducking out without delivering the message to Helen, are you?"));
 				_philExitWarning++;
 				return true;
 			}
 			_ambients.hide("AmbSmallGuard");
-			room->playVideoSpeech(TranscribedSound("MovDoorGuardPass", "Oh, so you're a new messenger, hm. Sorry, I didn't recognize you. Go ahead and watch out for those Greeks. They're everywhere."), 700, 20019, Common::Point(508, 414));
+			room->playVideoSpeech(TranscribedSound::make("MovDoorGuardPass", "Oh, so you're a new messenger, hm. Sorry, I didn't recognize you. Go ahead and watch out for those Greeks. They're everywhere."), 700, 20019, Common::Point(508, 414));
 			return true;
 		}
 
 		if (name == "Helen" && item == kMessage) {
 			playPhilVideo(
 				persistent->_gender == kMale
-				? TranscribedSound("PhilEvenAHero", "Even a hero can't jump that high. Sorry, you'll have to find another way")
-				: TranscribedSound("PhilEvenAHeroine", "Even a heroine can't jump that high. Sorry, you'll have to find another way"));
+				? TranscribedSound::make("PhilEvenAHero", "Even a hero can't jump that high. Sorry, you'll have to find another way")
+				: TranscribedSound::make("PhilEvenAHeroine", "Even a heroine can't jump that high. Sorry, you'll have to find another way"));
 			return true;
 		}
 
@@ -242,7 +242,7 @@ public:
 			room->playAnimLoop("AnimHelenScarf", 600);
 			break;
 		case 20022:
-			playPhilVideo(TranscribedSound("PhilYouDidIt", "Hooray, you did it. You delivered the message. Now get out of here as quick as you can. Move it"), 20023);
+			playPhilVideo(TranscribedSound::make("PhilYouDidIt", "Hooray, you did it. You delivered the message. Now get out of here as quick as you can. Move it"), 20023);
 			break;
 		case 20023:
 			// TODO: repeated 20024 timer 1/frame
@@ -258,7 +258,7 @@ public:
 			// TODO: timer 20024
 			_collapseCounter--;
 			if (_collapseCounter == 0) {
-				playPhilVideo(TranscribedSound(
+				playPhilVideo(TranscribedSound::make(
 						      "PhilOhCollapse",
 						      "Oh great, that's just great. "
 						      "The catacombs caved in so there is no going back the way you came. Any ideas?"));
