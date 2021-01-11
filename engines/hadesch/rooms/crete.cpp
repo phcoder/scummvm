@@ -303,10 +303,12 @@ public:
 		}
 
 		if (name == "Poseidon") {
-			Common::Array<Common::String> videos;
-			videos.push_back("r1230na0");
-			videos.push_back("r1230nb0");
-			videos.push_back("r1230nc0");
+			TranscribedSound videos[] = {
+				{"r1230na0", _s("I'm Poseidon, most powerful groomer of the sea. I carry a trident. When I get angry, I can make the earth shake. Ha")},
+				{"r1230nb0", _s("Crete is not just a trading port. Tourists flood here to see where my brother, Zeus, was born.")},
+				{"r1230nc0", _s("Beware, Crete is full of deceitful merchants")},
+				{nullptr, nullptr}
+			};
 
 			room->playStatueSMK(kPoseidonStatue,
 					    kPoseidonHighlight,
@@ -316,9 +318,11 @@ public:
 		}
 
 		if (name == "Zeus") {
-			Common::Array<Common::String> videos;
-			videos.push_back("r1240wa0");
-			videos.push_back("r1240wb0");
+			TranscribedSound videos[] = {
+				{"r1240wa0", _s("You know me: I'm Zeus, the god of heaven and earth. Ha-ha-ha")},
+				{"r1240wb0", _s("Good luck on your quest. You're doing a fine job.")},
+				{nullptr, nullptr}
+			};
 
 			room->playStatueSMK(kZeusStatue, kZeusHighlight, 5000,
 					    videos, 23, 35);
@@ -326,9 +330,11 @@ public:
 		}
 
 		if (name == "Hermes") {
-			Common::Array<Common::String> videos;
-			videos.push_back("r2320na0");
-			videos.push_back("r2320nb0");
+			TranscribedSound videos[] = {
+				{"r2320na0", _s("I'm Hermes, the messenger god")},
+				{"r2320nb0", _s("I escort the dead to the underworld which is real exciting, let me tell you")},
+				{nullptr, nullptr}
+			};
 
 			room->playStatueSMK(kHermesStatue,
 					    kHermesHighlight,
