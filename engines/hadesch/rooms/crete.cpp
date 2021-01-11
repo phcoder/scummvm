@@ -402,7 +402,7 @@ public:
 		}
 
 		if (name == kOneManBandHotZone) {
-			room->playVideo(
+			room->playVideoSFX(
 				Common::String::format(
 					"r2040b%c0", 'a' + (_oneManBandCounter % 3)),
 				1600,
@@ -422,7 +422,10 @@ public:
 			renderAtlantisDisks();
 			if (persistent->_creteIntroAtlantisWood) {
 				room->disableMouse();
-				room->playVideo("R1210BA0", 600, kAtlantisBoatIntro2Finished);
+				room->playVideoSpeech(TranscribedSound::make(
+							      "R1210BA0", "The wood that Daedalus is looking for is inside that boat. "
+							      "You're going to have to figure out how to unlock that door"),
+						      600, kAtlantisBoatIntro2Finished);
 				persistent->_creteIntroAtlantisWood = false;
 			}
 			return;
@@ -584,23 +587,28 @@ TODO:
 			break;
 		case kIntroMerchantPanFinished:
 			room->setLayerEnabled(kMerchantAnim, false);
-			room->playVideo("R2200BA0", kMerchantZ,
-					kIntroMerchantVideoFinished,
-					Common::Point(308, 99));
+			room->playVideoSpeech(TranscribedSound::make(
+						      "R2200BA0",
+						      "King Minos doesn't speak to anyone who doesn't have a gift. "
+						      "And all gifts are free today"),
+					      kMerchantZ, kIntroMerchantVideoFinished,
+					      Common::Point(308, 99));
 			break;
 		// TODO: replay of R2200BB0 and R2200BC0
 		case kIntroMerchantVideoFinished:
 			room->disableMouse();
-			room->playVideo("R2200BB0", kMerchantZ,
-					12108,
-					Common::Point(304, 113));
+			room->playVideoSpeech(TranscribedSound::make(
+						      "R2200BB0", "Here, take this statue to him."),
+					      kMerchantZ, 12108,
+					      Common::Point(304, 113));
 			_merchantIsBusy = true;
 			break;
 		case 12108:
 			room->disableMouse();
-			room->playVideo("R2200BC0", kMerchantZ,
-					12109,
-					Common::Point(304, 110));
+			room->playVideoSpeech(TranscribedSound::make(
+						      "R2200BC0", "I assure you: he'll love it"),
+					      kMerchantZ, 12109,
+					      Common::Point(304, 110));
 			_merchantIsBusy = true;
 			break;
 		case 12109:
@@ -610,24 +618,33 @@ TODO:
 			break;
 		case kTakenHorned:
 			room->setLayerEnabled(kMerchantAnim, false);
-			room->playVideo("r2210ba0", kMerchantZ, 12117,
-					Common::Point(344, 111));
+			room->playVideoSpeech(
+				TranscribedSound::make("r2210ba0", "Ah, that's a good choice"),
+				kMerchantZ, 12117,
+				Common::Point(344, 111));
 			room->disableMouse();
 			break;
 		case 12117:
-			room->playVideo("r2210bb0", kMerchantZ, 12119,
+			room->playVideoSpeech(
+				TranscribedSound::make("r2210bb0", "King Minos will love it. Heee-heee"),
+				kMerchantZ, 12119,
 				Common::Point(308, 112));
 			break;
 		case kTakenHornless:
 			room->setLayerEnabled(kMerchantAnim, false);
-			room->playVideo("r2240ba0", kMerchantZ, 12119,
+			room->playVideoSpeech(TranscribedSound::make("r2240ba0", "No-no-no. I should warn you: the king is not going to like that one"), kMerchantZ, 12119,
 				Common::Point(314, 91));
 			_merchantIsBusy = true;
 			break;
 		case 12119:
 			room->selectFrame(kMerchantAnim, kMerchantZ, 0);
 			if (!persistent->_cretePlayedEyeGhostTown) {
-				room->playVideo("r2210bc0", 1000, 12120,
+				room->playVideoSpeech(TranscribedSound::make(
+							      "r2210bc0",
+							      "Hey, kid. The Minotaur just went to a restaurant to have lunch. "
+							      "He ate all the customers. He's going to the town meeting for desert. "
+							      "You'd better hurry or this place is going to wind up a ghost town."),
+						      1000, 12120,
 						   Common::Point(0, 216));
 				persistent->_cretePlayedEyeGhostTown = true;
 			} else {
@@ -652,7 +669,10 @@ TODO:
 		case 12142:
 			if (persistent->_quest == kMedusaQuest && !persistent->_cretePlayedPhilAlchemist) {
 				persistent->_cretePlayedPhilAlchemist = true;
-				room->playVideo("r2220bc0", 1000, 12143, Common::Point(640, 216));
+				room->playVideoSpeech(TranscribedSound::make(
+							      "r2220bc0", "I wonder what kind of crazy potion that alchemist was mixing. "
+							      "Looks like it didn't go so well"),
+						      1000, 12143, Common::Point(640, 216));
 				room->disableMouse();
 			}
 			if (persistent->_quest == kRescuePhilQuest && !persistent->_cretePlayedZeusCheckOutThatBox && persistent->_hintsAreEnabled) {
@@ -681,7 +701,10 @@ TODO:
 			room->disableHotzone("SmallDisk");
 			room->disableHotzone("Background");
 			room->enableHotzone("wood");
-			room->playVideo("r1210bd0", 600, 12308);
+			room->playVideoSpeech(TranscribedSound::make(
+						      "r1210bd0",
+						      "Great job, kid! You did it!"),
+					      600, 12308);
 			break;
 		case 12308:
 			room->enableMouse();
