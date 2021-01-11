@@ -261,7 +261,7 @@ public:
 					      PlayAnimParams::disappear());
 			_shrinkLevel++;
 			if (_wrongAnswerCount == 0) {
-				playHadesVideo(TranscribedSound("HadesLaugh", "Ha-ha"), kHadesFirstLaugh);
+				playHadesVideo(TranscribedSound::make("HadesLaugh", "Ha-ha"), kHadesFirstLaugh);
 			} else {
 				playHadesVideo(hadesLikeVideos[_hades_like_counter % 5],
 					       kNextQuestionAfterFail);
