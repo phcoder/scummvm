@@ -21,11 +21,11 @@
 
 #include "mutationofjb/commands/loadplayercommand.h"
 
+#include "common/str.h"
+
 #include "mutationofjb/game.h"
 #include "mutationofjb/gamedata.h"
 #include "mutationofjb/script.h"
-
-#include "common/str.h"
 
 /** @file
  * "RABLOAD " <apkFrameFirst> " " <apkFrameLast> " " <playerFrameFirst> " " <palIndexFirst> " " <apkFilename>

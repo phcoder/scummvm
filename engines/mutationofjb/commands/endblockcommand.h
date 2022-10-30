@@ -22,9 +22,11 @@
 #ifndef MUTATIONOFJB_ENDBLOCKCOMMAND_H
 #define MUTATIONOFJB_ENDBLOCKCOMMAND_H
 
-#include "mutationofjb/commands/command.h"
 #include "common/scummsys.h"
 #include "common/array.h"
+#include "common/str.h"
+
+#include "mutationofjb/commands/command.h"
 
 namespace MutationOfJB {
 
