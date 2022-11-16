@@ -700,11 +700,48 @@ void DefaultFont::outFont(const FontStyle &drawFont, const char *text, size_t co
 	ct = count;
 
 	bool isBig5 = !!_chineseFont;
+	bool isJohab = !!_koreanFont;
 
 	// Draw string one character at a time, maximum of 'draw_str'_ct
 	// characters, or no limit if 'draw_str_ct' is 0
 	for (; *textPointer && (!count || ct); textPointer++, ct--) {
 		c_code = *textPointer & 0xFFU;
+
+		if ((c_code & 0x80) && isBig5) {
+			byte leading = c_code;
+			byte trailing = *++textPointer & 0xFFU;
+			ct--;
+			if (ct == 0 || trailing == 0)
+				break;
+			uint16 full = ((lead & 0x7f) << 8) | trailing;
+			int initial = (full >> 10) & 0x1f;
+			int mid = (full >> 5) & 0x1f;
+			int fin = full & 0x1f;
+			int initidx = initial - 1;
+			static const int mididxlut[0x20] = {
+				-1, -1, 0, 1, 2, 3, 4, 5, -1, -1, 6, 7, 8, 9,
+				10, 11, -1, -1, 12, 13, 14, 15, 16, 17, -1, -1,
+				18, 19, 20, 21, -1, -1}; 
+			int mididx = mididxlut[mid];
+			int finidx = finidxlut[fin];
+			if (initial >= 0x15 || initidx < 0 || mididx < 0 || finidx < 0) {
+				// TODO: non-jamo
+				textPoint.x += _cjkFontWidth;
+				continue;
+			}
+			int initidx = initial - 1;
+			
+			int idx = _chineseFontIndex[((leading & 0x7f) << 8) | trailing];
+			if (idx < 0) {
+				textPoint.x += _cjkFontWidth;
+				continue;
+			}
+			blitGlyph(textPoint, _chineseFont + idx, _cjkFontWidth, _cjkFontHeight, _cjkFontWidth / 8, (byte)color);
+			// Advance tracking position
+			textPoint.x += _cjkFontWidth;
+			continue;
+		}
+
 
 		if ((c_code & 0x80) && isBig5) {
 			byte leading = c_code;
