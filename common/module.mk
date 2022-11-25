@@ -36,6 +36,7 @@ MODULE_OBJS := \
 	random.o \
 	rational.o \
 	rendermode.o \
+	rnc_deco.o \
 	sinewindows.o \
 	str.o \
 	stream.o \

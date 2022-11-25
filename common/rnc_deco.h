@@ -19,11 +19,11 @@
  *
  */
 
-#ifndef SKY_RNC_DECO_H
-#define SKY_RNC_DECO_H
+#ifndef COMMON_RNC_DECO_H
+#define COMMON_RNC_DECO_H
 
 
-namespace Sky {
+namespace Common {
 
 class RncDecoder {
 
@@ -56,6 +56,6 @@ protected:
 
 };
 
-} // End of namespace Sky
+} // End of namespace Common
 
 #endif
