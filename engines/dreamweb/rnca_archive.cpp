@@ -38,17 +38,31 @@ RNCAArchive* RNCAArchive::open(Common::SeekableReadStream *stream, DisposeAfterU
 		return nullptr;
 
 	uint16 metadataSize1 = stream->readUint16BE();
-	stream->readUint16BE(); // No ida
+	stream->readUint16BE(); // No idea
 	uint16 metadataSize2 = stream->readUint16BE();
+	stream->readByte(); // Always zero
 
 	if (metadataSize1 != metadataSize2 || metadataSize1 < 15)
 		return nullptr;
 
-	while(stream->pos() <= metadataSize1 - 5) {
-		Common::String fileName = stream->readString(0, metadataSize1 - 4 - stream->pos());
-		uint32 off = stream->readUint32BE();
+	int headerlessMetadataSize = metadataSize1 - 11;
+	byte *metadata = new byte[headerlessMetadataSize];
+	stream->read(metadata, headerlessMetadataSize);
+	const byte *eptr = metadata;
+
+	while(eptr < metadata + headerlessMetadataSize - 5) {
+		const byte *ptr = eptr;
+		while (*ptr)
+			ptr++;
+		Common::String fileName((const char *) eptr, ptr - eptr);
+		ptr++;
+		uint32 off = READ_BE_UINT32(ptr);
+		debug("%s -> 0x%x @ 0x%x", fileName.c_str(), off, (int) (eptr - metadata + 11));
+		eptr = ptr + 4;
 		files[fileName] = RNCAFileDescriptor(fileName, off);
 	}
+
+	delete[]metadata;
 
 	return new RNCAArchive(files, stream, dispose);
 }
@@ -84,14 +98,18 @@ Common::SeekableReadStream *RNCAArchive::createReadStreamForMember(const Common:
 		return nullptr;
 	const RNCAFileDescriptor& desc = _files.getVal(translated);
 	if (_cache.contains(desc._fileName)) {
-		return new Common::MemoryReadStream(&_cache[desc._fileName][0], _cache[desc._fileName].size(), DisposeAfterUse::NO);
+		const Common::SharedPtr<CacheEntry> &entry = _cache[desc._fileName];
+		if (entry->is_error) {
+			return nullptr;
+		}
+		return new Common::MemoryReadStream(entry->contents, entry->size, DisposeAfterUse::NO);
 	}
 
 	_stream->seek(desc._fileDataOffset);
 
 	if (_stream->readUint32BE() != Common::RncDecoder::kRnc1Signature) {
-		_cache[desc._fileName].clear();
-		return new Common::MemoryReadStream(&_cache[desc._fileName][0], 0, DisposeAfterUse::NO);
+		_cache[desc._fileName] = CacheEntry::error();
+		return nullptr;
 	}
 
 	// read unpacked/packed file length
@@ -99,8 +117,8 @@ Common::SeekableReadStream *RNCAArchive::createReadStreamForMember(const Common:
 	uint32 packLen = _stream->readUint32BE();
 
 	if (unpackLen > 0x7ffff000 || packLen > 0x7ffff000) {
-		_cache[desc._fileName].clear();
-		return new Common::MemoryReadStream(&_cache[desc._fileName][0], 0, DisposeAfterUse::NO);
+		_cache[desc._fileName] = CacheEntry::error();
+		return nullptr;
 	}
 
 	// Rewind back the header
@@ -108,18 +126,25 @@ Common::SeekableReadStream *RNCAArchive::createReadStreamForMember(const Common:
 	packLen += 0x12;
 
 	byte *compressedBuffer = new byte[packLen];
-	_stream->read(compressedBuffer, packLen);
-	_cache[desc._fileName].resize(unpackLen);
+	if (_stream->read(compressedBuffer, packLen) != packLen) {
+		_cache[desc._fileName] = CacheEntry::error();
+		return nullptr;		
+	}
+	byte *uncompressedBuffer = new byte[unpackLen];
 
 	Common::RncDecoder rnc;
 	
-	if (rnc.unpackM1(compressedBuffer, packLen,
-			 &_cache[desc._fileName][0]) != (int32) unpackLen) {
-		_cache[desc._fileName].clear();
-		return new Common::MemoryReadStream(&_cache[desc._fileName][0], 0, DisposeAfterUse::NO);
+	if (rnc.unpackM1(compressedBuffer, packLen, uncompressedBuffer) != (int32) unpackLen) {
+		_cache[desc._fileName] = CacheEntry::error();
+		return nullptr;
 	}
+	
+	_cache[desc._fileName].reset(new CacheEntry);
+	_cache[desc._fileName]->size = unpackLen;
+	_cache[desc._fileName]->is_error = false;
+	_cache[desc._fileName]->contents = uncompressedBuffer;		
 
-	return new Common::MemoryReadStream(&_cache[desc._fileName][0], 0, DisposeAfterUse::NO);
+	return new Common::MemoryReadStream(uncompressedBuffer, unpackLen, DisposeAfterUse::NO);
 }
 
 }
