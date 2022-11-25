@@ -57,12 +57,6 @@ DreamWebEngine::DreamWebEngine(OSystem *syst, const DreamWebGameDescription *gam
 
 	_ttsMan = g_system->getTextToSpeechManager();
 
-	if (_gameDescription->desc.flags & GF_INSTALLER) {
-		Common::File *dw = new Common::File();
-		dw->open("dreamweb.rnc");
-		SearchMan.add("rnca", RNCAArchive::open(dw, DisposeAfterUse::YES));
-	}
-
 	_datafilePrefix = "DREAMWEB.";
 	_speechDirName = "SPEECH";
 	// ES and FR CD release use a different data file prefix
@@ -404,6 +398,12 @@ void DreamWebEngine::processEvents(bool processSoundEvents) {
 }
 
 Common::Error DreamWebEngine::run() {
+	if (_gameDescription->desc.flags & GF_INSTALLER) {
+		Common::File *dw = new Common::File();
+		assert(dw->open("DREAMWEB.RNC"));
+		SearchMan.add("rnca", RNCAArchive::open(dw, DisposeAfterUse::YES));
+	}
+
 	if (_ttsMan != nullptr) {
 		Common::String languageString = Common::getLanguageCode(getLanguage());
 		_ttsMan->setLanguage(languageString);
