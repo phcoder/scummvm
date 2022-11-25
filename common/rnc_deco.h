@@ -40,7 +40,7 @@ protected:
 	const uint8 *_srcPtr;
 	uint8 *_dstPtr;
 
-	int16 _inputByteLeft;
+	int32 _inputByteLeft;
 
 public:
 	RncDecoder();

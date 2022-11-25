@@ -258,6 +258,9 @@ int32 RncDecoder::unpackM1(const void *input, uint inputSize, void *output) {
 			uint32 inputOffset;
 
 			if (inputLength) {
+				if (_inputByteLeft < (int32) inputLength || inputLength > 0xff000000) {
+					return NOT_PACKED;
+				}
 				memcpy(_dstPtr, _srcPtr, inputLength); //memcpy is allowed here
 				_dstPtr += inputLength;
 				_srcPtr += inputLength;
