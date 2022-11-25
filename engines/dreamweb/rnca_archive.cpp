@@ -58,7 +58,6 @@ RNCAArchive* RNCAArchive::open(Common::SeekableReadStream *stream, DisposeAfterU
 		Common::String fileName((const char *) eptr, ptr - eptr);
 		ptr++;
 		uint32 off = READ_BE_UINT32(ptr);
-		debug("%s -> 0x%x @ 0x%x", fileName.c_str(), off, (int) (eptr - metadata + 11));
 		eptr = ptr + 4;
 		files[fileName] = RNCAFileDescriptor(fileName, off);
 	}
