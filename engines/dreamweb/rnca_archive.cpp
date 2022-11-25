@@ -146,7 +146,7 @@ Common::SeekableReadStream *RNCAArchive::createReadStreamForMember(const Common:
 	_cache[desc._fileName].reset(new CacheEntry);
 	_cache[desc._fileName]->size = unpackLen;
 	_cache[desc._fileName]->is_error = false;
-	_cache[desc._fileName]->contents = uncompressedBuffer;		
+	_cache[desc._fileName]->contents = uncompressedBuffer;
 
 	return new Common::MemoryReadStream(uncompressedBuffer, unpackLen, DisposeAfterUse::NO);
 }
