@@ -33,8 +33,10 @@
 #include "graphics/palette.h"
 #include "graphics/surface.h"
 
+#include "dreamweb/detection.h"
 #include "dreamweb/sound.h"
 #include "dreamweb/dreamweb.h"
+#include "dreamweb/rnca_archive.h"
 
 #include "common/text-to-speech.h"
 
@@ -54,6 +56,12 @@ DreamWebEngine::DreamWebEngine(OSystem *syst, const DreamWebGameDescription *gam
 	_oldMouseState = 0;
 
 	_ttsMan = g_system->getTextToSpeechManager();
+
+	if (_gameDescription->desc.flags & GF_INSTALLER) {
+		Common::File *dw = new Common::File();
+		dw->open("dreamweb.rnc");
+		SearchMan.add("rnca", RNCAArchive::open(dw, DisposeAfterUse::YES));
+	}
 
 	_datafilePrefix = "DREAMWEB.";
 	_speechDirName = "SPEECH";
