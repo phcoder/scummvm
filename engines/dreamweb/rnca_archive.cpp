@@ -141,6 +141,12 @@ Common::SeekableReadStream *RNCAArchive::createReadStreamForMember(const Common:
 		debug("Unpacking error for %s", desc._fileName.c_str());
 		return nullptr;
 	}
+
+	byte b = 0;
+	for (byte *ptr = uncompressedBuffer; ptr < uncompressedBuffer + unpackLen; ptr++) {
+		b += *ptr;
+		*ptr = b;
+	}
 	
 	_cache[desc._fileName].reset(new CacheEntry);
 	_cache[desc._fileName]->size = unpackLen;
