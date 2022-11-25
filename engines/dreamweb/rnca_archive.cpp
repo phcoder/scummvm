@@ -26,6 +26,7 @@
 #include "common/substream.h"
 #include "common/memstream.h"
 #include "common/rnc_deco.h"
+#include "common/file.h"
 
 #include "dreamweb/rnca_archive.h"
 
@@ -118,6 +119,7 @@ Common::SeekableReadStream *RNCAArchive::createReadStreamForMember(const Common:
 
 	if (unpackLen > 0x7ffff000 || packLen > 0x7ffff000) {
 		_cache[desc._fileName] = CacheEntry::error();
+		debug("Header error for %s", desc._fileName.c_str());
 		return nullptr;
 	}
 
@@ -128,6 +130,7 @@ Common::SeekableReadStream *RNCAArchive::createReadStreamForMember(const Common:
 	byte *compressedBuffer = new byte[packLen];
 	if (_stream->read(compressedBuffer, packLen) != packLen) {
 		_cache[desc._fileName] = CacheEntry::error();
+		debug("Read error for %s", desc._fileName.c_str());
 		return nullptr;		
 	}
 	byte *uncompressedBuffer = new byte[unpackLen];
@@ -136,6 +139,7 @@ Common::SeekableReadStream *RNCAArchive::createReadStreamForMember(const Common:
 	
 	if (rnc.unpackM1(compressedBuffer, packLen, uncompressedBuffer) != (int32) unpackLen) {
 		_cache[desc._fileName] = CacheEntry::error();
+		debug("Unpacking error for %s", desc._fileName.c_str());
 		return nullptr;
 	}
 	
