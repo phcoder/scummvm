@@ -22,17 +22,26 @@
 #ifndef COMMON_CONCATSTREAM_H
 #define COMMON_CONCATSTREAM_H
 
+#include "common/array.h"
+#include "common/ptr.h"
 #include "common/stream.h"
 
+namespace Common {
 /*
  * ConcatReadStream provides access to a virtually concatenated stream.
  *
- * Manipulating the parent stream directly /will/ mess up a substream.
- * @see SubReadStream
+ * Manipulating the parent stream directly /will/ mess up a concatstream.
+ *
+ * Assumptions:
+ * - number of streams is small so iterating through array sized by N is cheap
+ * - size of streams doesn't changes
  */
 class ConcatReadStream : public SeekableReadStream {
-protected:
+private:
 	Common::Array<Common::SharedPtr<Common::SeekableReadStream>> _parentStreams;
+	Common::Array<int64> _sizes;
+	Common::Array<int64> _startOffsets;
+
 	uint32 _totalSize, _linearPos;
 	uint32 _volume, _volumePos;
 	bool _err, _eos;
@@ -49,6 +58,9 @@ public:
 	}
 	bool seek(int64 offset, int whence = SEEK_SET) override;
 	uint32 read(void *dataPtr, uint32 dataSize) override;
+	bool seekToVolume(int volume, int64 offset);
 };
+
+}
 
 #endif
