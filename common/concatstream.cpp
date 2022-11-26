@@ -100,4 +100,41 @@ bool ConcatReadStream::seekToVolume(int volume, int64 offset) {
 	_linearPos = _startOffsets[volume] + offset;
 	return true;
 }
+
+uint32 ConcatReadStream::read(void *dataPtr, uint32 dataSize) {
+	uint32 rem = dataSize;
+	uint32 alreadyRead = 0;
+	byte *curPtr = (byte*) dataPtr;
+	while (rem > 0) {
+		int64 avail = _startOffsets[_volume] + _sizes[_volume];
+		while (avail == 0) {
+			if (_volume + 1 >= _startOffsets.size()) {
+				_eos = true;
+				return alreadyRead;
+			}
+			_volume++;
+			_volumePos = 0;
+			avail = _startOffsets[_volume] + _sizes[_volume];
+		}
+
+		uint32 toRead = MIN((int64) rem, avail);
+		_parentStreams[_volume]->seek(_volumePos); // Also clears error and EOS.
+		uint32 actuallyRead = _parentStreams[_volume]->read(curPtr, toRead);
+		alreadyRead += actuallyRead;
+		rem -= actuallyRead;
+		curPtr += actuallyRead;
+		_volumePos += actuallyRead;
+		_linearPos += actuallyRead;
+		if (_volumePos == _sizes[_volume] && _volume + 1 < _startOffsets.size()) {
+			_volume++;
+			_volumePos = 0;			
+		}
+		if (_parentStreams[_volume]->err()) {
+			_err = true;
+			return alreadyRead;
+		}
+	}
+
+	return alreadyRead;
+}
 }
