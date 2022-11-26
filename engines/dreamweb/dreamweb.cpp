@@ -27,6 +27,7 @@
 #include "common/system.h"
 #include "common/timer.h"
 #include "common/util.h"
+#include "common/concatstream.h"
 
 #include "engines/advancedDetector.h"
 
@@ -399,9 +400,17 @@ void DreamWebEngine::processEvents(bool processSoundEvents) {
 
 Common::Error DreamWebEngine::run() {
 	if (_gameDescription->desc.flags & GF_INSTALLER) {
-		Common::File *dw = new Common::File();
-		assert(dw->open("DREAMWEB.RNC"));
-		SearchMan.add("rnca", RNCAArchive::open(dw, DisposeAfterUse::YES));
+		Common::Array<Common::SharedPtr<Common::SeekableReadStream>> volumes;
+		for (uint i = 0; _gameDescription->desc.filesDescriptions[i].fileName; i++) {
+			Common::File *dw = new Common::File();
+			const char *name = _gameDescription->desc.filesDescriptions[i].fileName;
+			if (!dw->open(name)) {
+				error("Can't open %s", name);
+			}
+			volumes.push_back(Common::SharedPtr<Common::SeekableReadStream>(dw));
+		}
+		Common::ConcatReadStream *concat = new Common::ConcatReadStream(volumes);
+		SearchMan.add("rnca", RNCAArchive::open(concat, DisposeAfterUse::YES));
 	}
 
 	if (_ttsMan != nullptr) {
