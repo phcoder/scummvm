@@ -82,6 +82,7 @@ typedef long z_off_t;
 typedef unsigned char Byte;
 typedef Byte Bytef;
 
+#include "common/crc.h"
 #include "common/fs.h"
 #include "common/gzio.h"
 #include "common/unzip.h"
@@ -218,7 +219,7 @@ int unzGetCurrentFileInfo(unzFile file,
    from it, and close it (you can close it before reading all the file)
    */
 
-Common::SeekableReadStream *unzOpenCurrentFile(unzFile file);
+Common::SeekableReadStream *unzOpenCurrentFile(unzFile file, const Common::CRC32& crc);
 /*
   Open for reading data the current file in the zipfile.
   If there is no error, the return value is UNZ_OK.
@@ -905,7 +906,7 @@ static int unzlocal_CheckCurrentFileCoherencyHeader(unz_s* s, uInt* piSizeVar,
   Open for reading data the current file in the zipfile.
   If there is no error and the file is opened, the return value is UNZ_OK.
 */
-Common::SeekableReadStream *unzOpenCurrentFile (unzFile file) {
+Common::SeekableReadStream *unzOpenCurrentFile (unzFile file, const Common::CRC32& crc) {
 	uInt iSizeVar;
 	unz_s* s;
 	uLong offset_local_extrafield;  /* offset of the local extra field */
@@ -949,7 +950,7 @@ Common::SeekableReadStream *unzOpenCurrentFile (unzFile file) {
 		return nullptr;
 	}
 
-	uint32 crc32_data = crc32(0, uncompressedBuffer, s->cur_file_info.uncompressed_size);
+	uint32 crc32_data = crc.crcSlow(uncompressedBuffer, s->cur_file_info.uncompressed_size);
 	if (crc32_data != crc32_wait) {
 		delete[] uncompressedBuffer;
 		warning("CRC32 mismatch: %08x, %08x", crc32_data, crc32_wait);
@@ -965,6 +966,7 @@ namespace Common {
 
 class ZipArchive : public Archive {
 	unzFile _zipFile;
+	Common::CRC32 _crc;
 
 public:
 	ZipArchive(unzFile zipFile);
@@ -996,8 +998,9 @@ public:
 };
 */
 
-ZipArchive::ZipArchive(unzFile zipFile) : _zipFile(zipFile) {
+ZipArchive::ZipArchive(unzFile zipFile) : _zipFile(zipFile), _crc() {
 	assert(_zipFile);
+	_crc.init();
 }
 
 ZipArchive::~ZipArchive() {
@@ -1035,7 +1038,7 @@ SeekableReadStream *ZipArchive::createReadStreamForMember(const Path &path) cons
 	if (unzLocateFile(_zipFile, name.c_str(), 2) != UNZ_OK)
 		return nullptr;
 
-	return unzOpenCurrentFile(_zipFile);
+	return unzOpenCurrentFile(_zipFile, _crc);
 }
 
 Archive *makeZipArchive(const String &name) {
