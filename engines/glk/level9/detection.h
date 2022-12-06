@@ -101,8 +101,6 @@ class GameDetection : public Scanner {
 private:
 	byte *&_startData;
 	uint32 &_fileSize;
-	bool _crcInitialized;
-	uint16 _crcTable[256];
 public:
 	const char *_gameName;
 public:

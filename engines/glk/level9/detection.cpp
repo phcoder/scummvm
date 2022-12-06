@@ -28,6 +28,7 @@
 #include "common/debug.h"
 #include "common/file.h"
 #include "common/md5.h"
+#include "common/crc.h"
 #include "engines/game.h"
 
 namespace Glk {
@@ -525,8 +526,7 @@ void Scanner::fullScan(byte *startFile, uint32 size) {
 /*----------------------------------------------------------------------*/
 
 GameDetection::GameDetection(byte *&startData, uint32 &fileSize) :
-		_startData(startData), _fileSize(fileSize), _crcInitialized(false), _gameName(nullptr) {
-	Common::fill(&_crcTable[0], &_crcTable[256], 0);
+		_startData(startData), _fileSize(fileSize), _gameName(nullptr) {
 }
 
 gln_game_tableref_t GameDetection::gln_gameid_identify_game() {
@@ -592,42 +592,17 @@ gln_game_tableref_t GameDetection::gln_gameid_identify_game() {
 	return game;
 }
 
-// CRC table initialization polynomial
-static const uint16 GLN_CRC_POLYNOMIAL = 0xa001;
-
 uint16 GameDetection::gln_get_buffer_crc(const void *void_buffer, size_t length, size_t padding) {
-	const char *buffer = (const char *)void_buffer;
-	uint16 crc;
-	size_t index;
-
-	/* Build the static CRC lookup table on first call. */
-	if (!_crcInitialized) {
-		for (index = 0; index < BYTE_MAX + 1; index++) {
-			int bit;
-
-			crc = (uint16)index;
-			for (bit = 0; bit < BITS_PER_BYTE; bit++)
-				crc = crc & 1 ? GLN_CRC_POLYNOMIAL ^ (crc >> 1) : crc >> 1;
-
-			_crcTable[index] = crc;
-		}
-
-		_crcInitialized = true;
-
-		/* CRC lookup table self-test, after is_initialized set -- recursion. */
-		assert(gln_get_buffer_crc("123456789", 9, 0) == 0xbb3d);
-	}
-
 	/* Start with zero in the crc, then update using table entries. */
-	crc = 0;
-	for (index = 0; index < length; index++)
-		crc = _crcTable[(crc ^ buffer[index]) & BYTE_MAX] ^ (crc >> BITS_PER_BYTE);
+	Common::CRC16 crc16;
+	uint16 remainder = crc16.getInitRemainder();
+	remainder = crc16.processBytes((const byte *)void_buffer, length, remainder);
 
 	/* Add in any requested NUL padding bytes. */
-	for (index = 0; index < padding; index++)
-		crc = _crcTable[crc & BYTE_MAX] ^ (crc >> BITS_PER_BYTE);
+	for (size_t index = 0; index < padding; index++)
+		remainder = crc16.processByte(0, remainder);
 
-	return crc;
+	return crc16.finalize(remainder);
 }
 
 gln_game_tableref_t GameDetection::gln_gameid_lookup_game(uint16 length, byte checksum, uint16 crc, int ignore_crc) const {
