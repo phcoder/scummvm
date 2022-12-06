@@ -41,10 +41,10 @@
 
 namespace Common {
 
-template <typename T>
+template <typename T, T poly>
 class CRCNormal {
 public:
-	CRCNormal(T poly, T init_remainder, T final_xor);
+	CRCNormal(T init_remainder, T final_xor);
 
 	T crcFast(byte const message[], int nBytes) const;
 	T processByte(byte byteVal, T remainder) const;
@@ -55,13 +55,14 @@ private:
 	const T _init_remainder;
 	const T _final_xor;
 
-  	T _crcTable[256];
+  	static T _crcTable[256];
+	static bool _is_inited;
 };
 
-template <typename T>
+template <typename T, T reflected_poly>
 class CRCReflected {
 public:
-	CRCReflected(T poly, T init_remainder, T final_xor);
+	CRCReflected(T init_remainder, T final_xor);
 
 	T crcFast(byte const message[], int nBytes) const;
 	T processByte(byte byteVal, T remainder) const;
@@ -69,15 +70,26 @@ public:
 	T finalize(T remainder) const { return remainder ^ _final_xor; }
 
 private:
-  	T _crcTable[256];
 	const T _reflected_init_remainder;
 	const T _final_xor;
+
+  	static T _crcTable[256];
+	static bool _is_inited;
 };
 
+#define DEFINE_CRC(class_type, type, poly)			\
+ 	template<> type class_type<type, poly>::_crcTable[256] = {0};	\
+	template<> bool class_type<type, poly>::_is_inited = false
 
-template <typename T>
-CRCNormal<T>::CRCNormal(T poly, T init_remainder, T final_xor) : _init_remainder(init_remainder), _final_xor(final_xor) {
+#define DEFINE_NORMAL_CRC(type, poly) DEFINE_CRC(CRCNormal, type, poly)
+#define DEFINE_REFLECTED_CRC(type, poly) DEFINE_CRC(CRCReflected, type, poly)
+
+template <typename T, T poly>
+CRCNormal<T, poly>::CRCNormal(T init_remainder, T final_xor) : _init_remainder(init_remainder), _final_xor(final_xor) {
 	const T topbit = 1ULL << (8 * sizeof(T) - 1);
+
+	if (_is_inited)
+		return;
 
 	/*
 	 * Compute the remainder of each possible dividend.
@@ -106,11 +118,16 @@ CRCNormal<T>::CRCNormal(T poly, T init_remainder, T final_xor) : _init_remainder
 		 * Store the result into the table.
 		 */
 		_crcTable[dividend] = remainder;
-	}	
+	}
+
+	_is_inited = true;
 }
 
-template <typename T>
-CRCReflected<T>::CRCReflected(T reflected_poly, T reflected_init_remainder, T final_xor) : _reflected_init_remainder(reflected_init_remainder), _final_xor(final_xor) {
+template <typename T, T reflected_poly>
+CRCReflected<T, reflected_poly>::CRCReflected(T reflected_init_remainder, T final_xor) : _reflected_init_remainder(reflected_init_remainder), _final_xor(final_xor) {
+	if (_is_inited)
+		return;
+
 	/*
 	 * Compute the remainder of each possible dividend.
 	 */
@@ -138,7 +155,9 @@ CRCReflected<T>::CRCReflected(T reflected_poly, T reflected_init_remainder, T fi
 		 * Store the result into the table.
 		 */
 		_crcTable[dividend] = remainder;
-	}	
+	}
+
+	_is_inited = true;
 }
 
 /*********************************************************************
@@ -152,8 +171,8 @@ CRCReflected<T>::CRCReflected(T reflected_poly, T reflected_init_remainder, T fi
  * Returns:     The CRC of the message.
  *
  *********************************************************************/
-template<typename T>
-T CRCNormal<T>::crcFast(byte const message[], int nBytes) const {
+template<typename T, T poly>
+T CRCNormal<T, poly>::crcFast(byte const message[], int nBytes) const {
 	T remainder = _init_remainder;
 
 	/*
@@ -181,8 +200,8 @@ T CRCNormal<T>::crcFast(byte const message[], int nBytes) const {
  * Returns:     The CRC of the message.
  *
  *********************************************************************/
-template<typename T>
-T CRCReflected<T>::crcFast(byte const message[], int nBytes) const {
+template<typename T, T reflected_poly>
+T CRCReflected<T, reflected_poly>::crcFast(byte const message[], int nBytes) const {
 	T remainder = _reflected_init_remainder;
 
 	/*
@@ -199,38 +218,38 @@ T CRCReflected<T>::crcFast(byte const message[], int nBytes) const {
 	return remainder ^ _final_xor;
 }
 
-template<typename T>
-T CRCNormal<T>::processByte(byte byteVal, T remainder) const {
+template<typename T, T poly>
+T CRCNormal<T, poly>::processByte(byte byteVal, T remainder) const {
 	byte data = byteVal ^ (remainder >> (8 * sizeof(T) - 8));
 
 	return _crcTable[data] ^ (remainder << 8);
 }
 
-template<typename T>
-T CRCReflected<T>::processByte(byte byteVal, T remainder) const {
+template<typename T, T poly>
+T CRCReflected<T, poly>::processByte(byte byteVal, T remainder) const {
 	byte data = byteVal ^ remainder;
 
 	return _crcTable[data] ^ (remainder >> 8);
 }
 
-class CRC_CCITT : public CRCNormal<uint16> {
+class CRC_CCITT : public CRCNormal<uint16, 0x1021> {
 public:
-	CRC_CCITT() : CRCNormal<uint16>(0x1021, 0xFFFF, 0x0000) {}
+	CRC_CCITT() : CRCNormal<uint16, 0x1021>(0xFFFF, 0x0000) {}
 };
 
-class CRC_BINHEX : public CRCNormal<uint16> {
+class CRC_BINHEX : public CRCNormal<uint16, 0x1021> {
 public:
-	CRC_BINHEX() : CRCNormal<uint16>(0x1021, 0x0000, 0x0000) {}
+	CRC_BINHEX() : CRCNormal<uint16, 0x1021>(0x0000, 0x0000) {}
 };
 
-class CRC16 : public CRCReflected<uint16> {
+class CRC16 : public CRCReflected<uint16, 0xa001> {
 public:
-	CRC16() : CRCReflected<uint16>(0xa001, 0x0000, 0x0000) {}
+	CRC16() : CRCReflected<uint16, 0xa001>(0x0000, 0x0000) {}
 };
 
-class CRC32 : public CRCReflected<uint32> {
+class CRC32 : public CRCReflected<uint32, 0xEDB88320> {
 public:
-	CRC32() : CRCReflected<uint32>(0xEDB88320, 0xFFFFFFFF, 0xFFFFFFFF) {}
+	CRC32() : CRCReflected<uint32, 0xEDB88320>(0xFFFFFFFF, 0xFFFFFFFF) {}
 };
 
 } // End of namespace Common
