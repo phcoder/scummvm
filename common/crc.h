@@ -48,6 +48,7 @@ public:
 
 	T crcFast(byte const message[], int nBytes) const;
 	T processByte(byte byteVal, T remainder) const;
+	T processBytes(const byte* buf, uint32 sz, T remainder) const;
 	T getInitRemainder() const { return _init_remainder; }
 	T finalize(T remainder) const { return remainder ^ _final_xor; }
 
@@ -66,6 +67,7 @@ public:
 
 	T crcFast(byte const message[], int nBytes) const;
 	T processByte(byte byteVal, T remainder) const;
+	T processBytes(const byte* buf, uint32 sz, T remainder) const;
 	T getInitRemainder() const { return _reflected_init_remainder; }
 	T finalize(T remainder) const { return remainder ^ _final_xor; }
 
@@ -230,6 +232,26 @@ T CRCReflected<T, poly>::processByte(byte byteVal, T remainder) const {
 	byte data = byteVal ^ remainder;
 
 	return _crcTable[data] ^ (remainder >> 8);
+}
+
+template<typename T, T poly>
+T CRCNormal<T, poly>::processBytes(const byte *buf, uint32 sz, T remainder) const {
+	for (uint32 i = 0; i < sz; i++) {
+		byte data = buf[i] ^ (remainder >> (8 * sizeof(T) - 8));
+		remainder = _crcTable[data] ^ (remainder << 8);
+	}
+
+	return remainder;
+}
+
+template<typename T, T poly>
+T CRCReflected<T, poly>::processBytes(const byte *buf, uint32 sz, T remainder) const {
+	for (uint32 i = 0; i < sz; i++) {
+		byte data = buf[i] ^ remainder;
+		remainder = _crcTable[data] ^ (remainder >> 8);
+	}
+
+	return remainder;
 }
 
 class CRC_CCITT : public CRCNormal<uint16, 0x1021> {
