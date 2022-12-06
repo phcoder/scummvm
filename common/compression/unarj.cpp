@@ -32,6 +32,7 @@
 #include "common/memstream.h"
 #include "common/bufferedstream.h"
 #include "common/textconsole.h"
+#include "common/crc.h"
 
 namespace Common {
 
@@ -159,47 +160,6 @@ private:
 #define PBIT		 5
 #define TBIT		 5
 
-// Source for CRC32::init, CRC32::checksum : crc32.c
-class CRC32 {
-	static uint32 	_table[256];
-	static bool _initialized;
-
-private:
-	static void init() {
-		const uint32 poly = 0xEDB88320;
-		int i, j;
-		uint32 r;
-
-		for (i = 0; i < 256; i++) {
-			r = i;
-			for (j = 0; j < 8; j++)
-				if (r & 1)
-					r = (r >> 1) ^ poly;
-				else
-					r >>= 1;
-			_table[i] = r;
-		}
-
-		_initialized = true;
-	}
-
-public:
-	static uint32 checksum(byte *data, int len) {
-		if (!_initialized) {
-			init();
-		}
-
-		uint32 CRC = 0xFFFFFFFF;
-		int i;
-		for (i = 0; i < len; i++)
-			CRC = (CRC >> 8) ^ _table[(CRC ^ data[i]) & 0xFF];
-		return CRC ^ 0xFFFFFFFF;
-	}
-};
-
-bool CRC32::_initialized = false;
-uint32 CRC32::_table[256];
-
 // Source for findHeader and readHeader: arj_arcv.c
 int32 findHeader(SeekableReadStream &stream) {
 	long end_pos, tmp_pos;
@@ -229,7 +189,7 @@ int32 findHeader(SeekableReadStream &stream) {
 			return -1;
 		if ((basic_hdr_size = stream.readUint16LE()) <= HEADERSIZE_MAX) {
 			stream.read(header, basic_hdr_size);
-			crc = CRC32::checksum(header, basic_hdr_size);
+			crc = Common::CRC32().crcFast(header, basic_hdr_size);
 			if (crc == stream.readUint32LE()) {
 				stream.seek(tmp_pos, SEEK_SET);
 				return tmp_pos;
@@ -267,7 +227,7 @@ ArjHeader *readHeader(SeekableReadStream &stream) {
 	MemoryReadStream readS(headData, rSize);
 
 	header.headerCrc = stream.readUint32LE();
-	if (CRC32::checksum(headData, header.headerSize) != header.headerCrc) {
+	if (Common::CRC32().crcFast(headData, header.headerSize) != header.headerCrc) {
 		warning("ArjFile::readHeader(): Bad header CRC");
 		return nullptr;
 	}
