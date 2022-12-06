@@ -22,6 +22,7 @@
 
 #include "common/endian.h"
 #include "common/compression/rnc_deco.h"
+#include "common/crc.h"
 
 namespace Common {
 
@@ -36,8 +37,6 @@ namespace Common {
 #define HEADER_LEN	18
 
 RncDecoder::RncDecoder() {
-	initCrc();
-
 	_bitBuffl = 0;
 	_bitBuffh = 0;
 	_bitCount = 0;
@@ -48,42 +47,6 @@ RncDecoder::RncDecoder() {
 
 RncDecoder::~RncDecoder() { }
 
-void RncDecoder::initCrc() {
-	uint16 cnt = 0;
-	uint16 tmp1 = 0;
-	uint16 tmp2 = 0;
-
-	for (tmp2 = 0; tmp2 < 0x100; tmp2++) {
-		tmp1 = tmp2;
-		for (cnt = 8; cnt > 0; cnt--) {
-			if (tmp1 % 2) {
-				tmp1 >>= 1;
-				tmp1 ^= 0x0a001;
-			} else
-				tmp1 >>= 1;
-		}
-		_crcTable[tmp2] = tmp1;
-	}
-}
-
-//calculate 16 bit crc of a block of memory
-uint16 RncDecoder::crcBlock(const uint8 *block, uint32 size) {
-	uint16 crc = 0;
-	uint8 *crcTable8 = (uint8 *)_crcTable; //make a uint8* to crc_table
-	uint8 tmp;
-	uint32 i;
-
-	for (i = 0; i < size; i++) {
-		tmp = *block++;
-		crc ^= tmp;
-		tmp = (uint8)((crc >> 8) & 0x00FF);
-		crc &= 0x00FF;
-		crc = *(uint16 *)&crcTable8[crc << 1];
-		crc ^= tmp;
-	}
-
-	return crc;
-}
 
 uint16 RncDecoder::inputBits(uint8 amount) {
 	uint16 newBitBuffh = _bitBuffh;
@@ -221,7 +184,7 @@ int32 RncDecoder::unpackM1(const void *input, uint inputSize, void *output) {
 	crcPacked = READ_BE_UINT16(inputptr); inputptr += 2;
 	inputptr = (inputptr + HEADER_LEN - 16);
 
-	if (crcBlock(inputptr, packLen) != crcPacked)
+	if (crc16.crcFast(inputptr, packLen) != crcPacked)
 		return PACKED_CRC;
 
 	inputptr = (((const uint8 *)input) + HEADER_LEN);
@@ -298,7 +261,7 @@ int32 RncDecoder::unpackM1(const void *input, uint inputSize, void *output) {
 		} while (--counts);
 	} while (--blocks);
 
-	if (crcBlock((uint8 *)output, unpackLen) != crcUnpacked)
+	if (crc16.crcFast((uint8 *)output, unpackLen) != crcUnpacked)
 		return UNPACKED_CRC;
 
 	// all is done..return the amount of unpacked bytes
@@ -335,7 +298,7 @@ int32 RncDecoder::unpackM2(const void *input, void *output) {
 	inputptr += 2;
 	inputptr = (inputptr + HEADER_LEN - 16);
 
-	if (crcBlock(inputptr, packLen) != crcPacked)
+	if (crc16.crcFast(inputptr, packLen) != crcPacked)
 		return PACKED_CRC;
 
 	inputptr = (((const uint8 *)input) + HEADER_LEN);
@@ -418,7 +381,7 @@ int32 RncDecoder::unpackM2(const void *input, void *output) {
 
 	}
 
-	if (crcBlock((uint8 *)output, unpackLen) != crcUnpacked)
+	if (crc16.crcFast((uint8 *)output, unpackLen) != crcUnpacked)
 		return UNPACKED_CRC;
 
 	// all is done..return the amount of unpacked bytes

@@ -22,6 +22,7 @@
 #ifndef COMMON_RNC_DECO_H
 #define COMMON_RNC_DECO_H
 
+#include "common/crc.h"
 
 namespace Common {
 
@@ -32,7 +33,6 @@ protected:
 	uint16 _rawTable[64];
 	uint16 _posTable[64];
 	uint16 _lenTable[64];
-	uint16 _crcTable[256];
 
 	uint16 _bitBuffl;
 	uint16 _bitBuffh;
@@ -42,6 +42,7 @@ protected:
 	uint8 *_dstPtr;
 
 	int32 _inputByteLeft;
+	Common::CRC16 crc16;
 
 public:
 	RncDecoder();
@@ -53,8 +54,6 @@ public:
 	static const uint32 kRnc2Signature = 0x524E4302; // "RNC\002"
 
 protected:
-	void initCrc();
-	uint16 crcBlock(const uint8 *block, uint32 size);
 	uint16 inputBits(uint8 amount);
 	void makeHufftable(uint16 *table);
 	uint16 inputValue(uint16 *table);
