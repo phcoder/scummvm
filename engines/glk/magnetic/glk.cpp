@@ -19,6 +19,7 @@
  *
  */
 
+#include "common/crc.h"
 #include "glk/magnetic/magnetic_defs.h"
 #include "glk/magnetic/magnetic.h"
 
@@ -274,18 +275,7 @@ int Magnetic::gms_strcasecmp(const char *s1, const char *s2) {
 /*---------------------------------------------------------------------*/
 
 glui32 Magnetic::gms_get_buffer_crc(const void *void_buffer, size_t length) {
-	const char *buf = (const char *) void_buffer;
-	uint32 crc;
-	size_t index;
-
-	/*
-	 * Start with all ones in the crc, then update using table entries.  Xor
-	 * with all ones again, finally, before returning.
-	 */
-	crc = 0xffffffff;
-	for (index = 0; index < length; index++)
-		crc = crc_table[(crc ^ buf[index]) & BYTE_MAX_VAL] ^ (crc >> BITS_PER_BYTE);
-	return crc ^ 0xffffffff;
+	return Common::CRC32().crcFast((const byte *) void_buffer, length);
 }
 
 /*---------------------------------------------------------------------*/

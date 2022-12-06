@@ -261,7 +261,6 @@ private:
 	Common::DumpFile *_log1, *_log2;
 private:
 	/* Method local statics in original code */
-	glui32 crc_table[BYTE_MAX_VAL + 1];
 	int luminance_weighting;
 	gms_gammaref_t linear_gamma;
 	uint32 pic_current_crc;			/* CRC of the current picture */
@@ -277,11 +276,6 @@ private:
 	 * Initializes settings from the ScummVM configuration
 	 */
 	void initializeSettings();
-
-	/**
-	 * Initializes the CRC table
-	 */
-	void initializeCRC();
 
 	/**
 	 * Initializes the linear gamma entry

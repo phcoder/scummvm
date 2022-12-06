@@ -78,7 +78,6 @@ Magnetic::Magnetic(OSystem *syst, const GlkGameDescription &gameDesc) : GlkAPI(s
 	undo_stat[0] = undo_stat[1] = 0;
 	Common::fill(&buffer[0], &buffer[80], 0);
 	Common::fill(&filename[0], &filename[256], 0);
-	Common::fill(&crc_table[0], &crc_table[BYTE_MAX_VAL + 1], 0);
 
 #ifndef NO_ANIMATION
 	Common::fill(&pos_table_count[0], &pos_table_count[MAX_POSITIONS], 0);
@@ -97,7 +96,6 @@ void Magnetic::runGame() {
 
 void Magnetic::initialize() {
 	initializeSettings();
-	initializeCRC();
 	initializeLinearGamma();
 
 	// Close the already opened gamefile, since the Magnetic code will open it on it's own
@@ -123,25 +121,6 @@ void Magnetic::initializeSettings() {
 	// Prompt enabled
 	if (ConfMan.hasKey("prompt_enabled"))
 		gms_prompt_enabled = ConfMan.getBool("prompt_enabled");
-}
-
-void Magnetic::initializeCRC() {
-	/* CRC table initialization polynomial. */
-	const glui32 GMS_CRC_POLYNOMIAL = 0xedb88320;
-	uint32 crc;
-
-	for (uint index = 0; index < BYTE_MAX_VAL + 1; ++index) {
-		int bit;
-
-		crc = index;
-		for (bit = 0; bit < BITS_PER_BYTE; bit++)
-			crc = crc & 1 ? GMS_CRC_POLYNOMIAL ^ (crc >> 1) : crc >> 1;
-
-		crc_table[index] = crc;
-	}
-
-	/* CRC lookup table self-test, after is_initialized set -- recursion. */
-	assert(gms_get_buffer_crc("123456789", 9) == 0xcbf43926);
 }
 
 void Magnetic::initializeLinearGamma() {
