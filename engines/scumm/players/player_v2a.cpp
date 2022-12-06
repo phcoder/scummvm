@@ -19,6 +19,7 @@
  *
  */
 
+#include "common/crc.h"
 #include "engines/engine.h"
 #include "scumm/players/player_v2a.h"
 #include "scumm/scumm.h"
@@ -26,30 +27,6 @@
 namespace Scumm {
 
 #define BASE_FREQUENCY 3579545
-
-static uint32 CRCtable[256];
-
-
-static void InitCRC() {
-	const uint32 poly = 0xEDB88320;
-	int i, j;
-	uint32 n;
-
-	for (i = 0; i < 256; i++) {
-		n = i;
-		for (j = 0; j < 8; j++)
-			n = (n & 1) ? ((n >> 1) ^ poly) : (n >> 1);
-		CRCtable[i] = n;
-	}
-}
-
-static uint32 GetCRC(byte *data, int len) {
-	uint32 CRC = 0xFFFFFFFF;
-	int i;
-	for (i = 0; i < len; i++)
-		CRC = (CRC >> 8) ^ CRCtable[(CRC ^ data[i]) & 0xFF];
-	return CRC ^ 0xFFFFFFFF;
-}
 
 class V2A_Sound {
 public:
@@ -1850,8 +1827,6 @@ Player_V2A::Player_V2A(ScummEngine *scumm, Audio::Mixer *mixer) {
 	int i;
 	_vm = scumm;
 
-	InitCRC();
-
 	for (i = 0; i < V2A_MAXSLOTS; i++) {
 		_slot[i].id = 0;
 		_slot[i].sound = nullptr;
@@ -1911,7 +1886,7 @@ void Player_V2A::startSound(int nr) {
 	assert(_vm);
 	byte *data = _vm->getResourceAddress(rtSound, nr);
 	assert(data);
-	uint32 crc = GetCRC(data + 0x0A, READ_BE_UINT16(data + 0x08));
+	uint32 crc = Common::CRC32().crcFast(data + 0x0A, READ_BE_UINT16(data + 0x08));
 	V2A_Sound *snd = findSound(crc);
 	if (snd == nullptr) {
 		warning("player_v2a - sound %i not recognized yet (crc %08X)", nr, crc);
