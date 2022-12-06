@@ -133,7 +133,6 @@ MODULE_OBJS := \
 	ui/ui_text.o \
 	ui/ui_tiled_image.o \
 	ui/ui_window.o \
-	utils/crc.o \
 	utils/path_util.o \
 	utils/string_util.o \
 	utils/utils.o \

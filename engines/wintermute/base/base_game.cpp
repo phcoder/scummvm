@@ -60,7 +60,6 @@
 #include "engines/wintermute/video/video_player.h"
 #include "engines/wintermute/video/video_theora_player.h"
 #include "engines/wintermute/utils/utils.h"
-#include "engines/wintermute/utils/crc.h"
 #include "engines/wintermute/utils/path_util.h"
 #include "engines/wintermute/utils/string_util.h"
 #include "engines/wintermute/ui/ui_window.h"
@@ -68,6 +67,7 @@
 #include "engines/wintermute/platform_osystem.h"
 #include "base/version.h"
 #include "common/config-manager.h"
+#include "common/crc.h"
 #include "common/savefile.h"
 #include "common/textconsole.h"
 #include "common/util.h"
@@ -2108,7 +2108,8 @@ bool BaseGame::scCallMethod(ScScript *script, ScStack *stack, ScStack *thisStack
 
 		Common::SeekableReadStream *file = BaseFileManager::getEngineInstance()->openFile(filename, false);
 		if (file) {
-			crc remainder = crc_initialize();
+			Common::CRC32 crc32;
+			uint32 remainder = crc32.getInitRemainder();
 			byte buf[1024];
 			int bytesRead = 0;
 
@@ -2116,11 +2117,9 @@ bool BaseGame::scCallMethod(ScScript *script, ScStack *stack, ScStack *thisStack
 				int bufSize = MIN((uint32)1024, (uint32)(file->size() - bytesRead));
 				bytesRead += file->read(buf, bufSize);
 
-				for (int i = 0; i < bufSize; i++) {
-					remainder = crc_process_byte(buf[i], remainder);
-				}
+				remainder = crc32.processBytes(buf, bufSize, remainder);
 			}
-			crc checksum = crc_finalize(remainder);
+			uint32 checksum = crc32.finalize(remainder);
 
 			if (asHex) {
 				char hex[100];
