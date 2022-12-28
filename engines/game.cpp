@@ -252,16 +252,20 @@ Common::U32String generateUnknownGameReport(const DetectedGames &detectedGames, 
 	report += Common::U32String("\n\n");
 
 	for (FilePropertiesMap::const_iterator file = matchedFiles.begin(); file != matchedFiles.end(); ++file) {
-		Common::String addon;
+		Common::String md5Prefix;
 
 		if (file->_value.md5prop & kMD5MacResFork)
-			addon += ", ADGF_MACRESFORK";
+			md5Prefix += "r";
+		if (file->_value.md5prop & kMD5MacDataFork)
+			md5Prefix += "d";
 		if (file->_value.md5prop & kMD5Tail)
-			addon += ", ADGF_TAILMD5";
+			md5Prefix += "t";
+		if (!md5Prefix.empty())
+			md5Prefix += ":";
 
-		report += Common::String::format("  {\"%s\", 0, \"%s\", %lld}%s,\n",
-			Common::punycode_encodefilename(Common::U32String(&file->_key.c_str()[2])).c_str(), // Skip the md5 prefix
-			file->_value.md5.c_str(), (long long)file->_value.size, addon.c_str());
+		report += Common::String::format("  {\"%s\", 0, \"%s%s\", %lld},\n",
+			Common::punycode_encodefilename(Common::U32String(strchr(file->_key.c_str(), ':') + 1).c_str()), // Skip the md5 prefix
+			md5Prefix.c_str(), file->_value.md5.c_str(), (long long)file->_value.size);
 	}
 
 	report += Common::U32String("\n");
