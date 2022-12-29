@@ -93,6 +93,11 @@ Common::Error ComposerEngine::run() {
 		_directoriesToStrip = 0;
 	}
 
+	if (getPlatform() == Common::kPlatformMacintosh && (gameId == "sleepingcub")) {
+		const Common::FSNode gameDataDir(ConfMan.get("path"));
+		SearchMan.addSubDirectoryMatching(gameDataDir, "sleepcub");
+	}
+
 	uint width = 640;
 	if (_bookIni.hasKey("Width", "Common"))
 		width = atoi(getStringFromConfig("Common", "Width").c_str());
