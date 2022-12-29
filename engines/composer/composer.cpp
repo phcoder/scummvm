@@ -99,6 +99,8 @@ Common::Error ComposerEngine::run() {
 			SearchMan.addSubDirectoryMatching(gameDataDir, "sleepcub");
 		if (gameId == "princess")
 			SearchMan.addSubDirectoryMatching(gameDataDir, "princess");
+		if (gameId == "liam")
+			SearchMan.addSubDirectoryMatching(gameDataDir, "liam");
 
 	}
 
