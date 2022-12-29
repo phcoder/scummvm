@@ -93,9 +93,13 @@ Common::Error ComposerEngine::run() {
 		_directoriesToStrip = 0;
 	}
 
-	if (getPlatform() == Common::kPlatformMacintosh && (gameId == "sleepingcub")) {
+	if (getPlatform() == Common::kPlatformMacintosh) {
 		const Common::FSNode gameDataDir(ConfMan.get("path"));
-		SearchMan.addSubDirectoryMatching(gameDataDir, "sleepcub");
+		if (gameId == "sleepingcub")
+			SearchMan.addSubDirectoryMatching(gameDataDir, "sleepcub");
+		if (gameId == "princess")
+			SearchMan.addSubDirectoryMatching(gameDataDir, "princess");
+
 	}
 
 	uint width = 640;
