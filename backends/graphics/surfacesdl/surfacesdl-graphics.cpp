@@ -890,6 +890,17 @@ bool SurfaceSdlGraphicsManager::loadGFXMode() {
 		_hwScreen = SDL_SetVideoMode(_videoMode.hardwareWidth, _videoMode.hardwareHeight, 16,
 			_videoMode.fullscreen ? (SDL_FULLSCREEN|SDL_SWSURFACE) : SDL_SWSURFACE
 			);
+#ifdef RS90
+		if (!_hwScreen) {
+			_videoMode.hardwareWidth = 240;
+			_videoMode.hardwareHeight = 160;
+			_videoMode.screenWidth = 240;
+			_videoMode.screenHeight = 160;
+			_hwScreen = SDL_SetVideoMode(_videoMode.hardwareWidth, _videoMode.hardwareHeight, 16,
+						     _videoMode.fullscreen ? (SDL_FULLSCREEN|SDL_SWSURFACE) : SDL_SWSURFACE
+				);
+		}
+#endif
 	}
 
 #ifdef USE_RGB_COLOR
