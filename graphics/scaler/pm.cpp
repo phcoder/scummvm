@@ -200,11 +200,11 @@ void PMScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 	}
 }
 
-uint PMScaler::increaseFactor() {
+Graphics::ScaleFactor PMScaler::increaseFactor() {
 	return _factor;
 }
 
-uint PMScaler::decreaseFactor() {
+Graphics::ScaleFactor PMScaler::decreaseFactor() {
 	return _factor;
 }
 

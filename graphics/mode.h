@@ -44,6 +44,98 @@ struct Mode {
 
 typedef Common::Array<Mode> ModeList;
 
+/**
+ * Represents value numerator/(2^shift)
+ */
+class ScaleFactor {
+public:
+	ScaleFactor(uint val) : numerator(val), shift(0) {}
+	ScaleFactor(uint val, uint sh) : numerator(val), shift(sh) { normalizeInPlace(); }
+	ScaleFactor() : numerator(1), shift(0) {}
+
+	bool operator==(const ScaleFactor &b) const {
+		ScaleFactor an = normalize(), bn = b.normalize();
+		return an.numerator == bn.numerator && an.shift == bn.shift;
+	}
+
+	bool operator!=(const ScaleFactor &b) const {
+		return !(*this == b);
+	}
+
+	ScaleFactor inc() {
+		return ScaleFactor(numerator + 1, shift).normalize();
+	}
+
+	ScaleFactor dec() {
+		ScaleFactor ret = { numerator, shift };
+		if (numerator == 1) {
+			ret.shift++;
+			return ret;
+		}
+		return ScaleFactor(numerator - 1, shift).normalize();
+	}
+
+	uint operator*(uint b) {
+		return (b * numerator) >> shift;
+	}
+
+	Common::U32String makeString() const {
+		if (shift == 0)
+			return Common::U32String::format("%dx", numerator);
+		return Common::U32String::format("%d/%dx", numerator, 1 << shift);
+	}
+
+	uint32 makeTag() const {
+		return numerator | (shift << 16);
+	}
+
+	uint32 getFracDenom() const {
+		return 1 << shift;
+	}
+
+	uint32 getFracPartNum() const {
+		return numerator & ((1 << shift) - 1);
+	}
+
+	uint32 getIntPart() const {
+		return numerator >> shift;
+	}
+
+	uint32 isInteger() const {
+		return shift == 0;
+	}
+
+	bool operator<(int b) const {
+		return b >= 0 && numerator < ((uint) b << shift);
+	}
+
+	bool operator>(int b) const {
+		return b <= 0 || numerator > ((uint) b << shift);
+	}
+
+private:
+	void normalizeInPlace() {
+		while (shift > 0 && (numerator & 1) == 0) {
+			shift--;
+			numerator >>= 1;
+		}
+	}
+
+	ScaleFactor normalize() const {
+		ScaleFactor ret = *this;
+		ret.normalizeInPlace();
+		return ret;
+	}
+
+	uint numerator;
+	uint shift;
+};
+
+
+FORCEINLINE uint operator*(uint a, ScaleFactor b) {
+	return b * a;
+}
+
 }
 
 #endif

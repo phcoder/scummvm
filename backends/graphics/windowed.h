@@ -183,7 +183,7 @@ protected:
 	/**
 	 * @returns the scale used between the game size and the surface on which it is rendered.
 	 */
-	virtual int getGameRenderScale() const {
+	virtual Graphics::ScaleFactor getGameRenderScale() const {
 		return 1;
 	}
 

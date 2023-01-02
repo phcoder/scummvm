@@ -893,7 +893,7 @@ public:
 	 *
 	 * @return The active scale factor.
 	 */
-	virtual uint getScaleFactor() const { return 1; }
+	virtual Graphics::ScaleFactor getScaleFactor() const { return 1; }
 
 
 	/**

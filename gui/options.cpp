@@ -1990,17 +1990,17 @@ void OptionsDialog::setupGraphicsTab() {
 void OptionsDialog::updateScaleFactors(uint32 tag) {
 	if ((int32)tag >= 0) {
 		const PluginList &scalerPlugins = ScalerMan.getPlugins();
-		const Common::Array<uint> &factors = scalerPlugins[tag]->get<ScalerPluginObject>().getFactors();
+		const Common::Array<Graphics::ScaleFactor> &factors = scalerPlugins[tag]->get<ScalerPluginObject>().getFactors();
 
 		_scaleFactorPopUp->clearEntries();
-		for (Common::Array<uint>::const_iterator it = factors.begin(); it != factors.end(); it++) {
-			_scaleFactorPopUp->appendEntry(Common::U32String::format("%dx", (*it)), (*it));
+		for (Common::Array<Graphics::ScaleFactor>::const_iterator it = factors.begin(); it != factors.end(); it++) {
+			_scaleFactorPopUp->appendEntry(it->makeString(), it->makeTag());
 		}
 
 		if (g_system->getScaler() == tag) {
-			_scaleFactorPopUp->setSelectedTag(g_system->getScaleFactor());
+			_scaleFactorPopUp->setSelectedTag(g_system->getScaleFactor().makeTag());
 		} else {
-			_scaleFactorPopUp->setSelectedTag(scalerPlugins[tag]->get<ScalerPluginObject>().getDefaultFactor());
+			_scaleFactorPopUp->setSelectedTag(scalerPlugins[tag]->get<ScalerPluginObject>().getDefaultFactor().makeTag());
 		}
 	} else {
 		_scaleFactorPopUp->clearEntries();

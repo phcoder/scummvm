@@ -571,7 +571,7 @@ uint SurfaceSdlGraphicsManager::getDefaultScaleFactor() const {
 #endif
 }
 
-bool SurfaceSdlGraphicsManager::setScaler(uint mode, int factor) {
+bool SurfaceSdlGraphicsManager::setScaler(uint mode, Graphics::ScaleFactor factor) {
 	Common::StackLock lock(_graphicsMutex);
 
 	assert(_transactionMode == kTransactionActive);
@@ -579,7 +579,7 @@ bool SurfaceSdlGraphicsManager::setScaler(uint mode, int factor) {
 	if (_oldVideoMode.setup && _oldVideoMode.scalerIndex == mode && _oldVideoMode.scaleFactor == factor)
 		return true;
 
-	int newFactor;
+	Graphics::ScaleFactor newFactor;
 	if (factor == -1)
 		newFactor = getDefaultScaleFactor();
 	else if (_scalerPlugins[mode]->get<ScalerPluginObject>().hasFactor(factor))
@@ -642,7 +642,7 @@ uint SurfaceSdlGraphicsManager::getScaler() const {
 	return _videoMode.scalerIndex;
 }
 
-uint SurfaceSdlGraphicsManager::getScaleFactor() const {
+Graphics::ScaleFactor SurfaceSdlGraphicsManager::getScaleFactor() const {
 	assert(_transactionMode == kTransactionNone);
 	return _videoMode.scaleFactor;
 }
@@ -741,7 +741,7 @@ void SurfaceSdlGraphicsManager::initSize(uint w, uint h, const Graphics::PixelFo
 			// new scale factor. If not, the normal scaler is
 			// assumed to be available at any reasonable factor,
 			// and is - of course -the only one that has a 1x mode.
-			const Common::Array<uint> &factors = _scalerPlugins[mode]->get<ScalerPluginObject>().getFactors();
+			const Common::Array<Graphics::ScaleFactor> &factors = _scalerPlugins[mode]->get<ScalerPluginObject>().getFactors();
 			if (Common::find(factors.begin(), factors.end(), (uint)scaleFactor) == factors.end()) {
 				mode = ScalerMan.findScalerPluginIndex("normal");
 			}
@@ -1088,7 +1088,7 @@ void SurfaceSdlGraphicsManager::updateScreen() {
 void SurfaceSdlGraphicsManager::internUpdateScreen() {
 	SDL_Surface *srcSurf, *origSurf;
 	int height, width;
-	int scale1;
+	Graphics::ScaleFactor scale1 = 1;
 
 	// If there's an active debugger, update it
 	GUI::Debugger *debugger = g_engine ? g_engine->getDebugger() : nullptr;
@@ -1139,7 +1139,7 @@ void SurfaceSdlGraphicsManager::internUpdateScreen() {
 		_forceRedraw = true;
 	}
 
-	int oldScaleFactor;
+	Graphics::ScaleFactor oldScaleFactor;
 
 	if (!_overlayVisible) {
 		if (_needRestoreAfterOverlay) {
@@ -1232,8 +1232,8 @@ void SurfaceSdlGraphicsManager::internUpdateScreen() {
 #ifdef USE_ASPECT
 				orig_dst_y = dst_y;
 #endif
-				dst_x *= scale1;
-				dst_y *= scale1;
+				dst_x = dst_x * scale1;
+				dst_y = dst_y * scale1;
 
 				if (_videoMode.aspectRatioCorrection && !_overlayInGUI)
 					dst_y = real2Aspect(dst_y);
@@ -1287,10 +1287,10 @@ void SurfaceSdlGraphicsManager::internUpdateScreen() {
 				if (h > height - y)
 					h = height - y;
 
-				x *= scale1;
-				y *= scale1;
-				w *= scale1;
-				h *= scale1;
+				x = x * scale1;
+				y = y * scale1;
+				w = w * scale1;
+				h = h * scale1;
 
 				if (_videoMode.aspectRatioCorrection && !_overlayInGUI)
 					y = real2Aspect(y);
@@ -1914,7 +1914,7 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 
 	_cursorNeedsRedraw = true;
 
-	int cursorScale;
+	Graphics::ScaleFactor cursorScale;
 	if (_cursorDontScale) {
 		// Don't scale the cursor at all if the user requests this behavior.
 		cursorScale = 1;
@@ -1981,22 +1981,66 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 		SDL_LockSurface(_mouseOrigSurface);
 		SDL_LockSurface(_mouseSurface);
 
-		const byte *src = (const byte *)_mouseOrigSurface->pixels;
-		byte *dst = (byte *)_mouseSurface->pixels;
-		for (int y = 0; y < _mouseOrigSurface->h; ++y) {
-			uint32 *rowDst = (uint32 *)dst;
-			const uint32 *rowSrc = (const uint32 *)src;
-			for (int x = 0; x < _mouseOrigSurface->w; ++x) {
-				for (int scaleX = 0; scaleX < cursorScale; ++scaleX) {
-					*rowDst++ = *rowSrc;
+		if (cursorScale.isInteger()) {
+			const byte *src = (const byte *)_mouseOrigSurface->pixels;
+			byte *dst = (byte *)_mouseSurface->pixels;
+			int cScale = cursorScale.getIntPart();
+			for (int y = 0; y < _mouseOrigSurface->h; ++y) {
+				uint32 *rowDst = (uint32 *)dst;
+				const uint32 *rowSrc = (const uint32 *)src;
+				for (int x = 0; x < _mouseOrigSurface->w; ++x) {
+					for (int scaleX = 0; scaleX < cScale; ++scaleX) {
+						*rowDst++ = *rowSrc;
+					}
+					++rowSrc;
 				}
-				++rowSrc;
-			}
-			for (int scaleY = 0; scaleY < cursorScale - 1; ++scaleY) {
-				memcpy(dst + _mouseSurface->pitch, dst, _mouseSurface->pitch);
+				for (int scaleY = 0; scaleY < cScale - 1; ++scaleY) {
+					memcpy(dst + _mouseSurface->pitch, dst, _mouseSurface->pitch);
+					dst += _mouseSurface->pitch;
+				}
 				dst += _mouseSurface->pitch;
+				src += _mouseOrigSurface->pitch;
 			}
-			dst += _mouseSurface->pitch;
+		} else {
+			uint denom = cursorScale.getFracDenom();
+			uint fraction = cursorScale.getFracPartNum();
+			uint full = cursorScale.getIntPart();
+
+			const byte *src = (const byte *)_mouseOrigSurface->pixels;
+			byte *dst = (byte *)_mouseSurface->pixels;
+			uint subpixely = 0;
+			int advancey = full;
+			subpixely += fraction;
+			if (subpixely >= denom) {
+				subpixely -= denom;
+				advancey++;
+			}
+			if (advancey) {
+				for (int y = 0; y < _mouseOrigSurface->h; ++y) {
+					uint32 *rowDst = (uint32 *)dst;
+					const uint32 *rowSrc = (const uint32 *)src;
+					uint subpixelx = 0;
+					for (int x = 0; x < _mouseOrigSurface->w; ++x) {
+						uint advance = full;
+						subpixelx += fraction;
+						if (subpixelx >= denom) {
+							subpixelx -= denom;
+							advance++;
+						}
+						for (int scaleX = 0; scaleX < advance; ++scaleX) {
+							*rowDst++ = *rowSrc;
+						}
+						++rowSrc;
+					}
+
+					for (int scaleY = 0; scaleY < advancey - 1; ++scaleY) {
+						memcpy(dst + _mouseSurface->pitch, dst, _mouseSurface->pitch);
+						dst += _mouseSurface->pitch;
+					}
+					dst += _mouseSurface->pitch;
+				}
+			}
+
 			src += _mouseOrigSurface->pitch;
 		}
 
@@ -2131,7 +2175,7 @@ void SurfaceSdlGraphicsManager::drawMouse() {
 	}
 
 	SDL_Rect dst;
-	int scale;
+	Graphics::ScaleFactor scale;
 	int hotX, hotY;
 
 	const Common::Point virtualCursor = convertWindowToVirtual(_cursorX, _cursorY);
@@ -2411,7 +2455,7 @@ void SurfaceSdlGraphicsManager::handleResizeImpl(const int width, const int heig
 	recalculateDisplayAreas();
 }
 
-void SurfaceSdlGraphicsManager::handleScalerHotkeys(uint mode, int factor) {
+void SurfaceSdlGraphicsManager::handleScalerHotkeys(uint mode, Graphics::ScaleFactor factor) {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	bool sizeChanged = _videoMode.scaleFactor != factor;
 #endif

@@ -109,7 +109,7 @@ uint ModularGraphicsBackend::getScaler() const {
 	return _graphicsManager->getScaler();
 }
 
-uint ModularGraphicsBackend::getScaleFactor() const {
+Graphics::ScaleFactor ModularGraphicsBackend::getScaleFactor() const {
 	return _graphicsManager->getScaleFactor();
 }
 

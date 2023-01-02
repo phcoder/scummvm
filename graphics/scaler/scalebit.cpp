@@ -336,9 +336,11 @@ int scale_precondition(unsigned scale, unsigned pixel, unsigned width, unsigned 
  * @param width Horizontal size in pixels of the source bitmap.
  * @param height Vertical size in pixels of the source bitmap.
  */
-void scale(unsigned scale, void* void_dst, unsigned dst_slice, const void* void_src, unsigned src_slice, unsigned pixel, unsigned width, unsigned height)
+void scale(Graphics::ScaleFactor scale, void* void_dst, unsigned dst_slice, const void* void_src, unsigned src_slice, unsigned pixel, unsigned width, unsigned height)
 {
-	switch (scale) {
+	if (!scale.isInteger())
+		return;
+	switch (scale.getIntPart()) {
 	case 2:
 		scale2x(void_dst, dst_slice, void_src, src_slice, pixel, width, height);
 		break;
@@ -361,15 +363,15 @@ void AdvMameScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 		::scale(_factor, dstPtr, dstPitch, srcPtr - srcPitch * 2, srcPitch, _format.bytesPerPixel, width, height);
 }
 
-uint AdvMameScaler::increaseFactor() {
+Graphics::ScaleFactor AdvMameScaler::increaseFactor() {
 	if (_factor < 4)
-		setFactor(_factor + 1);
+		setFactor(_factor.inc());
 	return _factor;
 }
 
-uint AdvMameScaler::decreaseFactor() {
+Graphics::ScaleFactor AdvMameScaler::decreaseFactor() {
 	if (_factor > 2)
-		setFactor(_factor - 1);
+		setFactor(_factor.dec());
 	return _factor;
 }
 

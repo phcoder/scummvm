@@ -203,13 +203,68 @@ void Normal5x(const uint8 *srcPtr, uint32 srcPitch, uint8 *dstPtr, uint32 dstPit
 		dstPtr += dstPitch5;
 	}
 }
+
+/**
+ * Trivial nearest-neighbor 5x scaler.
+ */
+template<typename Pixel>
+void NormalFrac(const uint8 *srcPtr, uint32 srcPitch, uint8 *dstPtr, uint32 dstPitch,
+		int width, int height, Graphics::ScaleFactor scale) {
+	uint8 *r;
+	const int b = sizeof(Pixel);
+	uint denom = scale.getFracDenom();
+	uint fraction = scale.getFracPartNum();
+	uint full = scale.getIntPart();
+	uint subpixely = 0;
+
+	while (height--) {
+		r = dstPtr;
+
+		int advancey = full;
+		subpixely += fraction;
+		if (subpixely >= denom) {
+			subpixely -= denom;
+			advancey++;
+		}
+
+		if (advancey) {
+			uint subpixelx = 0;
+			for (int i = 0; i < width; ++i) {
+				uint advance = full;
+				subpixelx += fraction;
+				if (subpixelx >= denom) {
+					subpixelx -= denom;
+					advance++;
+				}
+
+				Pixel color = *(((const Pixel *)srcPtr) + i);
+
+				for (uint j = 0; j < advance; j++, r += b)
+					*(Pixel *)r = color;
+			}
+
+			dstPtr += dstPitch;
+
+			for (int scaleY = 0; scaleY < advancey - 1; ++scaleY) {
+				memcpy(dstPtr + dstPitch, dstPtr, dstPitch);
+				dstPtr += dstPitch;
+			}
+		}
+
+		srcPtr += srcPitch;
+	}
+}
 #endif
 
 void NormalScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 							uint8 *dstPtr, uint32 dstPitch, int width, int height, int x, int y) {
 #ifdef USE_SCALERS
 	if (_format.bytesPerPixel == 1) {
-		switch (_factor) {
+		if (!_factor.isInteger()) {
+			NormalFrac<uint8>(srcPtr, srcPitch, dstPtr, dstPitch, width, height, _factor);
+			return;
+		}
+		switch (_factor.getIntPart()) {
 		case 2:
 			Normal2x<uint8>(srcPtr, srcPitch, dstPtr, dstPitch, width, height);
 			break;
@@ -224,7 +279,11 @@ void NormalScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 			break;
 		}
 	} else if (_format.bytesPerPixel == 2) {
-		switch (_factor) {
+		if (!_factor.isInteger()) {
+			NormalFrac<uint16>(srcPtr, srcPitch, dstPtr, dstPitch, width, height, _factor);
+			return;
+		}
+		switch (_factor.getIntPart()) {
 		case 2:
 #ifdef USE_ARM_SCALER_ASM
 			Normal2xARM(srcPtr, srcPitch, dstPtr, dstPitch, width, height);
@@ -244,7 +303,11 @@ void NormalScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 		}
 	} else {
 		assert(_format.bytesPerPixel == 4);
-		switch (_factor) {
+		if (!_factor.isInteger()) {
+			NormalFrac<uint32>(srcPtr, srcPitch, dstPtr, dstPitch, width, height, _factor);
+			return;
+		}
+		switch (_factor.getIntPart()) {
 		case 2:
 			Normal2x<uint32>(srcPtr, srcPitch, dstPtr, dstPitch, width, height);
 			break;
@@ -262,18 +325,18 @@ void NormalScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 #endif
 }
 
-uint NormalScaler::increaseFactor() {
+Graphics::ScaleFactor NormalScaler::increaseFactor() {
 #ifdef USE_SCALERS
 	if (_factor < 5)
-		setFactor(_factor + 1);
+		setFactor(_factor.inc());
 #endif
 	return _factor;
 }
 
-uint NormalScaler::decreaseFactor() {
+Graphics::ScaleFactor NormalScaler::decreaseFactor() {
 #ifdef USE_SCALERS
 	if (_factor > 1)
-		setFactor(_factor - 1);
+		setFactor(_factor.dec());
 #endif
 	return _factor;
 }

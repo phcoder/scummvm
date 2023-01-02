@@ -56,11 +56,11 @@ void DotMatrixScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 	}
 }
 
-uint DotMatrixScaler::increaseFactor() {
+Graphics::ScaleFactor DotMatrixScaler::increaseFactor() {
 	return _factor;
 }
 
-uint DotMatrixScaler::decreaseFactor() {
+Graphics::ScaleFactor DotMatrixScaler::decreaseFactor() {
 	return _factor;
 }
 

@@ -58,9 +58,9 @@ public:
 	virtual int getStretchMode() const { return 0; }
 	virtual uint getDefaultScaler() const { return 0; }
 	virtual uint getDefaultScaleFactor() const { return 1; }
-	virtual bool setScaler(uint mode, int factor) { return false; }
+	virtual bool setScaler(uint mode, Graphics::ScaleFactor factor) { return false; }
 	virtual uint getScaler() const { return 0; }
-	virtual uint getScaleFactor() const { return 1; }
+	virtual Graphics::ScaleFactor getScaleFactor() const { return 1; }
 
 #ifdef USE_RGB_COLOR
 	virtual Graphics::PixelFormat getScreenFormat() const = 0;

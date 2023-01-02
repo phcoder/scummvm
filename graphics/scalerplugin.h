@@ -24,6 +24,7 @@
 #include "base/plugins.h"
 #include "graphics/pixelformat.h"
 #include "graphics/surface.h"
+#include "graphics/mode.h"
 
 class Scaler {
 public:
@@ -49,15 +50,15 @@ public:
 	 * Increase the factor of scaling.
 	 * @return The new factor
 	 */
-	virtual uint increaseFactor() = 0;
+	virtual Graphics::ScaleFactor increaseFactor() = 0;
 
 	/**
 	 * Decrease the factor of scaling.
 	 * @return The new factor
 	 */
-	virtual uint decreaseFactor() = 0;
+	virtual Graphics::ScaleFactor decreaseFactor() = 0;
 
-	virtual uint getFactor() const { return _factor; }
+	virtual Graphics::ScaleFactor getFactor() const { return _factor; }
 
 	/**
 	 * Set the scaling factor.
@@ -66,8 +67,8 @@ public:
 	 * @param factor A valid scaling factor for the plugin
 	 * @return The old factor.
 	 */
-	virtual uint setFactor(uint factor) {
-		uint oldFactor = _factor;
+	virtual Graphics::ScaleFactor setFactor(Graphics::ScaleFactor factor) {
+		Graphics::ScaleFactor oldFactor = _factor;
 		_factor = factor;
 		return oldFactor;
 	}
@@ -101,7 +102,7 @@ protected:
 	virtual void scaleIntern(const uint8 *srcPtr, uint32 srcPitch, uint8 *dstPtr,
 	                         uint32 dstPitch, int width, int height, int x, int y) = 0;
 
-	uint _factor;
+	Graphics::ScaleFactor _factor;
 	Graphics::PixelFormat _format;
 };
 
@@ -120,7 +121,7 @@ public:
 
 	virtual void enableSource(bool enable) final { _enable = enable; }
 
-	virtual uint setFactor(uint factor) final;
+	virtual Graphics::ScaleFactor setFactor(Graphics::ScaleFactor factor) final;
 
 protected:
 
@@ -154,11 +155,11 @@ public:
 
 	virtual Scaler *createInstance(const Graphics::PixelFormat &format) const = 0;
 
-	const Common::Array<uint> &getFactors() const { return _factors; }
+	const Common::Array<Graphics::ScaleFactor> &getFactors() const { return _factors; }
 
-	bool hasFactor(uint factor) const {
-		const Common::Array<uint> &factors = getFactors();
-		for (Common::Array<uint>::const_iterator it = factors.begin(); it != factors.end(); it++) {
+	bool hasFactor(Graphics::ScaleFactor factor) const {
+		const Common::Array<Graphics::ScaleFactor> &factors = getFactors();
+		for (Common::Array<Graphics::ScaleFactor>::const_iterator it = factors.begin(); it != factors.end(); it++) {
 			if ((*it) == factor)
 				return true;
 		}
@@ -186,7 +187,7 @@ public:
 	/**
 	 * The default scale factor.
 	 */
-	virtual uint getDefaultFactor() const { return 2; }
+	virtual Graphics::ScaleFactor getDefaultFactor() const { return 2; }
 
 	/**
 	 * Computationally intense scalers can benefit from comparing new and old
@@ -200,7 +201,7 @@ public:
 	virtual bool useOldSource() const { return false; }
 
 protected:
-	Common::Array<uint> _factors;
+	Common::Array<Graphics::ScaleFactor> _factors;
 };
 
 /**

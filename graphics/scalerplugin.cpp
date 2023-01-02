@@ -80,8 +80,8 @@ void SourceScaler::setSource(const byte *src, uint pitch, int width, int height,
 	_bufferedOutput.create(_width * _factor, _height * _factor, _format);
 }
 
-uint SourceScaler::setFactor(uint factor) {
-	uint oldFactor = _factor;
+Graphics::ScaleFactor SourceScaler::setFactor(Graphics::ScaleFactor factor) {
+	Graphics::ScaleFactor oldFactor = _factor;
 	_factor = factor;
 
 	if (factor != oldFactor && _width != 0 && _height != 0) {

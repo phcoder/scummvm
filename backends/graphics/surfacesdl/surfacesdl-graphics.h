@@ -74,9 +74,9 @@ public:
 	int getGraphicsMode() const override;
 	uint getDefaultScaler() const override;
 	uint getDefaultScaleFactor() const override;
-	bool setScaler(uint mode, int factor) override;
+	bool setScaler(uint mode, Graphics::ScaleFactor factor) override;
 	uint getScaler() const override;
-	uint getScaleFactor() const override;
+	Graphics::ScaleFactor getScaleFactor() const override;
 #ifdef USE_RGB_COLOR
 	Graphics::PixelFormat getScreenFormat() const override { return _screenFormat; }
 	Common::List<Graphics::PixelFormat> getSupportedFormats() const override;
@@ -168,7 +168,7 @@ protected:
 	bool gameNeedsAspectRatioCorrection() const override {
 		return _videoMode.aspectRatioCorrection;
 	}
-	int getGameRenderScale() const override {
+	Graphics::ScaleFactor getGameRenderScale() const override {
 		return _videoMode.scaleFactor;
 	}
 
@@ -264,7 +264,7 @@ protected:
 #endif
 
 		uint scalerIndex;
-		int scaleFactor;
+		Graphics::ScaleFactor scaleFactor;
 
 		int screenWidth, screenHeight;
 		int overlayWidth, overlayHeight;
@@ -423,7 +423,7 @@ protected:
 
 private:
 	void setFullscreenMode(bool enable);
-	void handleScalerHotkeys(uint mode, int factor);
+	void handleScalerHotkeys(uint mode, Graphics::ScaleFactor factor);
 
 	/**
 	 * Converts the given point from the overlay's coordinate space to the

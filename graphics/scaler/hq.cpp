@@ -5038,13 +5038,13 @@ void HQScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 
 uint HQScaler::increaseFactor() {
 	if (_factor < 3)
-		setFactor(_factor + 1);
+		setFactor(_factor.inc());
 	return _factor;
 }
 
 uint HQScaler::decreaseFactor() {
 	if (_factor > 2)
-		setFactor(_factor - 1);
+		setFactor(_factor.dec());
 	return _factor;
 }
 

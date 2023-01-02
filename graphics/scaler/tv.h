@@ -26,8 +26,8 @@
 class TVScaler : public Scaler {
 public:
 	TVScaler(const Graphics::PixelFormat &format) : Scaler(format) { _factor = 2; }
-	uint increaseFactor() override;
-	uint decreaseFactor() override;
+	Graphics::ScaleFactor increaseFactor() override;
+	Graphics::ScaleFactor decreaseFactor() override;
 private:
 	virtual void scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 							uint8 *dstPtr, uint32 dstPitch, int width, int height, int x, int y) override;

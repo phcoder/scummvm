@@ -3599,13 +3599,13 @@ void EdgeScaler::internScale(const uint8 *srcPtr, uint32 srcPitch,
 
 uint EdgeScaler::increaseFactor() {
 	if (_factor == 2)
-		setFactor(_factor + 1);
+		setFactor(_factor.inc());
 	return _factor;
 }
 
 uint EdgeScaler::decreaseFactor() {
 	if (_factor == 3)
-		setFactor(_factor - 1);
+		setFactor(_factor.dec());
 	return _factor;
 }
 

@@ -38,11 +38,11 @@ void TVScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 
 }
 
-uint TVScaler::increaseFactor() {
+Graphics::ScaleFactor TVScaler::increaseFactor() {
 	return _factor;
 }
 
-uint TVScaler::decreaseFactor() {
+Graphics::ScaleFactor TVScaler::decreaseFactor() {
 	return _factor;
 }
 

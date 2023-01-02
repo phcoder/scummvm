@@ -406,11 +406,11 @@ void SAIScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 	}
 }
 
-uint SAIScaler::increaseFactor() {
+Graphics::ScaleFactor SAIScaler::increaseFactor() {
 	return _factor;
 }
 
-uint SAIScaler::decreaseFactor() {
+Graphics::ScaleFactor SAIScaler::decreaseFactor() {
 	return _factor;
 }
 
@@ -462,11 +462,11 @@ void SuperSAIScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 	}
 }
 
-uint SuperSAIScaler::increaseFactor() {
+Graphics::ScaleFactor SuperSAIScaler::increaseFactor() {
 	return _factor;
 }
 
-uint SuperSAIScaler::decreaseFactor() {
+Graphics::ScaleFactor SuperSAIScaler::decreaseFactor() {
 	return _factor;
 }
 
@@ -518,11 +518,11 @@ void SuperEagleScaler::scaleIntern(const uint8 *srcPtr, uint32 srcPitch,
 	}
 }
 
-uint SuperEagleScaler::increaseFactor() {
+Graphics::ScaleFactor SuperEagleScaler::increaseFactor() {
 	return _factor;
 }
 
-uint SuperEagleScaler::decreaseFactor() {
+Graphics::ScaleFactor SuperEagleScaler::decreaseFactor() {
 	return _factor;
 }
 
