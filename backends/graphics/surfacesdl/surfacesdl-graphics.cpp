@@ -632,11 +632,11 @@ void SurfaceSdlGraphicsManager::setGraphicsModeIntern() {
 		|| _transactionDetails.formatChanged
 #endif
 		) {
-		Graphics::PixelFormat format = convertSDLPixelFormat(_hwScreen->format);
+		_scalerFormat = convertSDLPixelFormat(_hwScreen->format);
 		delete _scaler;
 
 		_scalerPlugin = &_scalerPlugins[_videoMode.scalerIndex]->get<ScalerPluginObject>();
-		_scaler = _scalerPlugin->createInstance(format);
+		_scaler = _scalerPlugin->createInstance(_scalerFormat);
 	}
 
 	_scaler->setFactor(_videoMode.scaleFactor);
@@ -2118,7 +2118,7 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 #ifdef USE_SCALERS
 		// HACK: AdvMame4x requires a height of at least 4 pixels, so we
 		// fall back on the Normal scaler when a smaller cursor is supplied.
-		if (_scalerPlugin->canDrawCursor() && (uint)_mouseCurState.h >= _extraPixels) {
+		if (_scalerPlugin->canDrawCursor() && (uint)_mouseCurState.h >= _extraPixels && _mouseOrigSurface->format->BytesPerPixel == _scalerFormat.bytesPerPixel) {
 			_scaler->scale(
 					(byte *)_mouseOrigSurface->pixels + _mouseOrigSurface->pitch * _maxExtraPixels + _maxExtraPixels * _mouseOrigSurface->format->BytesPerPixel,
 					_mouseOrigSurface->pitch, (byte *)_mouseSurface->pixels, _mouseSurface->pitch,

@@ -326,6 +326,7 @@ protected:
 	const PluginList &_scalerPlugins;
 	ScalerPluginObject *_scalerPlugin;
 	Scaler *_scaler;
+	Graphics::PixelFormat _scalerFormat;
 	uint _maxExtraPixels;
 	uint _extraPixels;
 
