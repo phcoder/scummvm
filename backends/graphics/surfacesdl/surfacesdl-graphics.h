@@ -375,6 +375,7 @@ protected:
 #endif
 	bool _cursorDontScale;
 	bool _cursorPaletteDisabled;
+	bool _cursorKeepPalettized;
 	SDL_Surface *_mouseOrigSurface;
 	SDL_Surface *_mouseSurface;
 	enum {

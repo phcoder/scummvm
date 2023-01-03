@@ -136,7 +136,7 @@ SurfaceSdlGraphicsManager::SurfaceSdlGraphicsManager(SdlEventSource *sdlEventSou
 #endif
 	_transactionMode(kTransactionNone),
 	_scalerPlugins(ScalerMan.getPlugins()), _scalerPlugin(nullptr), _scaler(nullptr),
-	_needRestoreAfterOverlay(false), _isInOverlayPalette(false) {
+	_needRestoreAfterOverlay(false), _isInOverlayPalette(false), _cursorKeepPalettized(false) {
 
 	// allocate palette storage
 	_currentPalette = (SDL_Color *)calloc(sizeof(SDL_Color), 256);
@@ -1867,6 +1867,8 @@ void SurfaceSdlGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, 
 
 	_cursorDontScale = dontScale;
 
+	_cursorKeepPalettized = _cursorFormat.bytesPerPixel == 1 && _hwScreen->format->Rmask == 0;
+
 	if (_mouseCurState.w != (int)w || _mouseCurState.h != (int)h || formatChanged) {
 		_mouseCurState.w = w;
 		_mouseCurState.h = h;
@@ -1899,6 +1901,14 @@ void SurfaceSdlGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, 
 			const Uint32 bMask = ((0xFF >> format->bLoss) << format->bShift);
 			const Uint32 aMask = ((0xFF >> format->aLoss) << format->aShift);
 			_mouseSurface = _mouseOrigSurface = SDL_CreateRGBSurfaceFrom(const_cast<void *>(buf), w, h, format->bytesPerPixel * 8, w * format->bytesPerPixel, rMask, gMask, bMask, aMask);
+		} else if (_cursorKeepPalettized) {
+			assert(!_mouseOrigSurface);
+
+			// Allocate bigger surface because scalers will read past the boudaries.
+			_mouseOrigSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
+							_mouseCurState.w + _maxExtraPixels * 2,
+							_mouseCurState.h + _maxExtraPixels * 2,
+								 8, 0, 0, 0, 0);
 		} else {
 			assert(!_mouseOrigSurface);
 
@@ -2048,11 +2058,19 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 	uint32 color;
 
 	// Make whole surface transparent
-	for (uint i = 0; i < h + _maxExtraPixels * 2; i++) {
-		dstPtr = (byte *)_mouseOrigSurface->pixels + _mouseOrigSurface->pitch * i;
-		for (uint j = 0; j < w + _maxExtraPixels * 2; j++) {
-			*(uint16 *)dstPtr = kMouseColorKey;
-			dstPtr += _mouseOrigSurface->format->BytesPerPixel;
+	if (_mouseOrigSurface->format->BytesPerPixel == 1) {
+		byte bgcolor = _cursorKeepPalettized ? _mouseKeyColor : (byte) kMouseColorKey;
+		for (uint i = 0; i < h + _maxExtraPixels * 2; i++) {
+			dstPtr = (byte *)_mouseOrigSurface->pixels + _mouseOrigSurface->pitch * i;
+			memset(dstPtr, bgcolor, w + _maxExtraPixels * 2);
+		}
+	} else {
+		for (uint i = 0; i < h + _maxExtraPixels * 2; i++) {
+			dstPtr = (byte *)_mouseOrigSurface->pixels + _mouseOrigSurface->pitch * i;
+			for (uint j = 0; j < w + _maxExtraPixels * 2; j++) {
+				*(uint16 *)dstPtr = kMouseColorKey;
+				dstPtr += _mouseOrigSurface->format->BytesPerPixel;
+			}
 		}
 	}
 
@@ -2066,50 +2084,93 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 	else
 		palette = _cursorPalette;
 
-	for (int i = 0; i < h; i++) {
-		for (int j = 0; j < w; j++) {
-			if (_cursorFormat.bytesPerPixel == 2) {
-				color = *(const uint16 *)srcPtr;
-				if (color != _mouseKeyColor) {
-					uint8 r, g, b;
-					_cursorFormat.colorToRGB(color, r, g, b);
-					*(uint16 *)dstPtr = SDL_MapRGB(_mouseOrigSurface->format, r, g, b);
-				}
-				dstPtr += _mouseOrigSurface->format->BytesPerPixel;
-				srcPtr += _cursorFormat.bytesPerPixel;
+	SDL_Color keyed_palette[256];
+
+	if (_cursorKeepPalettized) {
+		for (uint i = 0; i < 256; i++) {
+			if (i == _mouseKeyColor) {
+				keyed_palette[i].r = 0;
+				keyed_palette[i].g = 0;
+				keyed_palette[i].b = 0;
+				keyed_palette[i].a = 0;
 			} else {
-				color = *srcPtr;
-				if (color != _mouseKeyColor) {
-					*(uint16 *)dstPtr = SDL_MapRGB(_mouseOrigSurface->format,
-						palette[color].r, palette[color].g, palette[color].b);
-				}
-				dstPtr += 2;
-				srcPtr++;
+				keyed_palette[i] = palette[i];
 			}
 		}
-		dstPtr += _mouseOrigSurface->pitch - w * _mouseOrigSurface->format->BytesPerPixel;
+	}
+
+	if (_cursorKeepPalettized) {
+		uint32 srcPitch = w * _mouseOrigSurface->format->BytesPerPixel;
+		for (int i = 0; i < h; i++) {
+			memcpy(dstPtr, srcPtr, srcPitch);
+			srcPtr += srcPitch;
+			dstPtr += _mouseOrigSurface->pitch;
+		}
+		SDL_SetColors(_mouseOrigSurface, keyed_palette, 0, 256);
+	} else {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				if (_cursorFormat.bytesPerPixel == 2) {
+					color = *(const uint16 *)srcPtr;
+					if (color != _mouseKeyColor) {
+						uint8 r, g, b;
+						_cursorFormat.colorToRGB(color, r, g, b);
+						*(uint16 *)dstPtr = SDL_MapRGB(_mouseOrigSurface->format, r, g, b);
+					}
+					dstPtr += _mouseOrigSurface->format->BytesPerPixel;
+					srcPtr += _cursorFormat.bytesPerPixel;
+				} else {
+					color = *srcPtr;
+					if (color != _mouseKeyColor) {
+						*(uint16 *)dstPtr = SDL_MapRGB(_mouseOrigSurface->format,
+									       palette[color].r, palette[color].g, palette[color].b);
+					}
+					dstPtr += 2;
+					srcPtr++;
+				}
+			}
+			dstPtr += _mouseOrigSurface->pitch - w * _mouseOrigSurface->format->BytesPerPixel;
+		}
 	}
 
 	if (sizeChanged || !_mouseSurface) {
 		if (_mouseSurface)
 			SDL_FreeSurface(_mouseSurface);
 
-		_mouseSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
-						_mouseCurState.rW,
-						_mouseCurState.rH,
-						16,
-						_hwScreen->format->Rmask,
-						_hwScreen->format->Gmask,
-						_hwScreen->format->Bmask,
-						_hwScreen->format->Amask);
+		if (_cursorKeepPalettized) {
+			_mouseSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
+							     _mouseCurState.rW,
+							     _mouseCurState.rH,
+							     8, 0, 0, 0, 0);
+			SDL_SetColors(_mouseSurface, keyed_palette, 0, 256);
+			SDL_SetColorKey(_mouseSurface, SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA, _mouseKeyColor);
+		} else if (_hwScreen->format->BytesPerPixel != 1) {
+			_mouseSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
+							     _mouseCurState.rW,
+							     _mouseCurState.rH,
+							     8 * _hwScreen->format->BytesPerPixel,
+							     _hwScreen->format->Rmask,
+							     _hwScreen->format->Gmask,
+							     _hwScreen->format->Bmask,
+							     _hwScreen->format->Amask);
+			SDL_SetColorKey(_mouseSurface, SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA, kMouseColorKey);
+		} else {
+			_mouseSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
+							     _mouseCurState.rW,
+							     _mouseCurState.rH,
+							     16, 0xF800, 0x7E0, 0x1F, 0);
+			SDL_SetColorKey(_mouseSurface, SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA, kMouseColorKey);
+		}
 
 		if (_mouseSurface == nullptr)
 			error("Allocating _mouseSurface failed");
-
-		SDL_SetColorKey(_mouseSurface, SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA, kMouseColorKey);
 	}
 
 	SDL_LockSurface(_mouseSurface);
+
+	if (_cursorKeepPalettized) {
+		SDL_SetColors(_mouseSurface, keyed_palette, 0, 256);
+	}
 
 	// If possible, use the same scaler for the cursor as for the rest of
 	// the game. This only works well with the non-blurring scalers so we
