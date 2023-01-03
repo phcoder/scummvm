@@ -258,6 +258,7 @@ protected:
 		bool aspectRatioCorrection;
 		AspectRatio desiredAspectRatio;
 		bool filtering;
+		bool isHwPalette;
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		int stretchMode;
@@ -387,6 +388,9 @@ protected:
 	// Palette data
 	SDL_Color *_currentPalette;
 	uint _paletteDirtyStart, _paletteDirtyEnd;
+
+	SDL_Color *_overlayPalette;
+	bool _isInOverlayPalette;
 
 	// Cursor palette data
 	SDL_Color *_cursorPalette;
