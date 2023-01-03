@@ -2084,21 +2084,6 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 	else
 		palette = _cursorPalette;
 
-	SDL_Color keyed_palette[256];
-
-	if (_cursorKeepPalettized) {
-		for (uint i = 0; i < 256; i++) {
-			if (i == _mouseKeyColor) {
-				keyed_palette[i].r = 0;
-				keyed_palette[i].g = 0;
-				keyed_palette[i].b = 0;
-				keyed_palette[i].a = 0;
-			} else {
-				keyed_palette[i] = palette[i];
-			}
-		}
-	}
-
 	if (_cursorKeepPalettized) {
 		uint32 srcPitch = w * _mouseOrigSurface->format->BytesPerPixel;
 		for (int i = 0; i < h; i++) {
@@ -2106,7 +2091,7 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 			srcPtr += srcPitch;
 			dstPtr += _mouseOrigSurface->pitch;
 		}
-		SDL_SetColors(_mouseOrigSurface, keyed_palette, 0, 256);
+		SDL_SetColors(_mouseOrigSurface, palette, 0, 256);
 	} else {
 		for (int i = 0; i < h; i++) {
 			for (int j = 0; j < w; j++) {
@@ -2142,7 +2127,7 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 							     _mouseCurState.rW,
 							     _mouseCurState.rH,
 							     8, 0, 0, 0, 0);
-			SDL_SetColors(_mouseSurface, keyed_palette, 0, 256);
+			SDL_SetColors(_mouseSurface, palette, 0, 256);
 			SDL_SetColorKey(_mouseSurface, SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA, _mouseKeyColor);
 		} else if (_hwScreen->format->BytesPerPixel != 1) {
 			_mouseSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
@@ -2169,7 +2154,8 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 	SDL_LockSurface(_mouseSurface);
 
 	if (_cursorKeepPalettized) {
-		SDL_SetColors(_mouseSurface, keyed_palette, 0, 256);
+		SDL_SetColors(_mouseSurface, palette, 0, 256);
+		SDL_SetColorKey(_mouseSurface, SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA, _mouseKeyColor);
 	}
 
 	// If possible, use the same scaler for the cursor as for the rest of
