@@ -581,9 +581,9 @@ uint SurfaceSdlGraphicsManager::getDefaultScaler() const {
 }
 
 uint SurfaceSdlGraphicsManager::getDefaultScaleFactor() const {
-	if (_videoMode.isHwPalette)
-		return 1;
-#ifdef USE_SCALERS
+#ifdef RS90
+	return 1;
+#elif defined (USE_SCALERS)
 	return 2;
 #else
 	return 1;
@@ -594,12 +594,6 @@ bool SurfaceSdlGraphicsManager::setScaler(uint mode, int factor) {
 	Common::StackLock lock(_graphicsMutex);
 
 	assert(_transactionMode == kTransactionActive);
-
-	if (_videoMode.isHwPalette) {
-		// No scaling for 8-bit is supported. This is meant for old devices anyway.
-		factor = 1;
-		mode = ScalerMan.findScalerPluginIndex("normal");
-	}
 
 	if (_oldVideoMode.setup && _oldVideoMode.scalerIndex == mode && _oldVideoMode.scaleFactor == factor)
 		return true;
@@ -749,8 +743,7 @@ void SurfaceSdlGraphicsManager::initSize(uint w, uint h, const Graphics::PixelFo
 		return;
 #endif
 
-	// RS90 handles scaling in IPU. We don't use 8-bpp on other devices
-	if (!_videoMode.isHwPalette && ((int)w != _videoMode.screenWidth || (int)h != _videoMode.screenHeight)) {
+	if (((int)w != _videoMode.screenWidth || (int)h != _videoMode.screenHeight)) {
 		const bool useDefault = defaultGraphicsModeConfig();
 		int scaleFactor = ConfMan.getInt("scale_factor");
 		if (scaleFactor == -1)
