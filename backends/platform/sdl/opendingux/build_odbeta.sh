@@ -40,7 +40,8 @@ export PATH=$TOOLCHAIN/usr/bin:$SYSROOT/usr/include:$TOOLCHAIN/bin:$PATH
 export CXX=mipsel-linux-g++
 export CXXFLAGS="-funsigned-char" # workaround for a scummvm tolower() bug when adding games
 
-./configure --host=opendingux-$target --enable-release --disable-detection-full
+#./configure --host=opendingux-$target --enable-release --disable-detection-full --default-dynamic --enable-plugins
+./configure --host=opendingux-$target --enable-release --disable-detection-full --default-dynamic --enable-plugins --disable-all-engines --enable-engine=scumm
 
 make -j12 od-make-opk $dualopk
 
