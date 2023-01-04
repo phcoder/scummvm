@@ -216,6 +216,7 @@ protected:
 	SDL_Surface *_overlayscreen;
 	bool _useOldSrc;
 	Graphics::PixelFormat _overlayFormat;
+	bool _isDoubleBuf;
 
 	enum {
 		kTransactionNone = 0,

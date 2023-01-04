@@ -136,7 +136,7 @@ SurfaceSdlGraphicsManager::SurfaceSdlGraphicsManager(SdlEventSource *sdlEventSou
 #endif
 	_transactionMode(kTransactionNone),
 	_scalerPlugins(ScalerMan.getPlugins()), _scalerPlugin(nullptr), _scaler(nullptr),
-	_needRestoreAfterOverlay(false), _isInOverlayPalette(false), _cursorKeepPalettized(false) {
+	_needRestoreAfterOverlay(false), _isInOverlayPalette(false), _cursorKeepPalettized(false), _isDoubleBuf(false) {
 
 	// allocate palette storage
 	_currentPalette = (SDL_Color *)calloc(sizeof(SDL_Color), 256);
@@ -913,9 +913,14 @@ bool SurfaceSdlGraphicsManager::loadGFXMode() {
 		}
 #endif
 
+		Uint32 flags = _videoMode.isHwPalette ? (SDL_HWSURFACE | SDL_HWPALETTE | SDL_DOUBLEBUF) : SDL_SWSURFACE;
+#ifndef RS90
+		if (_videoMode.fullscreen)
+			flags |= SDL_FULLSCREEN;
+#endif
 		_hwScreen = SDL_SetVideoMode(_videoMode.hardwareWidth, _videoMode.hardwareHeight, _videoMode.isHwPalette ? 8 : 16,
-			_videoMode.fullscreen ? (SDL_FULLSCREEN|SDL_SWSURFACE) : SDL_SWSURFACE
-			);
+					       flags);
+		_isDoubleBuf = flags & SDL_DOUBLEBUF;
 	}
 
 #ifdef USE_RGB_COLOR
@@ -1391,6 +1396,8 @@ void SurfaceSdlGraphicsManager::internUpdateScreen() {
 	_numDirtyRects = 0;
 	_forceRedraw = false;
 	_cursorNeedsRedraw = false;
+	if (_isDoubleBuf)
+		SDL_Flip(_hwScreen);
 }
 
 bool SurfaceSdlGraphicsManager::saveScreenshot(const Common::String &filename) const {
