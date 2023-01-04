@@ -175,7 +175,9 @@ SurfaceSdlGraphicsManager::SurfaceSdlGraphicsManager(SdlEventSource *sdlEventSou
 	_scaler = nullptr;
 	_maxExtraPixels = ScalerMan.getMaxExtraPixels();
 
+#ifndef RS90
 	_videoMode.fullscreen = ConfMan.getBool("fullscreen");
+#endif
 	_videoMode.filtering = ConfMan.getBool("filtering");
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	_videoMode.stretchMode = STRETCH_FIT;
@@ -205,7 +207,9 @@ SurfaceSdlGraphicsManager::~SurfaceSdlGraphicsManager() {
 
 bool SurfaceSdlGraphicsManager::hasFeature(OSystem::Feature f) const {
 	return
+#ifndef RS90
 		(f == OSystem::kFeatureFullscreenMode) ||
+#endif
 #ifdef USE_SCALERS
 		(f == OSystem::kFeatureScalers) ||
 #endif
@@ -319,8 +323,9 @@ OSystem::TransactionError SurfaceSdlGraphicsManager::endGFXTransaction() {
 	if (_transactionMode == kTransactionRollback) {
 		if (_videoMode.fullscreen != _oldVideoMode.fullscreen) {
 			errors |= OSystem::kTransactionFullscreenFailed;
-
+#ifndef RS90
 			_videoMode.fullscreen = _oldVideoMode.fullscreen;
+#endif
 		} else if (_videoMode.aspectRatioCorrection != _oldVideoMode.aspectRatioCorrection) {
 			errors |= OSystem::kTransactionAspectRatioFailed;
 
@@ -916,10 +921,8 @@ bool SurfaceSdlGraphicsManager::loadGFXMode() {
 #endif
 
 		Uint32 flags = _videoMode.isHwPalette ? (SDL_HWSURFACE | SDL_HWPALETTE | SDL_DOUBLEBUF) : SDL_SWSURFACE;
-#ifndef RS90
 		if (_videoMode.fullscreen)
 			flags |= SDL_FULLSCREEN;
-#endif
 		_hwScreen = SDL_SetVideoMode(_videoMode.hardwareWidth, _videoMode.hardwareHeight, _videoMode.isHwPalette ? 8 : 16,
 					       flags);
 		_isDoubleBuf = flags & SDL_DOUBLEBUF;
@@ -1438,6 +1441,7 @@ void SurfaceSdlGraphicsManager::setFullscreenMode(bool enable) {
 	if (!g_system->hasFeature(OSystem::kFeatureFullscreenMode))
 		return;
 
+#ifndef RS90
 	if (_oldVideoMode.setup && _oldVideoMode.fullscreen == enable)
 		return;
 
@@ -1445,6 +1449,7 @@ void SurfaceSdlGraphicsManager::setFullscreenMode(bool enable) {
 		_videoMode.fullscreen = enable;
 		_transactionDetails.needHotswap = true;
 	}
+#endif
 }
 
 void SurfaceSdlGraphicsManager::setAspectRatioCorrection(bool enable) {

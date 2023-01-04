@@ -255,7 +255,11 @@ protected:
 	struct VideoState {
 		bool setup;
 
+#ifdef RS90
+		static const bool fullscreen = 0;
+#else
 		bool fullscreen;
+#endif
 		bool aspectRatioCorrection;
 		AspectRatio desiredAspectRatio;
 		bool filtering;
@@ -277,7 +281,9 @@ protected:
 
 		VideoState() {
 			setup = false;
+#ifndef RS90
 			fullscreen = false;
+#endif
 			aspectRatioCorrection = false;
 			// desiredAspectRatio set to (0, 0) by AspectRatio constructor
 			filtering = false;
