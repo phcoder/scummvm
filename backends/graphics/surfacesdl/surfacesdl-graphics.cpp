@@ -160,11 +160,11 @@ SurfaceSdlGraphicsManager::SurfaceSdlGraphicsManager(SdlEventSource *sdlEventSou
 		_enableFocusRectDebugCode = ConfMan.getBool("use_sdl_debug_focusrect");
 #endif
 
-//#ifdef RS90
+#ifdef RS90
 	_videoMode.isHwPalette = true;
-//#else
-//	_videoMode.isHwPalette = false;
-//#endif
+#else
+	_videoMode.isHwPalette = false;
+#endif
 
 #if defined(USE_ASPECT)
 	_videoMode.aspectRatioCorrection = ConfMan.getBool("aspect_ratio");
@@ -843,12 +843,12 @@ void SurfaceSdlGraphicsManager::fixupResolutionForAspectRatio(AspectRatio desire
 }
 
 void SurfaceSdlGraphicsManager::setupHardwareSize() {
-//#ifdef RS90
+#ifdef RS90
 	_videoMode.isHwPalette = true;
 	_videoMode.scaleFactor = 1;
-//#else
-//	_videoMode.isHwPalette = false;
-//#endif
+#else
+	_videoMode.isHwPalette = false;
+#endif
 
 	_videoMode.overlayWidth = _videoMode.screenWidth * _videoMode.scaleFactor;
 	_videoMode.overlayHeight = _videoMode.screenHeight * _videoMode.scaleFactor;
