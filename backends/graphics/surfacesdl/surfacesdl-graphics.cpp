@@ -143,10 +143,11 @@ SurfaceSdlGraphicsManager::SurfaceSdlGraphicsManager(SdlEventSource *sdlEventSou
 	_overlayPalette = (SDL_Color *)calloc(sizeof(SDL_Color), 256);
 	_cursorPalette = (SDL_Color *)calloc(sizeof(SDL_Color), 256);
 
+	// Generate RGB332 palette for overlay
 	for (uint i = 0; i < 256; i++) {
-		_overlayPalette[i].r = (i >> 5) & 7;
-		_overlayPalette[i].g = (i >> 2) & 7;
-		_overlayPalette[i].b = i & 3;
+		_overlayPalette[i].r = ((i >> 5) & 7) << 5;
+		_overlayPalette[i].g = ((i >> 2) & 7) << 5;
+		_overlayPalette[i].b = (i & 3) << 6;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		_overlayPalette[i].a = 0xff;
 #endif
@@ -981,6 +982,7 @@ bool SurfaceSdlGraphicsManager::loadGFXMode() {
 		error("allocating _overlayscreen failed");
 
 	_overlayFormat = convertSDLPixelFormat(_overlayscreen->format);
+	// Overlay uses RGB332 palette
 	if (_overlayFormat.bytesPerPixel == 1 && _overlayFormat.rBits() == 0)
 		_overlayFormat = Graphics::PixelFormat(1, 3, 3, 2, 0, 5, 2, 0, 0);
 
@@ -1169,6 +1171,10 @@ void SurfaceSdlGraphicsManager::internUpdateScreen() {
 			SDL_SetColors(_tmpscreen, _currentPalette + _paletteDirtyStart,
 				      _paletteDirtyStart,
 				      _paletteDirtyEnd - _paletteDirtyStart);
+		if (_videoMode.isHwPalette && !_isInOverlayPalette)
+			SDL_SetColors(_hwScreen, _currentPalette + _paletteDirtyStart,
+				       _paletteDirtyStart,
+				       _paletteDirtyEnd - _paletteDirtyStart);
 
 		_paletteDirtyEnd = 0;
 
