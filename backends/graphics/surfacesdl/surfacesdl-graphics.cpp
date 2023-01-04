@@ -147,7 +147,9 @@ SurfaceSdlGraphicsManager::SurfaceSdlGraphicsManager(SdlEventSource *sdlEventSou
 		_overlayPalette[i].r = (i >> 5) & 7;
 		_overlayPalette[i].g = (i >> 2) & 7;
 		_overlayPalette[i].b = i & 3;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 		_overlayPalette[i].a = 0xff;
+#endif
 	}
 
 	_mouseBackup.x = _mouseBackup.y = _mouseBackup.w = _mouseBackup.h = 0;
