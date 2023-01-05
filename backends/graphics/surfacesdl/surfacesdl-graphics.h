@@ -348,8 +348,11 @@ protected:
 	};
 
 	// Dirty rect management
-	SDL_Rect _dirtyRectList[NUM_DIRTY_RECT];
+	SDL_Rect _dirtyRectList[2 * NUM_DIRTY_RECT];
 	int _numDirtyRects;
+
+	SDL_Rect _prevDirtyRectList[NUM_DIRTY_RECT];
+	int _numPrevDirtyRects;
 
 	struct MousePos {
 		// The size and hotspot of the original cursor image.
@@ -471,6 +474,8 @@ private:
 	 * can be triggered.
 	 */
 	bool _needRestoreAfterOverlay;
+	bool _prevForceRedraw;
+	bool _prevCursorNeedsRedraw;
 };
 
 #endif
