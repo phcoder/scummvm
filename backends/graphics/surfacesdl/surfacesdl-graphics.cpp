@@ -1958,7 +1958,7 @@ void SurfaceSdlGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, 
 
 	_cursorDontScale = dontScale;
 
-	_cursorKeepPalettized = _cursorFormat.bytesPerPixel == 1 && _hwScreen->format->Rmask == 0;
+	_cursorKeepPalettized = _cursorFormat.bytesPerPixel == 1 && (_hwScreen->format->Rmask == 0 || _hwScreen->format->Rmask == 0xff);
 
 	if (_mouseCurState.w != (int)w || _mouseCurState.h != (int)h || formatChanged) {
 		_mouseCurState.w = w;
