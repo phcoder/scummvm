@@ -3584,8 +3584,10 @@ if test -n "$_host"; then
 					append_var DEFINES "-DRS90 -DDISABLE_FANCY_THEMES"
 					_16bit=no
 					_highres=no
+					# Scaling is handled by IPU
 					_build_aspect=no
 					_build_hq_scalers=no
+					_build_scalers=no
 					_host=opendingux-rg99
 					;;
 				*)
