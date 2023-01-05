@@ -2172,19 +2172,28 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 			}
 			_mappedMouseKeyColor = _mouseKeyColor;
 		} else {
-			byte targetGfxPalette[256 * 3];
-			for (uint i = 0; i < 256; i++) {
-				targetGfxPalette[i * 3] = targetPalette[i].r;
-				targetGfxPalette[i * 3 + 1] = targetPalette[i].g;
-				targetGfxPalette[i * 3 + 2] = targetPalette[i].b;
-			}
-			Graphics::PaletteLookup palLookup(targetGfxPalette, 256);
 			uint16 mapping[256];
 			memset(mapping, 0, sizeof(mapping));
 			srcPtr = _mouseData;
-			for (int i = 0; i < h * w; i++)
-				if (srcPtr[i] != _mouseKeyColor && !mapping[srcPtr[i]])
-					mapping[srcPtr[i]] = 0x100 | palLookup.findBestColor(palette[srcPtr[i]].r, palette[srcPtr[i]].g, palette[srcPtr[i]].b);
+			if (_overlayVisible) {
+				// Fast path for RGB332
+				for (int i = 0; i < h * w; i++)
+					if (srcPtr[i] != _mouseKeyColor && !mapping[srcPtr[i]])
+						mapping[srcPtr[i]] = 0x100 | (palette[srcPtr[i]].r & 0xe0)
+							| ((palette[srcPtr[i]].g >> 3) & 0x1c) | ((palette[srcPtr[i]].b >> 6) & 3);
+			} else {
+				byte targetGfxPalette[256 * 3];
+				for (uint i = 0; i < 256; i++) {
+					targetGfxPalette[i * 3] = targetPalette[i].r;
+					targetGfxPalette[i * 3 + 1] = targetPalette[i].g;
+					targetGfxPalette[i * 3 + 2] = targetPalette[i].b;
+				}
+				Graphics::PaletteLookup palLookup(targetGfxPalette, 256);
+
+				for (int i = 0; i < h * w; i++)
+					if (srcPtr[i] != _mouseKeyColor && !mapping[srcPtr[i]])
+						mapping[srcPtr[i]] = 0x100 | palLookup.findBestColor(palette[srcPtr[i]].r, palette[srcPtr[i]].g, palette[srcPtr[i]].b);
+			}
 			_mappedMouseKeyColor = 0;
 			for (int i = 0; i < 256; i++)
 				if (!mapping[i]) {
