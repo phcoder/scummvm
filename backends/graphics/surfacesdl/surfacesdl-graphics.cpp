@@ -1996,7 +1996,7 @@ void SurfaceSdlGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, 
 			assert(!_mouseOrigSurface);
 
 			// Allocate bigger surface because scalers will read past the boudaries.
-			_mouseOrigSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
+			_mouseOrigSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
 							_mouseCurState.w + _maxExtraPixels * 2,
 							_mouseCurState.h + _maxExtraPixels * 2,
 								 8, 0, 0, 0, 0);
@@ -2020,6 +2020,8 @@ void SurfaceSdlGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, 
 
 		if (_cursorFormat.bytesPerPixel == 4) {
 			SDL_SetColorKey(_mouseOrigSurface, SDL_SRCCOLORKEY | SDL_SRCALPHA, _mouseKeyColor);
+		} else if (_cursorKeepPalettized) {
+			SDL_SetColorKey(_mouseOrigSurface, SDL_SRCCOLORKEY, kMouseColorKey);
 		} else {
 			SDL_SetColorKey(_mouseOrigSurface, SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA, kMouseColorKey);
 		}
@@ -2244,12 +2246,12 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 			SDL_FreeSurface(_mouseSurface);
 
 		if (_cursorKeepPalettized) {
-			_mouseSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
+			_mouseSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
 							     _mouseCurState.rW,
 							     _mouseCurState.rH,
 							     8, 0, 0, 0, 0);
 			SDL_SetColors(_mouseSurface, targetPalette, 0, 256);
-			SDL_SetColorKey(_mouseSurface, SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA, _mappedMouseKeyColor);
+			SDL_SetColorKey(_mouseSurface, SDL_SRCCOLORKEY, _mappedMouseKeyColor);
 		} else if (_hwScreen->format->BytesPerPixel != 1) {
 			_mouseSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
 							     _mouseCurState.rW,
@@ -2275,8 +2277,8 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 	SDL_LockSurface(_mouseSurface);
 
 	if (_cursorKeepPalettized) {
-//		SDL_SetColors(_mouseSurface, targetPalette, 0, 256);
-//		SDL_SetColorKey(_mouseSurface, SDL_SRCCOLORKEY, _mappedMouseKeyColor);
+		SDL_SetColors(_mouseSurface, targetPalette, 0, 256);
+		SDL_SetColorKey(_mouseSurface, SDL_SRCCOLORKEY, _mappedMouseKeyColor);
 	}
 
 	// If possible, use the same scaler for the cursor as for the rest of
