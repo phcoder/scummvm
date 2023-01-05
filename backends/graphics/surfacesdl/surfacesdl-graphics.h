@@ -436,6 +436,7 @@ protected:
 
 	bool saveScreenshot(const Common::String &filename) const override;
 	virtual void setGraphicsModeIntern();
+	void getDefaultResolution(uint &w, uint &h);
 
 private:
 	void setFullscreenMode(bool enable);

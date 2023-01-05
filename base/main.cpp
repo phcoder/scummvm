@@ -350,7 +350,11 @@ static void setupGraphics(OSystem &system) {
 		system.setScaler(ConfMan.get("scaler").c_str(), ConfMan.getInt("scale_factor"));
 		system.setShader(ConfMan.get("shader"));
 
+#ifdef RS90
+		system.initSize(0, 0);
+#else
 		system.initSize(320, 200);
+#endif
 
 		// Parse graphics configuration, implicit fallback to defaults set with RegisterDefaults()
 		system.setFeatureState(OSystem::kFeatureAspectRatioCorrection, ConfMan.getBool("aspect_ratio"));
