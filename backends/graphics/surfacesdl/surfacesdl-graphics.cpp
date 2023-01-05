@@ -958,12 +958,20 @@ bool SurfaceSdlGraphicsManager::loadGFXMode() {
 		}
 #endif
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		Uint32 flags = SDL_SWSURFACE;
+#else
 		Uint32 flags = _videoMode.isHwPalette ? (SDL_HWSURFACE | SDL_HWPALETTE | SDL_DOUBLEBUF) : SDL_SWSURFACE;
+#endif
 		if (_videoMode.fullscreen)
 			flags |= SDL_FULLSCREEN;
 		_hwScreen = SDL_SetVideoMode(_videoMode.hardwareWidth, _videoMode.hardwareHeight, _videoMode.isHwPalette ? 8 : 16,
 					       flags);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		_isDoubleBuf = false;
+#else
 		_isDoubleBuf = flags & SDL_DOUBLEBUF;
+#endif
 	}
 
 #ifdef USE_RGB_COLOR
@@ -1468,8 +1476,10 @@ void SurfaceSdlGraphicsManager::internUpdateScreen() {
 	_numDirtyRects = 0;
 	_forceRedraw = false;
 	_cursorNeedsRedraw = false;
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 	if (_isDoubleBuf)
 		SDL_Flip(_hwScreen);
+#endif
 }
 
 bool SurfaceSdlGraphicsManager::saveScreenshot(const Common::String &filename) const {
