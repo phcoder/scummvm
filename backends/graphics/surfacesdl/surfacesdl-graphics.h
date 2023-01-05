@@ -383,6 +383,7 @@ protected:
 #else
 	byte _mouseKeyColor;
 #endif
+	byte _mappedMouseKeyColor;
 	bool _cursorDontScale;
 	bool _cursorPaletteDisabled;
 	bool _cursorKeepPalettized;
