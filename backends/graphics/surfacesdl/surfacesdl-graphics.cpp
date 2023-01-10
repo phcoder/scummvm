@@ -889,7 +889,11 @@ bool SurfaceSdlGraphicsManager::loadGFXMode() {
 #endif
 
 		_hwScreen = SDL_SetVideoMode(_videoMode.hardwareWidth, _videoMode.hardwareHeight, 16,
+#ifdef MIYOOMINI
+					     SDL_FULLSCREEN|SDL_HWSURFACE
+#else
 			_videoMode.fullscreen ? (SDL_FULLSCREEN|SDL_SWSURFACE) : SDL_SWSURFACE
+#endif
 			);
 	}
 
@@ -911,6 +915,18 @@ bool SurfaceSdlGraphicsManager::loadGFXMode() {
 
 #if !SDL_VERSION_ATLEAST(2, 0, 0)
 	handleResize(_videoMode.hardwareWidth, _videoMode.hardwareHeight);
+#endif
+
+#ifdef MIYOOMINI
+	_realHwScreen = _hwScreen;
+	_hwScreen = SDL_CreateRGBSurface(SDL_HWSURFACE, _videoMode.hardwareWidth, _videoMode.hardwareHeight,
+					 _realHwScreen->format->BitsPerPixel,
+					 _realHwScreen->format->Rmask,
+					 _realHwScreen->format->Gmask,
+					 _realHwScreen->format->Bmask,
+					 _realHwScreen->format->Amask);
+	if (_hwScreen == nullptr)
+		error("allocating bouncing _hwScreen failed");
 #endif
 
 	//
@@ -1339,7 +1355,17 @@ void SurfaceSdlGraphicsManager::internUpdateScreen() {
 
 		// Finally, blit all our changes to the screen
 		if (!_displayDisabled) {
+#ifdef MIYOOMINI
+			SDL_Rect full;
+			full.x = 0;
+			full.y = 0;
+			full.w = width;
+			full.h = height;
+			SDL_BlitSurface(_hwScreen, &full, _realHwScreen, &full);
+			SDL_UpdateRects(_realHwScreen, _numDirtyRects, _dirtyRectList);
+#else			
 			SDL_UpdateRects(_hwScreen, _numDirtyRects, _dirtyRectList);
+#endif
 		}
 	}
 

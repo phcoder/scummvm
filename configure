@@ -837,6 +837,7 @@ Special configuration feature:
                                            ios7-arm64 for Apple iPhone / iPad (iOS >= 7, 64-bit)
                                            maemo for Nokia Maemo
                                            miyoo for 1st generation Miyoo
+                                           miyoomini for Miyoo Mini
                                            n64 for Nintendo 64
                                            opendingux-gcw0 for GCW0 with Opendingux Beta
                                            opendingux-lepus for Lepus with Opendingux Beta
@@ -1646,6 +1647,11 @@ miyoo)
 	_host_os=linux
 	_host_cpu=arm
 	_host_alias=arm-linux
+	;;
+miyoomini)
+	_host_os=linux
+	_host_cpu=arm
+	_host_alias=arm-linux-gnueabihf
 	;;
 n64)
 	_host_os=n64
@@ -3542,6 +3548,30 @@ if test -n "$_host"; then
 			add_line_to_config_mk 'OPENDINGUX = 1'
 			add_line_to_config_mk "OPENDINGUX_TARGET = miyoo"
 			;;
+		miyoomini)
+			_sysroot=`$CXX --print-sysroot`
+			_sdlpath=$_sysroot/usr/bin
+			append_var DEFINES  "-DMIYOO -DMIYOOMINI -DREDUCE_MEMORY_USAGE -DDINGUX -DOPENDINGUX -DUNCACHED_PLUGINS"
+			append_var CXXFLAGS "-marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -march=armv7ve -ffast-math -fomit-frame-pointer -fno-strength-reduce"
+			append_var LDFLAGS  "-marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -march=armv7ve -ffast-math -fomit-frame-pointer -fno-strength-reduce"
+			append_var LDFLAGS  "-O3 -Wl,--as-needed,--gc-sections"
+			_vkeybd=yes
+			_alsa=no
+			_vorbis=no
+			_mt32emu=no
+			_timidity=no
+			_fluidsynth=no
+			_theoradec=no
+			_highres=yes
+			_seq_midi=no
+			_nuked_opl=no
+			_curl=no
+			_optimization_level=-O3
+			_backend="opendingux"
+			_port_mk="backends/platform/sdl/opendingux/miyoo.mk"
+			add_line_to_config_mk 'OPENDINGUX = 1'
+			add_line_to_config_mk "OPENDINGUX_TARGET = miyoomini"
+			;;
 		n64)
 			append_var CXXFLAGS "-mno-extern-sdata"
 			append_var CXXFLAGS "--param max-inline-insns-auto=20"
@@ -3812,7 +3842,7 @@ case $_backend in
 		append_var DEFINES "-DUSE_NULL_DRIVER"
 		_text_console=yes
 		;;
-	opendingux | miyoo)
+	opendingux | miyoo | miyoomini)
 		_sdlconfig=sdl-config
 		_sdl=auto
 		append_var MODULES "backends/platform/sdl"
@@ -4010,7 +4040,7 @@ fi
 # Enable 16bit support only for backends which support it
 #
 case $_backend in
-	3ds | android | dingux | dc | ds | gph | iphone | ios7 | maemo | null | opendingux | miyoo | openpandora | psp | psp2 | samsungtv | sdl | switch | wii)
+	3ds | android | dingux | dc | ds | gph | iphone | ios7 | maemo | null | opendingux | miyoomini | miyoo | openpandora | psp | psp2 | samsungtv | sdl | switch | wii)
 		if test "$_16bit" = auto ; then
 			_16bit=yes
 		else

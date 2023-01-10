@@ -375,6 +375,9 @@ protected:
 	bool _cursorPaletteDisabled;
 	SDL_Surface *_mouseOrigSurface;
 	SDL_Surface *_mouseSurface;
+#ifdef MIYOOMINI
+	SDL_Surface *_realHwScreen;
+#endif
 	enum {
 		kMouseColorKey = 1
 	};

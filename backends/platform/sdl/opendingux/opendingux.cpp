@@ -37,7 +37,12 @@
 #include "backends/keymapper/keymap.h"
 #include "backends/keymapper/keymapper.h"
 
-#ifdef MIYOO
+#ifdef MIYOOMINI
+#define SCUMM_DIR	"/mnt/SDCARD/.scummvm"
+#define CONFIG_FILE	"/mnt/SDCARD/.scummvmrc"
+#define SAVE_PATH	"/mnt/SDCARD/.scummvm/saves"
+#define LOG_FILE	"/mnt/SDCARD/.scummvm/scummvm.log"
+#elif defined(MIYOO)
 #define SCUMM_DIR	"/mnt/.scummvm"
 #define CONFIG_FILE	"/mnt/.scummvmrc"
 #define SAVE_PATH	"/mnt/.scummvm/saves"
@@ -51,7 +56,12 @@
 #define JOYSTICK_DIR	"/sys/devices/platform/joystick"
 
 static const Common::KeyTableEntry odKeyboardButtons[] = {
-#ifdef MIYOO
+#ifdef MIYOOMINI
+	{ "JOY_A",		Common::KEYCODE_LCTRL,		_s("A")			},
+	{ "JOY_B",		Common::KEYCODE_LALT,		_s("B")			},
+	{ "JOY_X",		Common::KEYCODE_SPACE,		_s("X")			},
+	{ "JOY_Y",		Common::KEYCODE_LSHIFT,		_s("Y")			},
+#elif defined(MIYOO)
 	{ "JOY_A",		Common::KEYCODE_LALT,		_s("A")			},
 	{ "JOY_B",		Common::KEYCODE_LCTRL,		_s("B")			},
 	{ "JOY_X",		Common::KEYCODE_LSHIFT,		_s("X")			},
@@ -70,7 +80,13 @@ static const Common::KeyTableEntry odKeyboardButtons[] = {
 	{ "JOY_DOWN",		Common::KEYCODE_DOWN,		_s("D-pad Down")	},
 	{ "JOY_LEFT",		Common::KEYCODE_LEFT,		_s("D-pad Left")	},
 	{ "JOY_RIGHT",		Common::KEYCODE_RIGHT,		_s("D-pad Right")	},
-#ifdef MIYOO
+#ifdef MIYOOMINI
+	{ "JOY_LEFT_STICK",     Common::KEYCODE_PAGEUP,		_s("L2")		},
+	{ "JOY_RIGHT_STICK",    Common::KEYCODE_PAGEDOWN,	_s("R2")		},
+	{ "JOY_LEFT_TRIGGER",	Common::KEYCODE_RALT,		_s("L3")	 	},
+	{ "JOY_RIGHT_TRIGGER",	Common::KEYCODE_RSHIFT,		_s("R3")	 	},
+	{ "JOY_GUIDE",		Common::KEYCODE_RCTRL,		_s("Menu")	 	},
+#elif defined(MIYOO)
 	{ "JOY_LEFT_STICK",     Common::KEYCODE_PAGEUP,		_s("L2")		},
 	{ "JOY_RIGHT_STICK",    Common::KEYCODE_PAGEDOWN,	_s("R2")		},
 	{ "JOY_LEFT_TRIGGER",	Common::KEYCODE_RALT,		_s("L3")	 	},
