@@ -57,10 +57,10 @@
 
 static const Common::KeyTableEntry odKeyboardButtons[] = {
 #ifdef MIYOOMINI
-	{ "JOY_A",		Common::KEYCODE_LCTRL,		_s("A")			},
-	{ "JOY_B",		Common::KEYCODE_LALT,		_s("B")			},
-	{ "JOY_X",		Common::KEYCODE_SPACE,		_s("X")			},
-	{ "JOY_Y",		Common::KEYCODE_LSHIFT,		_s("Y")			},
+	{ "JOY_A",		Common::KEYCODE_SPACE,		_s("A")			},
+	{ "JOY_B",		Common::KEYCODE_LCTRL,		_s("B")			},
+	{ "JOY_X",		Common::KEYCODE_LSHIFT,		_s("X")			},
+	{ "JOY_Y",		Common::KEYCODE_LALT,		_s("Y")			},
 #elif defined(MIYOO)
 	{ "JOY_A",		Common::KEYCODE_LALT,		_s("A")			},
 	{ "JOY_B",		Common::KEYCODE_LCTRL,		_s("B")			},
