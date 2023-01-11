@@ -55,6 +55,12 @@
 #endif
 #endif
 
+#ifdef MIYOOMINI
+#define MOUSESURFACE_FLAGS SDL_SWSURFACE
+#else
+#define MOUSESURFACE_FLAGS SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA
+#endif
+
 // SDL surface flags which got removed in SDL2.
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 #define SDL_SRCCOLORKEY 0
@@ -1876,7 +1882,7 @@ void SurfaceSdlGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, 
 		assert(!_mouseOrigSurface);
 
 		// Allocate bigger surface because scalers will read past the boudaries.
-		_mouseOrigSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
+		_mouseOrigSurface = SDL_CreateRGBSurface(MOUSESURFACE_FLAGS,
 						_mouseCurState.w + _maxExtraPixels * 2,
 						_mouseCurState.h + _maxExtraPixels * 2,
 						_cursorFormat.bytesPerPixel * 8,
@@ -1970,7 +1976,7 @@ void SurfaceSdlGraphicsManager::blitCursor() {
 		if (_mouseSurface)
 			SDL_FreeSurface(_mouseSurface);
 
-		_mouseSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL | SDL_SRCCOLORKEY | SDL_SRCALPHA,
+		_mouseSurface = SDL_CreateRGBSurface(MOUSESURFACE_FLAGS,
 						_mouseCurState.rW,
 						_mouseCurState.rH,
 						_mouseOrigSurface->format->BitsPerPixel,
