@@ -991,6 +991,13 @@ void SurfaceSdlGraphicsManager::unloadGFXMode() {
 		_hwScreen = nullptr;
 	}
 
+#ifdef MIYOOMINI
+	if (_realHwScreen) {
+		SDL_FreeSurface(_realHwScreen);
+		_realHwScreen = nullptr;
+	}
+#endif
+
 	if (_tmpscreen) {
 		SDL_FreeSurface(_tmpscreen);
 		_tmpscreen = nullptr;
@@ -1356,12 +1363,7 @@ void SurfaceSdlGraphicsManager::internUpdateScreen() {
 		// Finally, blit all our changes to the screen
 		if (!_displayDisabled) {
 #ifdef MIYOOMINI
-			SDL_Rect full;
-			full.x = 0;
-			full.y = 0;
-			full.w = width;
-			full.h = height;
-			SDL_BlitSurface(_hwScreen, &full, _realHwScreen, &full);
+			SDL_BlitSurface(_hwScreen, nullptr, _realHwScreen, nullptr);
 			SDL_UpdateRects(_realHwScreen, _numDirtyRects, _dirtyRectList);
 #else			
 			SDL_UpdateRects(_hwScreen, _numDirtyRects, _dirtyRectList);
