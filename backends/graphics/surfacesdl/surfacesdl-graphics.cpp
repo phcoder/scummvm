@@ -887,9 +887,9 @@ bool SurfaceSdlGraphicsManager::loadGFXMode() {
 		}
 #endif
 
-		_hwScreen = SDL_SetVideoMode(_videoMode.hardwareWidth, _videoMode.hardwareHeight, 16,
+		_hwScreen = SDL_SetVideoMode(_videoMode.hardwareWidth, _videoMode.hardwareHeight, 32,
 #ifdef MIYOOMINI
-					     SDL_FULLSCREEN|SDL_HWSURFACE
+					     SDL_HWSURFACE
 #else
 			_videoMode.fullscreen ? (SDL_FULLSCREEN|SDL_SWSURFACE) : SDL_SWSURFACE
 #endif
