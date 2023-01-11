@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ScummVM 1.6.0git\n"
 "Report-Msgid-Bugs-To: scummvm-devel@lists.scummvm.org\n"
-"POT-Creation-Date: 2023-01-08 19:42+0000\n"
+"POT-Creation-Date: 2023-01-10 22:52+0000\n"
 "PO-Revision-Date: 2023-01-01 19:47+0000\n"
 "Last-Translator: Timo Mikkolainen <tmikkola@gmail.com>\n"
 "Language-Team: Finnish <https://translations.scummvm.org/projects/scummvm/"
@@ -179,8 +179,8 @@ msgstr ""
 #: engines/parallaction/saveload.cpp:270 engines/saga/music.cpp:102
 #: engines/sci/engine/kgraphics.cpp:75 engines/sci/graphics/controls32.cpp:926
 #: engines/scumm/scumm.cpp:1094 engines/scumm/scumm.cpp:1120
-#: engines/scumm/scumm.cpp:1142 engines/scumm/scumm.cpp:1453
-#: engines/scumm/scumm.cpp:1922 engines/scumm/scumm.cpp:1938
+#: engines/scumm/scumm.cpp:1142 engines/scumm/scumm.cpp:1459
+#: engines/scumm/scumm.cpp:1928 engines/scumm/scumm.cpp:1944
 #: engines/sky/compact.cpp:140 engines/sword1/animation.cpp:529
 #: engines/sword1/animation.cpp:560 engines/sword1/animation.cpp:568
 #: engines/sword1/control.cpp:888 engines/sword1/logic.cpp:1634
@@ -4317,7 +4317,7 @@ msgstr "Lataa tallenne"
 msgid "Quick load or save game isn't supported in this location"
 msgstr "Pelin pikalataus tai tallennus ei ole tuettu tässä sijainnissa"
 
-#: engines/agos/saveload.cpp:161 engines/scumm/scumm.cpp:2700
+#: engines/agos/saveload.cpp:161 engines/scumm/scumm.cpp:2706
 #, c-format
 msgid ""
 "Failed to load saved game from file:\n"
@@ -4328,7 +4328,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: engines/agos/saveload.cpp:196 engines/scumm/scumm.cpp:2687
+#: engines/agos/saveload.cpp:196 engines/scumm/scumm.cpp:2693
 #, c-format
 msgid ""
 "Failed to save game to file:\n"
@@ -4339,7 +4339,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: engines/agos/saveload.cpp:204 engines/scumm/scumm.cpp:2716
+#: engines/agos/saveload.cpp:204 engines/scumm/scumm.cpp:2722
 #, c-format
 msgid ""
 "Successfully saved game in file:\n"
@@ -4564,8 +4564,7 @@ msgstr ""
 #: engines/sci/detection_tables.h:5201 engines/sherlock/detection_tables.h:223
 #: engines/stark/detection.cpp:319 engines/teenagent/detection.cpp:117
 #: engines/toltecs/detection.cpp:210 engines/trecision/detection.cpp:201
-#: engines/zvision/detection_tables.h:129
-#: engines/zvision/detection_tables.h:149
+#: engines/zvision/detection_tables.h:127
 msgid "Missing game code"
 msgstr "Pelimoottori puuttuu"
 
@@ -5516,12 +5515,12 @@ msgid "Demo plays simple animations without using Westwood's Engine."
 msgstr ""
 "Demo toistaa yksinkertaisia animaatioita ilman Westwood:in pelimoottoria."
 
-#: engines/kyra/detection_tables.h:1365
+#: engines/kyra/detection_tables.h:1352
 msgid "You added the game incorrectly. Please add the root folder of the game."
 msgstr "Lisäsit pelin väärin. Ole hyvä ja lisää pelin juurikansio."
 
 #. I18N: The file in the game directory needs to be extracted
-#: engines/kyra/detection_tables.h:1381
+#: engines/kyra/detection_tables.h:1368
 msgid ""
 "You added the game incorrectly. The GAME.DAT file is an ISO image and you "
 "need to extract the game data files from it."
@@ -6840,7 +6839,7 @@ msgstr "(Autom. tallennus)"
 msgid "Please use an external viewer to open the game's help file: %s"
 msgstr "Käytä ulkoista ohjelmaa pelin ohjetiedoston avaamiseen: %s"
 
-#: engines/sci/engine/kmisc.cpp:894
+#: engines/sci/engine/kmisc.cpp:895
 msgid ""
 "The Poker logic is hardcoded in an external DLL, and is not implemented yet. "
 "There exists some dummy logic for now, where opponent actions are chosen "
@@ -7774,6 +7773,17 @@ msgstr ""
 "Korvaa musiikki, äänitehosteet sekä puhe modatuilla ääniresursseilla, jos "
 "niitä on saatavilla."
 
+#: engines/scumm/metaengine.cpp:674
+#, fuzzy
+#| msgid "Enable the debug mode"
+msgid "Enable low latency audio mode"
+msgstr "Debug-tila päälle"
+
+#: engines/scumm/metaengine.cpp:675
+msgid ""
+"Allows the game to use low latency audio, at the cost of sound accuracy."
+msgstr ""
+
 #: engines/scumm/scumm.cpp:261
 msgid ""
 "You have enabled 'aspect ratio correction'. However, FM-TOWNS' natural "
@@ -7811,7 +7821,7 @@ msgstr ""
 "\"Monkey Island\":in Macintosh ohjelmatiedostoa ei löydetty\n"
 "instrumenttien lukemiseksi. Emme soita musiikkia."
 
-#: engines/scumm/scumm.cpp:1450
+#: engines/scumm/scumm.cpp:1456
 msgid ""
 "Audio files compressed with ScummVM Tools were detected; *.BUN/*.SOU\n"
 "compression is not supported anymore for this game, audio will be disabled.\n"
@@ -7821,7 +7831,7 @@ msgstr ""
 "pakkaukset eivät enää ole tuettuja tässä pelissä, joten äänet eivät kuulu.\n"
 "Ole hyvä ja asenna peli uudelleen sopivien äänitiedostojen kera."
 
-#: engines/scumm/scumm.cpp:1920
+#: engines/scumm/scumm.cpp:1926
 #, c-format
 msgid ""
 "Native MIDI support requires the Roland Upgrade from LucasArts,\n"
@@ -7830,7 +7840,7 @@ msgstr ""
 "Suora MIDI tuki vaatii Roland päivityksen LucasArtsilta, mutta\n"
 "%s puuttuu. Käytetään AdLibia sen sijaan."
 
-#: engines/scumm/scumm.cpp:1936
+#: engines/scumm/scumm.cpp:1942
 msgid ""
 "This particular version of Monkey Island 1 is known to miss some\n"
 "required resources for MT-32. Using AdLib instead."
@@ -7839,7 +7849,7 @@ msgstr ""
 "vaadittuja käytön mahdollistavia osasia MT-32:lle. Otetaan sen sijasta "
 "käyttöön AdLib."
 
-#: engines/scumm/scumm.cpp:3276
+#: engines/scumm/scumm.cpp:3282
 msgid ""
 "Usually, Maniac Mansion would start now. But for that to work, the game "
 "files for Maniac Mansion have to be in the 'Maniac' directory inside the "

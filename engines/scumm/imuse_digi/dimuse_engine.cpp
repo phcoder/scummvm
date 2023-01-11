@@ -41,7 +41,7 @@ void IMuseDigital::timer_handler(void *refCon) {
 	diMUSE->callback();
 }
 
-IMuseDigital::IMuseDigital(ScummEngine_v7 *scumm, int sampleRate, Audio::Mixer *mixer, Common::Mutex *mutex)
+IMuseDigital::IMuseDigital(ScummEngine_v7 *scumm, int sampleRate, Audio::Mixer *mixer, Common::Mutex *mutex, bool lowLatencyMode)
 	: _vm(scumm), _mixer(mixer), _mutex(mutex) {
 	assert(_vm);
 	assert(mixer);
@@ -50,8 +50,13 @@ IMuseDigital::IMuseDigital(ScummEngine_v7 *scumm, int sampleRate, Audio::Mixer *
 	_callbackFps = DIMUSE_TIMER_BASE_RATE_HZ;
 	_usecPerInt = DIMUSE_TIMER_BASE_RATE_USEC;
 
+	_lowLatencyMode = lowLatencyMode;
 	_internalSampleRate = sampleRate;
 	_internalFeedSize = (int)(DIMUSE_BASE_FEEDSIZE * ((float)_internalSampleRate / DIMUSE_BASE_SAMPLERATE));
+
+	if (_lowLatencyMode) {
+		_internalFeedSize *= 2;
+	}
 
 	_splayer = nullptr;
 	_isEarlyDiMUSE = (_vm->_game.id == GID_FT || (_vm->_game.id == GID_DIG && _vm->_game.features & GF_DEMO));
@@ -88,7 +93,7 @@ IMuseDigital::IMuseDigital(ScummEngine_v7 *scumm, int sampleRate, Audio::Mixer *
 	_numAudioNames = 0;
 
 	_emptyMarker[0] = '\0';
-	_internalMixer = new IMuseDigiInternalMixer(mixer, _internalSampleRate, _isEarlyDiMUSE);
+	_internalMixer = new IMuseDigiInternalMixer(mixer, _internalSampleRate, _isEarlyDiMUSE, _lowLatencyMode);
 	_groupsHandler = new IMuseDigiGroupsHandler(this);
 	_fadesHandler = new IMuseDigiFadesHandler(this);
 	_triggersHandler = new IMuseDigiTriggersHandler(this);
@@ -158,6 +163,9 @@ IMuseDigital::~IMuseDigital() {
 	// Deinit the WaveOut module
 	free(_waveOutOutputBuffer);
 	_waveOutOutputBuffer = nullptr;
+
+	free(_waveOutLowLatencyOutputBuffer);
+	_waveOutLowLatencyOutputBuffer = nullptr;
 
 	free(_audioNames);
 }
