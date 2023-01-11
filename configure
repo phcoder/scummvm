@@ -3551,7 +3551,7 @@ if test -n "$_host"; then
 		miyoomini)
 			_sysroot=`$CXX --print-sysroot`
 			_sdlpath=$_sysroot/usr/bin
-			append_var DEFINES  "-DMIYOO -DMIYOOMINI -DREDUCE_MEMORY_USAGE -DDINGUX -DOPENDINGUX -DUNCACHED_PLUGINS"
+			append_var DEFINES  "-DMIYOOMINI -DREDUCE_MEMORY_USAGE -DDINGUX -DOPENDINGUX -DUNCACHED_PLUGINS"
 			append_var CXXFLAGS "-marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -march=armv7ve -ffast-math -fomit-frame-pointer -fno-strength-reduce"
 			append_var LDFLAGS  "-marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -march=armv7ve -ffast-math -fomit-frame-pointer -fno-strength-reduce"
 			append_var LDFLAGS  "-O3 -Wl,--as-needed,--gc-sections"
