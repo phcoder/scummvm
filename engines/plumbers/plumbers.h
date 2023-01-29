@@ -122,6 +122,7 @@ private:
 	bool _cheatEnabled;
 	int _cheatFSM;
 	bool _leftShoulderPressed;
+	bool _halfSize;
 
 	enum Action {
 		Redraw,

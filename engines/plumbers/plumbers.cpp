@@ -71,7 +71,7 @@ static const Common::JoystickButton cheatJoy[] = {
 
 PlumbersGame::PlumbersGame(OSystem *syst, const ADGameDescription *gameDesc) :
 		Engine(syst), _gameDescription(gameDesc), _console(nullptr), _image(nullptr),
-		_compositeSurface(nullptr), _videoDecoder(nullptr), _ctrlHelpImage(nullptr) {
+		_compositeSurface(nullptr), _videoDecoder(nullptr), _ctrlHelpImage(nullptr), _halfSize(false) {
 	_timerInstalled = false;
 	_showScoreFl = false;
 	_setDurationFl = false;
@@ -189,8 +189,14 @@ Common::Error PlumbersGame::run() {
 		initGraphics(_screenW, _screenH, &pf);
 	} else {
 		_image = new Image::BitmapDecoder();
+#ifdef USE_HIGHRES
 		_screenW = 640;
 		_screenH = 480;
+#else
+		_halfSize = true;
+		_screenW = 320;
+		_screenH = 240;
+#endif
 		initGraphics(_screenW, _screenH);
 	}
 
@@ -381,6 +387,10 @@ Common::Error PlumbersGame::run() {
 	return Common::kNoError;
 }
 
+static uint32 getBrightness(byte col, const byte *pal) {
+	return pal[3 * col] * pal[3 * col] + pal[3 * col + 1] * pal[3 * col + 1] + pal[3 * col + 2] * pal[3 * col + 2];
+}
+
 void PlumbersGame::loadImage(const Common::String &name) {
 	debugC(1, kDebugGeneral, "%s : %s", __FUNCTION__, name.c_str());
 	Common::File file;
@@ -390,6 +400,40 @@ void PlumbersGame::loadImage(const Common::String &name) {
 	_image->loadStream(file);
 	delete _compositeSurface;
 	_compositeSurface = nullptr;
+
+	if (_halfSize) {
+		_compositeSurface = new Graphics::Surface();
+		const Graphics::Surface *inSurf = _image->getSurface();
+		_compositeSurface->create(_screenW, _screenH, inSurf->format);
+		const byte *palette = _image->getPalette();
+		for (int y = 0; y < _screenH; y++) {
+			const byte *src1 = (const byte *) inSurf->getBasePtr(0, y * 2);
+			const byte *src2 = (const byte *) inSurf->getBasePtr(0, y * 2 + 1);
+			byte *dst = (byte*) _compositeSurface->getBasePtr(0, y);
+			for (int x = 0; x < _screenW; x++) {
+				// Choose the brightest pixel. Writing in this game is bright on
+				// a dark background, so this preserves text as much as we can.
+				byte colors[4] = {
+					*src1++,
+					*src1++,
+					*src2++,
+					*src2++
+				};
+
+				byte col = colors[0];
+				uint32 bri = getBrightness(col, palette);
+				for (uint i = 1; i < 4; i++) {
+					uint32 nbri = getBrightness(colors[i], palette);
+					if (nbri > bri) {
+						bri = nbri;
+						col = colors[i];
+					}
+				}
+
+				*dst++ = col;
+			}
+		}
+	}
 }
 
 // TODO: discover correct offsets
@@ -711,7 +755,10 @@ void PlumbersGame::readTablesPC(const Common::String &fileName) {
 			int top = file.readSint16LE();
 			int right = file.readSint16LE();
 			int bottom = file.readSint16LE();
-			_scenes[i]._choices[j]._region = Common::Rect(left, top, right, bottom);
+			if (_halfSize)
+				_scenes[i]._choices[j]._region = Common::Rect(left / 2, top / 2, right / 2, bottom / 2);
+			else
+				_scenes[i]._choices[j]._region = Common::Rect(left, top, right, bottom);
 		}
 	}
 
