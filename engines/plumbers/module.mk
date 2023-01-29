@@ -2,6 +2,8 @@ MODULE := engines/plumbers
 
 MODULE_OBJS = \
 	plumbers.o \
+	windows.o \
+	3do.o \
 	console.o \
 	metaengine.o
 

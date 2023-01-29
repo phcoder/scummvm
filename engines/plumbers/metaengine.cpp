@@ -40,7 +40,10 @@ class PlumbersMetaEngine : public AdvancedMetaEngine {
 };
 
 Common::Error PlumbersMetaEngine::createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const {
-	*engine = new Plumbers::PlumbersGame(syst, desc);
+	if (desc->platform == Common::kPlatform3DO)
+		*engine = new Plumbers::PlumbersGame3DO(syst, desc);
+	else
+		*engine = new Plumbers::PlumbersGameWindows(syst, desc);
 	return Common::kNoError;
 }
 
