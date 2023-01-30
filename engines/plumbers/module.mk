@@ -3,9 +3,12 @@ MODULE := engines/plumbers
 MODULE_OBJS = \
 	plumbers.o \
 	windows.o \
-	3do.o \
 	console.o \
 	metaengine.o
+
+ifdef ENABLE_PLUMBERS_3DO
+MODULE_OBJS += 3do.o
+endif
 
 # This module can be built as a plugin
 ifeq ($(ENABLE_PLUMBERS), DYNAMIC_PLUGIN)

@@ -1,3 +1,4 @@
 # This file is included from the main "configure" script
 # add_engine [name] [desc] [build-by-default] [subengines] [base games] [deps]
-add_engine plumbers "Plumbers Don't Wear Ties" yes "" "" "16bit"
+add_engine plumbers "Plumbers Don't Wear Ties" yes "plumbers_3do" "Windows version" ""
+add_engine plumbers_3do "3DO version" yes "" "" "16bit"

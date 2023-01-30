@@ -22,6 +22,7 @@
 #include "base/plugins.h"
 
 #include "engines/advancedDetector.h"
+#include "gui/message.h"
 
 #include "plumbers/plumbers.h"
 
@@ -40,9 +41,15 @@ class PlumbersMetaEngine : public AdvancedMetaEngine {
 };
 
 Common::Error PlumbersMetaEngine::createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const {
-	if (desc->platform == Common::kPlatform3DO)
+	if (desc->platform == Common::kPlatform3DO) {
+#ifdef ENABLE_PLUMBERS_3DO
 		*engine = new Plumbers::PlumbersGame3DO(syst, desc);
-	else
+#else
+		// Should never happen. So no need to translate
+		GUI::MessageDialog dialog("3DO Plumbers plugin is not available.");
+		dialog.runModal();
+#endif
+	} else
 		*engine = new Plumbers::PlumbersGameWindows(syst, desc);
 	return Common::kNoError;
 }
