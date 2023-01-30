@@ -48,6 +48,7 @@ Common::Error PlumbersMetaEngine::createInstance(OSystem *syst, Engine **engine,
 		// Should never happen. So no need to translate
 		GUI::MessageDialog dialog("3DO Plumbers plugin is not available.");
 		dialog.runModal();
+#error WTF?
 #endif
 	} else
 		*engine = new Plumbers::PlumbersGameWindows(syst, desc);
