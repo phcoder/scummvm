@@ -35,7 +35,7 @@ public:
 	void loadPrefixedRaw(Common::ReadStream &input, int height);
 	bool draw(byte *dest, int maxX, int maxY, uint32 destPitch, uint16 ch, byte color, byte outlineColor);
 	bool draw(Graphics::Surface *surf, int x, int y, uint16 ch, uint32 color);
-	inline bool getHeight() const { return _chineseTraditionalHeight; }
+	inline int getHeight() const { return _chineseTraditionalHeight; }
 
 	static const int kChineseTraditionalWidth = 16;
 private:
