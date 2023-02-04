@@ -2067,7 +2067,7 @@ void ScalpelUserInterface::printObjectDesc(const Common::String &str, bool first
 			endOfStr = false;
 		}
 
-		screen.gPrint(Common::Point(16, CONTROLS_Y + 12 + lineNum * 9),
+		screen.gPrint(Common::Point(16, CONTROLS_Y + 12 + lineNum * (_vm->getLanguage() == Common::Language::ZH_TWN ? 16 : 9)),
 			INV_FOREGROUND, "%s", line.c_str());
 	}
 
