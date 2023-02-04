@@ -2042,33 +2042,33 @@ void ScalpelUserInterface::printObjectDesc(const Common::String &str, bool first
 	for (int lineNum = 0; lineNum < ONSCREEN_FILES_COUNT && !endOfStr; ++lineNum) {
 		int width = 0;
 		const char *lineStartP = msgP;
+		int msgIdx = 0;
+		int last_valid = 0, last_space = 0;
 
 		// Determine how much can be displayed on the line
 		do {
-			width += screen.charWidth(*msgP++);
-		} while (width < 300 && *msgP);
+			if (lineStartP[msgIdx] == ' ')
+				last_space = msgIdx;
+			last_valid = msgIdx;
+			width += screen.charWidth(lineStartP, msgIdx);
+		} while (width < 300 && lineStartP[msgIdx]);
 
-		if (*msgP)
-			--msgP;
-		else
+		Common::String line;
+		if (!lineStartP[msgIdx]) {
+			line = Common::String(lineStartP);
 			endOfStr = true;
-
-		// If the line needs to be wrapped, scan backwards to find
-		// the end of the previous word as a splitting point
-		if (width >= 300) {
-			while (*msgP != ' ')
-				--msgP;
+		} else if (last_space > 0) {
+			line = Common::String(lineStartP, lineStartP + last_space);
+			msgP = lineStartP + last_space + 1;
+			endOfStr = false;
+		} else {
+			line = Common::String(lineStartP, lineStartP + last_valid);
+			msgP = lineStartP + last_valid;
 			endOfStr = false;
 		}
 
-		// Print out the line
-		Common::String line(lineStartP, msgP);
 		screen.gPrint(Common::Point(16, CONTROLS_Y + 12 + lineNum * 9),
 			INV_FOREGROUND, "%s", line.c_str());
-
-		if (!endOfStr)
-			// Start next line at start of the nxet word after space
-			++msgP;
 	}
 
 	// Handle display depending on whether all the message was shown
