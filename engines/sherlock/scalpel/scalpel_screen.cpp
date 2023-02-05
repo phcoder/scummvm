@@ -85,6 +85,11 @@ void ScalpelScreen::buttonPrint(const Common::Point &pt, uint color, bool slamIt
 			if (prefixTextPos < prefixTextLen) {
 				// only adjust in case hotkey character was actually found
 				prefixOffsetX = stringWidth(prefixText);
+			} else {
+				// Otherwise print hotkey before the string
+				int pWidth = stringWidth(buttonText.substr(0, 1));
+				prefixOffsetX = -pWidth;
+				xStart += pWidth / 2;
 			}
 		}
 
