@@ -522,8 +522,8 @@ static const char *const fixedTextZH[] = {
 	"M\xad\xb5\xbc\xd6\xc3\xf6(M)", /* "M音樂關"; "MMusic off" */	
 	"P\xa8\x76\xb9\xb3\xb6\x7d(P)", /* "P肖像開"; "PPortrait on" */
 	"P\xa8\x76\xb9\xb3\xc3\xf6(P)", /* "P肖像關"; "PPortrait off" */
-	"JJoystick off", // TODO
-	"NNew Font Style", // TODO
+	"JJoystick off", // Not used in Chinese as this button is skipped
+	"NNew Font Style", // Not used in Chinese as only one font is available
 	"S\xad\xb5\xae\xc4\xb6\x7d(S)", /* "S音效開"; "SSound Effects on" */
 	"S\xad\xb5\xae\xc4\xc3\xf6(S)", /* "S音效關"; "SSound Effects off" */	
 	"W\xb5\xf8\xb5\xa1\xb7\xc6\xb1\xb2(W)", /* "W視窗滑捲"; "WWindow Slide Scroll" */
@@ -531,8 +531,8 @@ static const char *const fixedTextZH[] = {
 	"C\xbd\xd5\xbe\xe3\xb7\x6e\xb1\xec(C)", /* "調整搖桿"; "CCalibrate Joystick" */
 	"A\xbb\xb2\xa7\x55\xa5\xaa(A)", /* "A輔助左"; "AAuto Help left" */
 	"A\xbb\xb2\xa7\x55\xa5\x6b(A)", /* "A輔助右"; "AAuto Help right" */
-	"VVoices on", // TODO
-	"VVoices off", // TODO
+	"VVoices on", // Not used in Chinese as no voices are available
+	"VVoices off", // Not used in Chinese as no voices are available
 	"F\xb2\x48\xa5\x58\xc2\x49\xaa\xac(F)", /* "F淡出點狀"; "FFade by Pixel" */
 	"F\xb2\x48\xa5\x58\xaa\xbd\xb1\xb5(F)", /* "F淡出直接"; "FFade Directly" */	
 	"K\xc1\xe4\xaa\xa9\xba\x43(K)", /* "K鍵版慢"; "KKey Pad Slow" */
