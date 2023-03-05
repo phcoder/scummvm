@@ -139,16 +139,12 @@ void decompressVima(const byte *src, int16 *dest, int destLen, uint16 *destTable
 
 	if (READ_BE_UINT32(src) == MKTAG('I', 'M', 'A', '4')) {
 		src += 4;
-		int iVar3;
-		uint uVar4;
 		static const int local_60[16] = {
 			-1,    -1,    -1,    -1,
 			2,     4,     6,     8,
 			-1,    -1,    -1,    -1,
 			2,     4,     6,     8
 		};
-		uint uStack_1c;
-		uint uStack_14;
 
 		for (int channel = 0; channel < numChannels; channel++) {
 			int16 *destPos = dest + channel;
@@ -156,29 +152,30 @@ void decompressVima(const byte *src, int16 *dest, int destLen, uint16 *destTable
 			int currTablePos = 0;
 			int curai = 7;
 			byte inputByte = 0;
-			uStack_14 = 0;
+			bool nibbleSwitch = false;
 			for (int sample = 0; sample < numSamples; sample++) {
-				uVar4 = inputByte;
-				if (uStack_14 == 0) {
+				byte bits;
+				if (!nibbleSwitch) {
 					inputByte = *src++;
-					uVar4 = inputByte >> 4;
+					bits = inputByte >> 4;
+				} else
+					bits = inputByte;
+				nibbleSwitch = !nibbleSwitch;
+				currTablePos = CLIP(currTablePos + local_60[bits & 0xf], 0, 88);
+				int delta = curai >> 3;
+				if (bits & 4) {
+					delta = delta + curai;
 				}
-				uStack_14 = (uint)(uStack_14 == 0);
-				currTablePos = CLIP(currTablePos + local_60[uVar4 & 0xf], 0, 88);
-				iVar3 = curai >> 3;
-				if ((uVar4 & 4) != 0) {
-					iVar3 = iVar3 + curai;
+				if (bits & 2) {
+					delta = delta + (curai >> 1);
 				}
-				if ((uVar4 & 2) != 0) {
-					iVar3 = iVar3 + (curai >> 1);
+				if (bits & 1) {
+					delta = delta + (curai >> 2);
 				}
-				if ((uVar4 & 1) != 0) {
-					iVar3 = iVar3 + (curai >> 2);
+				if (bits & 8) {
+					delta = -delta;
 				}
-				if ((uVar4 & 8) != 0) {
-					iVar3 = -iVar3;
-				}
-				outputWord = CLIP(outputWord + iVar3, -0x8000, 0x7fff);
+				outputWord = CLIP(outputWord + delta, -0x8000, 0x7fff);
 				if (currTablePos > 0)
 					curai = imcTable1[currTablePos];
 				WRITE_BE_UINT16(destPos, outputWord);
