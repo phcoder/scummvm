@@ -138,71 +138,52 @@ void decompressVima(const byte *src, int16 *dest, int destLen, uint16 *destTable
 	int numSamples = destLen / (numChannels * 2);
 
 	if (READ_BE_UINT32(src) == MKTAG('I', 'M', 'A', '4')) {
-		debug("IMA4");
-		char cVar1;
-		int iVar2;
+		src += 4;
 		int iVar3;
 		uint uVar4;
-		int iVar5;
-		int curai = 7;
-		const int local_60[16] = {
+		static const int local_60[16] = {
 			-1,    -1,    -1,    -1,
 			2,     4,     6,     8,
 			-1,    -1,    -1,    -1,
 			2,     4,     6,     8
 		};
-		uint uStack_20;
 		uint uStack_1c;
-		int16 *puStack_18;
 		uint uStack_14;
- 
-		int16 *destPos = dest;
-		src += 4;
-		iVar2 = 0;
-		iVar5 = 0;
-		uStack_14 = 0;
-		for (int sample = 0; sample < numSamples; sample++) {
-			uVar4 = uStack_1c;
-			if (uStack_14 == 0) {
-				cVar1 = *src++;
-				uStack_1c = (int)cVar1;
-				uVar4 = (int)cVar1 >> 4;
-			}
-			uStack_14 = (uint)(uStack_14 == 0);
-			iVar5 = iVar5 + local_60[uVar4 & 0xf];
-			if (iVar5 < 0) {
-				iVar5 = 0;
-			}
-			else if (88 < iVar5) {
-				iVar5 = 88;
-			}
-			uStack_20 = uVar4 & 8;
-			iVar3 = curai >> 3;
-			if ((uVar4 & 4) != 0) {
-				iVar3 = iVar3 + curai;
-			}
-			if ((uVar4 & 2) != 0) {
-				iVar3 = iVar3 + (curai >> 1);
-			}
-			if ((uVar4 & 1) != 0) {
-				iVar3 = iVar3 + (curai >> 2);
-			}
-			if ((uVar4 & 8) != 0) {
-				iVar3 = -iVar3;
-			}
-			iVar2 = iVar2 + iVar3;
-			if (iVar2 < 0x8000) {
-				if (iVar2 < -0x8000) {
-					iVar2 = -0x8000;
+
+		for (int channel = 0; channel < numChannels; channel++) {
+			int16 *destPos = dest + channel;
+			int outputWord = 0;
+			int currTablePos = 0;
+			int curai = 7;
+			byte inputByte = 0;
+			uStack_14 = 0;
+			for (int sample = 0; sample < numSamples; sample++) {
+				uVar4 = inputByte;
+				if (uStack_14 == 0) {
+					inputByte = *src++;
+					uVar4 = inputByte >> 4;
 				}
+				uStack_14 = (uint)(uStack_14 == 0);
+				currTablePos = CLIP(currTablePos + local_60[uVar4 & 0xf], 0, 88);
+				iVar3 = curai >> 3;
+				if ((uVar4 & 4) != 0) {
+					iVar3 = iVar3 + curai;
+				}
+				if ((uVar4 & 2) != 0) {
+					iVar3 = iVar3 + (curai >> 1);
+				}
+				if ((uVar4 & 1) != 0) {
+					iVar3 = iVar3 + (curai >> 2);
+				}
+				if ((uVar4 & 8) != 0) {
+					iVar3 = -iVar3;
+				}
+				outputWord = CLIP(outputWord + iVar3, -0x8000, 0x7fff);
+				if (currTablePos > 0)
+					curai = imcTable1[currTablePos];
+				WRITE_BE_UINT16(destPos, outputWord);
+				destPos += numChannels;
 			}
-			else {
-				iVar2 = 0x7fff;
-			}
-			if (iVar5 > 0)
-				curai = imcTable1[iVar5];
-			WRITE_BE_UINT16(destPos, iVar2);
-			destPos++;
 		}
 
 		return;
