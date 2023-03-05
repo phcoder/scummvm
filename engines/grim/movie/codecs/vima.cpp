@@ -139,48 +139,48 @@ void decompressVima(const byte *src, int16 *dest, int destLen, uint16 *destTable
 
 	if (READ_BE_UINT32(src) == MKTAG('I', 'M', 'A', '4')) {
 		src += 4;
-		static const int local_60[16] = {
+		int outputWord = READ_LE_INT16(src);
+		int currTablePos = src[2];
+		src += 3;
+		static const int tableDeltas[16] = {
 			-1,    -1,    -1,    -1,
 			2,     4,     6,     8,
 			-1,    -1,    -1,    -1,
 			2,     4,     6,     8
 		};
 
-		for (int channel = 0; channel < numChannels; channel++) {
-			int16 *destPos = dest + channel;
-			int outputWord = 0;
-			int currTablePos = 0;
-			int curai = 7;
-			byte inputByte = 0;
-			bool nibbleSwitch = false;
-			for (int sample = 0; sample < numSamples; sample++) {
-				byte bits;
-				if (!nibbleSwitch) {
-					inputByte = *src++;
-					bits = inputByte >> 4;
-				} else
-					bits = inputByte;
-				nibbleSwitch = !nibbleSwitch;
-				currTablePos = CLIP(currTablePos + local_60[bits & 0xf], 0, 88);
-				int delta = curai >> 3;
-				if (bits & 4) {
-					delta = delta + curai;
-				}
-				if (bits & 2) {
-					delta = delta + (curai >> 1);
-				}
-				if (bits & 1) {
-					delta = delta + (curai >> 2);
-				}
-				if (bits & 8) {
-					delta = -delta;
-				}
-				outputWord = CLIP(outputWord + delta, -0x8000, 0x7fff);
-				if (currTablePos > 0)
-					curai = imcTable1[currTablePos];
-				WRITE_BE_UINT16(destPos, outputWord);
-				destPos += numChannels;
+		int16 *destPos = dest;
+		int curai = 7;
+		byte inputByte = 0;
+		bool nibbleSwitch = false;
+		for (int sample = 0; sample < numSamples; sample++) {
+			byte bits;
+			if (!nibbleSwitch) {
+				inputByte = *src++;
+				bits = inputByte >> 4;
+			} else
+				bits = inputByte;
+			nibbleSwitch = !nibbleSwitch;
+			currTablePos = CLIP(currTablePos + tableDeltas[bits & 0xf], 0, 88);
+			int delta = curai >> 3;
+			if (bits & 4) {
+				delta = delta + curai;
 			}
+			if (bits & 2) {
+				delta = delta + (curai >> 1);
+			}
+			if (bits & 1) {
+				delta = delta + (curai >> 2);
+			}
+			if (bits & 8) {
+				delta = -delta;
+			}
+			outputWord = CLIP(outputWord + delta, -0x8000, 0x7fff);
+			if (currTablePos > 0)
+				curai = imcTable1[currTablePos];
+			for (int channel = 0; channel < numChannels; channel++)
+				WRITE_BE_UINT16(destPos + channel, outputWord);
+			destPos += numChannels;
 		}
 
 		return;
