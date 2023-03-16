@@ -217,6 +217,10 @@ bool GobEngine::is640x480() const {
 	return (_features & kFeatures640x480) != 0;
 }
 
+bool GobEngine::is640x400() const {
+	return (_features & kFeatures640x400) != 0;
+}
+
 bool GobEngine::is800x600() const {
 	return (_features & kFeatures800x600) != 0;
 }
@@ -710,6 +714,10 @@ Common::Error GobEngine::initGraphics() {
 		_width  = 640;
 		_height = 480;
 		_mode   = 0x18;
+	} else if (is640x400()) {
+		_width  = 640;
+		_height = 400;
+		_mode   = 0x19;
 	} else {
 		_width  = 320;
 		_height = 200;

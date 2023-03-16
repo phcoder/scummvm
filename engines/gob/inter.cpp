@@ -89,7 +89,7 @@ void Inter::executeOpcodeFunc(byte i, byte j, OpFuncParams &params) {
 }
 
 void Inter::executeOpcodeGob(int i, OpGobParams &params) {
-	debugC(1, kDebugGobOp, "%s:%08d: opcodeGoblin %d [0x%X] (%s)",
+	debug("%s:%08d: opcodeGoblin %d [0x%X] (%s)",
 		   _vm->_game->_curTotFile.c_str(), _vm->_game->_script->pos(), i, i, getDescOpcodeGob(i));
 
 	OpcodeEntry<OpcodeGob> *op = nullptr;
@@ -103,7 +103,7 @@ void Inter::executeOpcodeGob(int i, OpGobParams &params) {
 	}
 
 	_vm->_game->_script->skip(params.paramCount << 1);
-	warning("unimplemented opcodeGob: %d [0x%X]", i, i);
+	warning("unimplemented opcodeGob: %d [0x%X] (%d params)", i, i, params.paramCount);
 }
 
 const char *Inter::getDescOpcodeDraw(byte i) {

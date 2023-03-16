@@ -396,7 +396,7 @@
 		GUIO2(GUIO_NOSUBTITLES, GUIO_NOSPEECH)
 	},
 	kGameTypeGob1,
-	kFeaturesAdLib,
+	kFeaturesAdLib | kFeatures640x400,
 	0, 0, 0
 },
 

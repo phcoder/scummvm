@@ -999,12 +999,15 @@ void Inter_v1::o1_loadTot(OpFuncParams &params) {
 	if ((_vm->_game->_script->peekByte() & 0x80) != 0) {
 		_vm->_game->_script->skip(1);
 		_vm->_game->_totToLoad = _vm->_game->_script->evalString();
+		debug("A");
 	} else {
 		uint8 size = _vm->_game->_script->readInt8();
 		_vm->_game->_totToLoad = Common::String(_vm->_game->_script->readString(size), size);
+		debug("B");
 	}
 
 	_vm->_game->_totToLoad += ".tot";
+	debug("totToLoad=<%s> _terminate=%d", _vm->_game->_totToLoad.c_str(), _terminate);
 
 	if (_terminate != 2)
 		_terminate = 1;

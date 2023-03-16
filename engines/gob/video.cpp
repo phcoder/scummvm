@@ -173,13 +173,13 @@ const byte *Font::getCharData(uint8 c) const {
 Video::Video(GobEngine *vm) : _vm(vm) {
 	_doRangeClamp = false;
 
-	_surfWidth = 320;
-	_surfHeight = 200;
+	_surfWidth = 640;
+	_surfHeight = 400;
 
 	_scrollOffsetX = 0;
 	_scrollOffsetY = 0;
 
-	_splitHeight1 = 200;
+	_splitHeight1 = 400;
 	_splitHeight2 = 0;
 	_splitStart = 0;
 

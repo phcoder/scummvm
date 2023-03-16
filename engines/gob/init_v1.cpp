@@ -48,7 +48,7 @@ void Init_v1::initVideo() {
 	_vm->_global->_pPaletteDesc->unused1 = _vm->_global->_unusedPalette1;
 	_vm->_global->_pPaletteDesc->unused2 = _vm->_global->_unusedPalette2;
 
-	_vm->_video->initSurfDesc(320, 200, PRIMARY_SURFACE);
+	_vm->_video->initSurfDesc(640, 400, PRIMARY_SURFACE);
 
 	_vm->_draw->_cursorWidth       = 16;
 	_vm->_draw->_cursorHeight      = 16;

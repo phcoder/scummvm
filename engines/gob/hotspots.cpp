@@ -154,13 +154,13 @@ bool Hotspots::Hotspot::isDisabled() const {
 bool Hotspots::Hotspot::isIn(uint16 x, uint16 y) const {
 	// FIXME: the cast to int16 is a hack, to fix handling of Gob2 problems related to
 	// hotspots with negative offset (to temporary disable them).
-	if ((int16) x < (int16) left)
+	if ((int16) x/2 < (int16) left)
 		return false;
-	if ((int16) x > (int16) right)
+	if ((int16) x/2 > (int16) right)
 		return false;
-	if ((int16) y < (int16) top)
+	if ((int16) y/2 < (int16) top)
 		return false;
-	if ((int16) y > (int16) bottom)
+	if ((int16) y/2 > (int16) bottom)
 		return false;
 
 	return true;

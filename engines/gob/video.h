@@ -120,7 +120,7 @@ public:
 
 	void drawPackedSprite(byte *sprBuf, int16 width, int16 height,
 			int16 x, int16 y, int16 transp, Surface &dest);
-	void drawPackedSprite(const char *path, Surface &dest, int width = 320);
+	void drawPackedSprite(const char *path, Surface &dest, int width = 640);
 
 	void setPalColor(byte *pal, byte red, byte green, byte blue) {
 		pal[0] = red << 2;

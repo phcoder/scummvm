@@ -635,6 +635,7 @@ void Game::playTot(int16 function) {
 				break;
 
 			_curTotFile = _totToLoad;
+			debug("_curTotFile=%s", _curTotFile.c_str());
 
 		}
 	} else {
