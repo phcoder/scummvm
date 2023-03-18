@@ -570,6 +570,7 @@ void Game::playTot(int16 function) {
 			}
 
 			if (!_script->load(_curTotFile)) {
+				warning("Failed to load script %s", _curTotFile.c_str());
 				_vm->_draw->blitCursor();
 				_vm->_inter->_terminate = 2;
 				break;
