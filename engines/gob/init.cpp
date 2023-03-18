@@ -89,6 +89,11 @@ void Init::initGame() {
 			_vm->_dataIO->openArchive(_vm->_startStk, true);
 	}
 
+	_vm->_dataIO->openArchive("disk1.stk", true);
+	_vm->_dataIO->openArchive("disk2.stk", true);
+	_vm->_dataIO->openArchive("disk3.stk", true);
+	_vm->_dataIO->openArchive("disk4.stk", true);
+
 	_vm->_util->initInput();
 
 	_vm->_video->initPrimary(_vm->_global->_videoMode);
