@@ -157,10 +157,23 @@ void DataIO::unpackChunk(Common::SeekableReadStream &src, byte *dest, uint32 siz
 	assert(tmpBuf);
 
 	uint32 counter = size;
+	uint16 tmpIndex;
 
-	for (int i = 0; i < 4078; i++)
-		tmpBuf[i] = 0x20;
-	uint16 tmpIndex = 4078;
+	memset(tmpBuf, 0, 4114);
+
+	uint32 magic3412 = src.readUint32BE();
+	bool format3412 = magic3412 == 0x34127856;
+
+	if (format3412) {
+		for (int i = 0; i < 273; i++)
+			tmpBuf[i] = 0x20;
+		tmpIndex = 273;
+	} else {
+		for (int i = 0; i < 4078; i++)
+			tmpBuf[i] = 0x20;
+		tmpIndex = 4078;
+		src.seek(-4, SEEK_CUR);
+	}
 
 	uint16 cmd = 0;
 	while (1) {
@@ -185,6 +198,10 @@ void DataIO::unpackChunk(Common::SeekableReadStream &src, byte *dest, uint32 siz
 
 			int16 off = tmp1 | ((tmp2 & 0xF0) << 4);
 			byte  len =         (tmp2 & 0x0F) + 3;
+
+			if (len == 0x12 && format3412) {
+				len = src.readByte() + 0x12;
+			}
 
 			for (int i = 0; i < len; i++) {
 				*dest++ = tmpBuf[(off + i) % 4096];
