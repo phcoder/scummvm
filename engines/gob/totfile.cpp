@@ -50,7 +50,7 @@ bool TOTFile::load(const Common::String &fileName) {
 	if (!_stream)
 		return false;
 
-	if (_stream->read(_header, 128) != 128)
+	if (_stream->read(_header, sizeof(_header)) != sizeof(_header))
 		return false;
 
 	_stream->seek(0);
