@@ -79,14 +79,16 @@ bool PalAnim::fadeStep(int16 oper) {
 		int colorCount = _vm->_global->_setAllPalette ? _vm->_global->_colorCount : 256;
 
 		for (int i = 0; i < colorCount; i++) {
-			byte newRed   = fadeColor(_vm->_global->_redPalette  [i], _toFadeRed  [i]);
-			byte newGreen = fadeColor(_vm->_global->_greenPalette[i], _toFadeGreen[i]);
-			byte newBlue  = fadeColor(_vm->_global->_bluePalette [i], _toFadeBlue [i]);
+			byte oldRed   = _vm->_global->_redPalette  [i];
+			byte oldGreen = _vm->_global->_greenPalette[i];
+			byte oldBlue  = _vm->_global->_bluePalette [i];
+			byte newRed   = fadeColor(oldRed  , _toFadeRed  [i]);
+			byte newGreen = fadeColor(oldGreen, _toFadeGreen[i]);
+			byte newBlue  = fadeColor(oldBlue , _toFadeBlue [i]);
 
-			if ((_vm->_global->_redPalette  [i] != newRed  ) ||
-					(_vm->_global->_greenPalette[i] != newGreen) ||
-					(_vm->_global->_bluePalette [i] != newBlue)) {
-
+			if ((oldRed   != newRed  ) ||
+			    (oldGreen != newGreen) ||
+			    (oldBlue  != newBlue )) {
 				_vm->_video->setPalElem(i, newRed, newGreen, newBlue, 0, 0x13);
 
 				_vm->_global->_redPalette  [i] = newRed;
