@@ -67,6 +67,7 @@ public:
 
 	void printShadedText(const char *string, int x, int y, int col1, int col2, int shadowCol, int pitch = -1);
 
+	void loadChineseEOB2LZBitmap(Common::SeekableReadStream *s, int pageNum, uint32 size);
 	void loadBitmap(const char *filename, int tempPage, int dstPage, Palette *pal, bool skip = false) override;
 	void loadEoBBitmap(const char *file, const uint8 *cgaMapping, int tempPage, int destPage, int convertToPage);
 	void loadShapeSetBitmap(const char *file, int tempPage, int destPage);
