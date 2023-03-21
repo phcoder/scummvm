@@ -114,6 +114,8 @@ private:
 	Screen::FontId _waitButtonFont;
 
 	uint8 _colorMap[256];
+
+	bool _isBig5;
 };
 
 } // End of namespace Kyra
