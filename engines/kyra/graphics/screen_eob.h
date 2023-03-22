@@ -263,6 +263,7 @@ public:
 	~OldDOSFont() override;
 
 	bool load(Common::SeekableReadStream &file) override;
+	bool loadPCBIOSTall();
 	Type getType() const override { return kASCII; }
 	int getHeight() const override { return _height; }
 	int getWidth() const override { return _width; }
