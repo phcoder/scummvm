@@ -75,44 +75,6 @@ struct eob2ChineseLZInStream {
 
 	eob2ChineseLZInStream(Common::SeekableReadStream *src) : srcStream(src), numBits(0), bits(0) {}
 };
-
-void eob2ChineseLZUncompress(byte *dest, uint32 destSize, Common::SeekableReadStream *src) {
-	src->skip(6);
-	eob2ChineseLZInStream in(src);
-	int lzOffset, lzLen;
-	byte *destPtr = dest;
-	byte *destEnd = dest + destSize;
-
-	while (1) {
-		if (in.getBit()) {
-			assert(destPtr < destEnd);
-			*destPtr++ = in.getByte();
-			continue;
-		}
-
-		if (!in.getBit()) {
-			lzLen = in.getBit() << 1;
-			lzLen |= in.getBit();
-			lzOffset = 0x100 - in.getByte();
-		} else {
-			uint16 lzPair = in.getShort();
-			lzOffset = 0x2000 - (lzPair >> 3);
-			lzLen = lzPair & 7;
-			if (lzLen == 0) {
-				lzLen = in.getByte();
-				if (lzLen == 0) {
-					return;
-				}
-			}
-		}
-		lzLen += 2;
-		assert(destPtr < destEnd);
-		assert(destPtr + lzLen < destEnd);
-		assert(destPtr - lzOffset >= dest);
-		naive_memcpy(destPtr, destPtr - lzOffset, lzLen);
-		destPtr += lzLen;
-	}
-}
 }
 
 Screen_EoB::Screen_EoB(EoBCoreEngine *vm, OSystem *system) : Screen(vm, system, _screenDimTable, _screenDimTableCount), _cursorColorKey16Bit(0x8000) {
@@ -362,6 +324,44 @@ void Screen_EoB::printShadedText(const char *string, int x, int y, int col1, int
 void Screen_EoB::loadShapeSetBitmap(const char *file, int tempPage, int destPage) {
 	loadEoBBitmap(file, _cgaMappingDefault, tempPage, destPage, -1);
 	_curPage = 2;
+}
+
+void Screen_EoB::eob2ChineseLZUncompress(byte *dest, uint32 destSize, Common::SeekableReadStream *src) {
+	src->skip(6);
+	eob2ChineseLZInStream in(src);
+	int lzOffset, lzLen;
+	byte *destPtr = dest;
+	byte *destEnd = dest + destSize;
+
+	while (1) {
+		if (in.getBit()) {
+			assert(destPtr < destEnd);
+			*destPtr++ = in.getByte();
+			continue;
+		}
+
+		if (!in.getBit()) {
+			lzLen = in.getBit() << 1;
+			lzLen |= in.getBit();
+			lzOffset = 0x100 - in.getByte();
+		} else {
+			uint16 lzPair = in.getShort();
+			lzOffset = 0x2000 - (lzPair >> 3);
+			lzLen = lzPair & 7;
+			if (lzLen == 0) {
+				lzLen = in.getByte();
+				if (lzLen == 0) {
+					return;
+				}
+			}
+		}
+		lzLen += 2;
+		assert(destPtr < destEnd);
+		assert(destPtr + lzLen < destEnd);
+		assert(destPtr - lzOffset >= dest);
+		naive_memcpy(destPtr, destPtr - lzOffset, lzLen);
+		destPtr += lzLen;
+	}
 }
 
 void Screen_EoB::loadChineseEOB2LZBitmap(Common::SeekableReadStream *s, int pageNum, uint32 size) {
