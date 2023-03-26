@@ -1356,3 +1356,25 @@ static const char *const kEoB2NpcPresetsNamesDOSChinese[6] = {
 };
 
 static const StringListProvider kEoB2NpcPresetsNamesDOSChineseProvider = { ARRAYSIZE(kEoB2NpcPresetsNamesDOSChinese), kEoB2NpcPresetsNamesDOSChinese };
+
+static const DarkMoonAnimCommand kEoB2IntroAnimData40DOSChinese[] = {
+	{ 101,    0,  21, 20,   1,   1,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   1,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   2,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   3,   0,   0,   0,   0 },
+	{ 0x06,  11,   0,  0,   0,   0,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   4,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   5,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,  18,   6,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,  90,   6,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   5,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   4,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   3,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   2,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   1,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   1,   0,   0,   0,   0 },
+	{ 101,    0,  21, 20,   1,   0,   0,   0,   0,   0 },
+	{ 0xFF,   0,   0,  0,   0,   0,   0,   0,   0,   0 }
+};
+
+static const DarkMoonAnimCommandProvider kEoB2IntroAnimData40DOSChineseProvider = { ARRAYSIZE(kEoB2IntroAnimData40DOSChinese), kEoB2IntroAnimData40DOSChinese }; // OK
