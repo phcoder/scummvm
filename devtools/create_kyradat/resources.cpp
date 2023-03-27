@@ -3537,7 +3537,7 @@ static const ResourceProvider resourceProviders[] = {
 	{ kEoB2IntroStrings, kEoB2, kPlatformDOS, kTalkieVersion, ZH_TWN, &kEoB2IntroStringsDOSChineseProvider },
 	{ kEoB2IntroCPSFiles, kEoB2, kPlatformDOS, kTalkieVersion, ZH_TWN, &kEoB2IntroCPSFilesDOSChineseProvider },
 	{ kEoB2FinaleStrings, kEoB2, kPlatformDOS, kTalkieVersion, ZH_TWN, &kEoB2FinaleStringsDOSChineseProvider },
-	{ kEoB2CreditsData, kEoB2, kPlatformDOS, kTalkieVersion, ZH_TWN, &kEoB2CreditsDataDOSChineseProvider },
+	{ kEoB2CreditsData, kEoB2, kPlatformDOS, kTalkieVersion, ZH_TWN, &kEoB2CreditsDataDOSEnglishProvider },
 	{ kEoB2FinaleCPSFiles, kEoB2, kPlatformDOS, kTalkieVersion, ZH_TWN, &kEoB2FinaleCPSFilesDOSChineseProvider },
 	{ kEoBBaseMonsterDistAttStrings, kEoB2, kPlatformDOS, kTalkieVersion, ZH_TWN, &kEoB2MonsterDistAttStringsDOSChineseProvider },
 	{ kEoB2Npc1Strings, kEoB2, kPlatformDOS, kTalkieVersion, ZH_TWN, &kEoB2Npc1StringsDOSChineseProvider },
