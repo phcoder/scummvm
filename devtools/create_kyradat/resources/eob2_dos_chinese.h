@@ -30,75 +30,75 @@ static const char *const kEoB2ChargenStrings2DOSChinese[12] = {
 static const StringListProvider kEoB2ChargenStrings2DOSChineseProvider = { ARRAYSIZE(kEoB2ChargenStrings2DOSChinese), kEoB2ChargenStrings2DOSChinese };
 
 static const char *const kEoB2ChargenStatStringsDOSChinese[12] = {
-	"STR",
-	"INT",
-	"WIS",
-	"DEX",
-	"CON",
-	"CHA",
-	"STRENGTH",
-	"INTELLIGENCE",
-	"WISDOM",
-	"DEXTERITY",
-	"CONSTITUTION",
-	"CHARISMA"
+	"\xa4\x4f\xb6\x71\x3a", /* "力量:"; */
+	"\xb4\xbc\xaf\xe0\x3a", /* "智能:"; */
+	"\xbe\xc7\xb0\xdd\x3a", /* "學問:"; */
+	"\xb1\xd3\xb1\xb6\x3a", /* "敏捷:"; */
+	"\xc5\xe9\xbd\xe8\x3a", /* "體質:"; */
+	"\xbe\x79\xa4\x4f\x3a", /* "魅力:"; */
+	"\xa4\x4f\xb6\x71\x3a", /* "力量:"; */
+	"\xb4\xbc\xaf\xe0\x3a", /* "智能:"; */
+	"\xbe\xc7\xb0\xdd\x3a", /* "學問:"; */
+	"\xb1\xd3\xb1\xb6\x3a", /* "敏捷:"; */
+	"\xc5\xe9\xbd\xe8\x3a", /* "體質:"; */
+	"\xbe\x79\xa4\x4f\x3a", /* "魅力:"; */
 };
 
-static const StringListProvider kEoB2ChargenStatStringsDOSChineseProvider = { ARRAYSIZE(kEoB2ChargenStatStringsDOSChinese), kEoB2ChargenStatStringsDOSChinese };
+static const StringListProvider kEoB2ChargenStatStringsDOSChineseProvider = { ARRAYSIZE(kEoB2ChargenStatStringsDOSChinese), kEoB2ChargenStatStringsDOSChinese }; // Likely OK
 
 static const char *const kEoB2ChargenRaceSexStringsDOSChinese[12] = {
-	"HUMAN MALE",
-	"HUMAN FEMALE",
-	"ELF MALE",
-	"ELF FEMALE",
-	"HALF-ELF MALE",
-	"HALF-ELF FEMALE",
-	"DWARF MALE",
-	"DWARF FEMALE",
-	"GNOME MALE",
-	"GNOME FEMALE",
-	"HALFLING MALE",
-	"HALFLING FEMALE"
+	"\xa8\x6b\xa9\xca\xa4\x48\xc3\xfe", /* "男性人類"; */
+	"\xa4\x6b\xa9\xca\xa4\x48\xc3\xfe", /* "女性人類"; */
+	"\xa8\x6b\xa9\xca\xba\xeb\xc6\x46", /* "男性精靈"; */
+	"\xa4\x6b\xa9\xca\xba\xeb\xc6\x46", /* "女性精靈"; */
+	"\xa8\x6b\xa5\x62\xba\xeb\xc6\x46", /* "男半精靈"; */
+	"\xa4\x6b\xa5\x62\xba\xeb\xc6\x46", /* "女半精靈"; */
+	"\xa8\x6b\xa9\xca\xb8\x47\xa4\x48", /* "男性矮人"; */
+	"\xa4\x6b\xa9\xca\xb8\x47\xa4\x48", /* "女性矮人"; */
+	"\xa8\x6b\xa9\xca\xa8\xdc\xbe\xa7", /* "男性侏儒"; */
+	"\xa4\x6b\xa9\xca\xa8\xdc\xbe\xa7", /* "女性侏儒"; */
+	"\xa8\x6b\xa5\x62\xa8\xad\xa4\x48", /* "男半身人"; */
+	"\xa4\x6b\xa5\x62\xa8\xad\xa4\x48", /* "女半身人"; */
 };
 
 static const StringListProvider kEoB2ChargenRaceSexStringsDOSChineseProvider = { ARRAYSIZE(kEoB2ChargenRaceSexStringsDOSChinese), kEoB2ChargenRaceSexStringsDOSChinese };
 
 static const char *const kEoB2ChargenClassStringsDOSChinese[21] = {
-	"FIGHTER",
-	"RANGER",
-	"PALADIN",
-	"MAGE",
-	"CLERIC",
-	"THIEF",
-	"FIGHTER/CLERIC",
-	"FIGHTER/THIEF",
-	"FIGHTER/MAGE",
-	"FIGHTER/MAGE/THIEF",
-	"THIEF/MAGE",
-	"CLERIC/THIEF",
-	"FIGHTER/CLERIC/MAGE",
-	"RANGER/CLERIC",
-	"CLERIC/MAGE",
-	"FIGHTER",
-	"MAGE",
-	"CLERIC",
-	"THIEF",
-	"PALADIN",
-	"RANGER"
+	"\xbe\xd4\xa4\x68", /* "戰士"; */
+	"\xb9\x43\xab\x4c", /* "遊俠"; */
+	"\xaa\x5a\xa4\x68", /* "武士"; */
+	"\xa7\xc5\xae\x76", /* "巫師"; */
+	"\xaa\xaa\xae\x76", /* "牧師"; */
+	"\xa4\x70\xb0\xbd", /* "小偷"; */
+	"\xbe\xd4\xa4\x68\x2f\xaa\xaa\xae\x76", /* "戰士/牧師"; */
+	"\xbe\xd4\xa4\x68\x2f\xa4\x70\xb0\xbd", /* "戰士/小偷"; */
+	"\xbe\xd4\xa4\x68\x2f\xa7\xc5\xae\x76", /* "戰士/巫師"; */
+	"\xbe\xd4\xa4\x68\x2f\xa7\xc5\xae\x76\x2f\xa4\x70\xb0\xbd", /* "戰士/巫師/小偷"; */
+	"\xa4\x70\xb0\xbd\x2f\xa7\xc5\xae\x76", /* "小偷/巫師"; */
+	"\xaa\xaa\xae\x76\x2f\xa4\x70\xb0\xbd", /* "牧師/小偷"; */
+	"\xbe\xd4\xa4\x68\x2f\xaa\xaa\xae\x76\x2f\xa7\xc5\xae\x76", /* "戰士/牧師/巫師"; */
+	"\xb9\x43\xab\x4c\x2f\xaa\xaa\xae\x76", /* "遊俠/牧師"; */
+	"\xaa\xaa\xae\x76\x2f\xa7\xc5\xae\x76", /* "牧師/巫師"; */
+	"\xbe\xd4\xa4\x68", /* "戰士"; */
+	"\xa7\xc5\xae\x76", /* "巫師"; */
+	"\xaa\xaa\xae\x76", /* "牧師"; */
+	"\xa4\x70\xb0\xbd", /* "小偷"; */
+	"\xaa\x5a\xa4\x68", /* "武士"; */
+	"\xb9\x43\xab\x4c", /* "遊俠"; */
 };
 
 static const StringListProvider kEoB2ChargenClassStringsDOSChineseProvider = { ARRAYSIZE(kEoB2ChargenClassStringsDOSChinese), kEoB2ChargenClassStringsDOSChinese };
 
 static const char *const kEoB2ChargenAlignmentStringsDOSChinese[9] = {
-	"LAWFUL GOOD",
-	"NEUTRAL GOOD",
-	"CHAOTIC GOOD",
-	"LAWFUL NEUTRAL",
-	"TRUE NEUTRAL",
-	"CHAOTIC NEUTRAL",
-	"LAWFUL EVIL",
-	"NEUTRAL EVIL",
-	"CHAOTIC EVIL"
+	"\xb5\xb4\xb9\xef\xb5\xbd\xa8\x7d", /* "絕對善良"; */
+	"\xb5\xbd\xa8\x7d\xa5\xbb\xa9\xca", /* "善良本性"; */
+	"\xa6\xfd\xa8\x44\xa6\x77\xa4\xdf", /* "但求安心"; */
+	"\xc4\x59\xa6\x75\xa4\xa4\xa5\xdf", /* "嚴守中立"; */
+	"\xa4\xa4\xa5\xdf\xa5\xbb\xa6\xec", /* "中立本位"; */
+	"\xc0\x48\xbe\xf7\xc0\xb3\xc5\xdc", /* "隨機應變"; */
+	"\xa7\xb9\xa5\xfe\xa8\xb8\xb4\x63", /* "完全邪惡"; */
+	"\xa8\xb8\xb4\x63\xa5\xbb\xa9\xca", /* "邪惡本性"; */
+	"\xc0\x48\xbf\xb3\xac\xb0\xb4\x63", /* "隨興為惡"; */
 };
 
 static const StringListProvider kEoB2ChargenAlignmentStringsDOSChineseProvider = { ARRAYSIZE(kEoB2ChargenAlignmentStringsDOSChinese), kEoB2ChargenAlignmentStringsDOSChinese };
@@ -111,58 +111,58 @@ static const StringListProvider kEoB2ChargenEnterGameStringsDOSChineseProvider =
 
 static const char *const kEoB2PryDoorStringsDOSChinese[8] = {
 	"\r",
-	"You are not capable of forcing the door.\r",
-	"\x06\x04""You force the door.\r",
-	"\x06\x06""You try to force the door but fail.\r",
-	"You can't put that item there.\r",
-	"The item is too large to fit.\r",
-	"No one is able to pry this door open.\r",
+	"\xb1\x7a\xaa\xba\xa4\x4f\xb6\x71\xa4\xa3\xb0\xf7\xbc\xb2\xb6\x7d\xb3\x6f\xb9\x44\xaa\xf9\x2e\r", /* "您的力量不夠撞開這道門.\r"; */
+	"\x06\x04\xb1\x7a\xa5\xce\xa4\x4f\xbc\xb2\xaa\xf9\x2e\r", /* "\x06\x04您用力撞門.\r"; */
+	"\x06\x06\xb1\x7a\xb9\xc1\xb8\xd5\xb1\x4e\xaa\xf9\xbc\xb2\xb6\x7d\x2c\xa6\xfd\xac\x4f\xb1\x7a\xa5\xa2\xb1\xd1\xa4\x46\x2e\r", /* "\x06\x06您嘗試將門撞開,但是您失敗了.\r"; */
+	"\xb1\x7a\xa4\xa3\xaf\xe0\xb1\x4e\xb3\x6f\xb6\xb5\xaa\xab\xab\x7e\xa9\xf1\xb8\x6d\xa9\xf3\xa6\xb9\xb3\x42\x2e\r", /* "您不能將這項物品放置於此處.\r"; */
+	"\xb3\x6f\xaa\xab\xab\x7e\xa4\xd3\xa4\x6a\xa4\x46\x2c\xb1\x7a\xa9\xf1\xa4\xa3\xb6\x69\xa5\x68\x2e\r", /* "這物品太大了,您放不進去.\r"; */
+	"\xa8\x53\xa6\xb3\xa4\x48\xaf\xe0\xb0\xf7\xb1\x4e\xb3\x6f\xb9\x44\xaa\xf9\xa5\xb4\xb6\x7d\x2e\r", /* "沒有人能夠將這道門打開.\r"; */
 	"\r"
 };
 
 static const StringListProvider kEoB2PryDoorStringsDOSChineseProvider = { ARRAYSIZE(kEoB2PryDoorStringsDOSChinese), kEoB2PryDoorStringsDOSChinese };
 
 static const char *const kEoB2WarningStringsDOSChinese[4] = {
-	"You can't go that way.\r",
-	"%s isn't capable of eating food!\r",
-	"That food is rotten!  You don't want to eat that!\r",
-	"You may only eat food!\r"
+	"\xb1\x7a\xb5\x4c\xaa\x6b\xa8\xab\xb9\x4c\xa5\x68\x2e", /* "您無法走過去."; */
+	"\x25\x73\xa4\x77\xb8\x67\xb5\x4c\xaa\x6b\xa6\x59\xaa\x46\xa6\xe8\xa4\x46\x21", /* "%s已經無法吃東西了!"; */
+	"\xb3\x6f\xad\xb9\xaa\xab\xa4\x77\xb8\x67\xbb\x47\xc3\x61\xa4\x46\x21\xb1\x7a\xa4\xa3\xad\x6e\xa6\x59\x21", /* "這食物已經腐壞了!您不要吃!"; */
+	"\xb1\x7a\xa5\x75\xaf\xe0\xb0\xf7\xa6\x59\xad\xb9\xaa\xab\x21", /* "您只能夠吃食物!"; */
 };
 
 static const StringListProvider kEoB2WarningStringsDOSChineseProvider = { ARRAYSIZE(kEoB2WarningStringsDOSChinese), kEoB2WarningStringsDOSChinese };
 
 static const char *const kEoB2ItemSuffixStringsRingsDOSChinese[4] = {
-	"Adornment",
-	"Wizardry",
-	"Sustenance",
-	"Feather Fall"
+	"\xaf\xc2\xba\xe9\xb8\xcb\xb9\xa2\xac\xfc\xc6\x5b\xa5\xce", /* "純粹裝飾美觀用"; */
+	"\xbc\x57\xb1\x6a\xa7\xc5\xae\x76\xb0\x4f\xbe\xd0\xaa\x6b\xb3\x4e", /* "增強巫師記憶法術"; */
+	"\xab\x4f\xab\xf9\xa4\xb8\xae\xf0\xa4\xa3\xb7\x7c\xc4\xc8\xb4\xf7", /* "保持元氣不會饑渴"; */
+	"\xbc\x59\xb8\xa8\xb3\xb4\xa7\x7c\xa4\xa3\xb7\x7c\xa8\xfc\xb6\xcb", /* "墜落陷坑不會受傷"; */
 };
 
 static const StringListProvider kEoB2ItemSuffixStringsRingsDOSChineseProvider = { ARRAYSIZE(kEoB2ItemSuffixStringsRingsDOSChinese), kEoB2ItemSuffixStringsRingsDOSChinese };
 
 
 static const char *const kEoB2ItemSuffixStringsPotionsDOSChinese[8] = {
-	"Giant Strength",
-	"Healing",
-	"Extra Healing",
-	"Poison",
-	"Vitality",
-	"Speed",
-	"Invisibility",
-	"Cure Poison"
+	"\xbc\x57\xa5\x5b\xa4\x4f\xb6\x71", /* "增加力量"; */
+	"\xa4\x40\xaf\xeb\xaa\x76\xc0\xf8", /* "一般治療"; */
+	"\xbc\x57\xb1\x6a\xa5\xcd\xa9\x52\xa4\x4f", /* "增強生命力"; */
+	"\xa6\xb3\xac\x72", /* "有毒"; */
+	"\xab\xec\xb4\x5f\xa4\xb8\xae\xf0", /* "恢復元氣"; */
+	"\xbc\x57\xa5\x5b\xac\xa1\xa4\x4f\xb3\x74\xab\xd7", /* "增加活力速度"; */
+	"\xc1\xf4\xa7\xce\xa5\xce", /* "隱形用"; */
+	"\xb8\xd1\xac\x72\xa5\xce", /* "解毒用"; */
 };
 
 static const StringListProvider kEoB2ItemSuffixStringsPotionsDOSChineseProvider = { ARRAYSIZE(kEoB2ItemSuffixStringsPotionsDOSChinese), kEoB2ItemSuffixStringsPotionsDOSChinese };
 
 static const char *const kEoB2ItemSuffixStringsWandsDOSChinese[8] = {
-	"Stick",
-	"Lightning",
-	"Frost",
-	"Curing",
-	"Fireball",
-	"Starfire",
-	"Magic Missile",
-	"Dispel Magic"
+	"\xb7\x7c\xc2\x48\xa4\xe2", /* "會黏手"; */
+	"\xac\x49\xae\x69\xb9\x70\xb9\x71\xb3\x4e", /* "施展雷電術"; */
+	"\xac\x49\xae\x69\xa7\x4e\xc0\x40\xb3\x4e", /* "施展冷錐術"; */
+	"\xaa\x76\xc0\xf8\xad\xab\xb6\xcb", /* "治療重傷"; */
+	"\xac\x49\xae\x69\xa4\xf5\xb2\x79\xb3\x4e", /* "施展火球術"; */
+	"\xac\x50\xa4\xf5\xc4\x5f\xa7\xfa", /* "星火寶杖"; */
+	"\xac\x49\xae\x69\xc5\x5d\xaa\x6b\xad\xb8\xbc\x75", /* "施展魔法飛彈"; */
+	"\xac\x49\xae\x69\xb8\xd1\xa9\x47\xb3\x4e", /* "施展解咒術"; */
 };
 
 static const StringListProvider kEoB2ItemSuffixStringsWandsDOSChineseProvider = { ARRAYSIZE(kEoB2ItemSuffixStringsWandsDOSChinese), kEoB2ItemSuffixStringsWandsDOSChinese };
@@ -317,30 +317,30 @@ static const char *const kEoB2AbortStringsDOSChinese[1] = {
 static const StringListProvider kEoB2AbortStringsDOSChineseProvider = { ARRAYSIZE(kEoB2AbortStringsDOSChinese), kEoB2AbortStringsDOSChinese };
 
 static const char *const kEoB2MenuStringsMainDOSChinese[8] = {
-	"Select Option:",
-	"Rest Party",
-	"Memorize Spells",
-	"Pray for Spells",
-	"Scribe Scrolls",
-	"Preferences",
-	"Game Options",
-	"Exit"
+	"\xbd\xd0\x20\xbf\xef\x20\xbe\xdc\x20\xb6\xb5\x20\xa5\xd8\x3a", /* "請 選 擇 項 目:"; */
+	"\xc5\xfd\x20\xb6\xa4\x20\xa5\xee\x20\xa5\xf0\x20\xae\xa7", /* "讓 隊 伍 休 息"; */
+	"\xb0\x4f\x20\x20\xbe\xd0\x20\x20\xaa\x6b\x20\x20\xb3\x4e", /* "記  憶  法  術"; */
+	"\xac\xe8\x20\x20\xa8\x44\x20\x20\xaa\x6b\x20\x20\xb3\x4e", /* "祈  求  法  術"; */
+	"\xa7\xdb\x20\x20\xbc\x67\x20\x20\xaa\x6b\x20\x20\xb3\x4e", /* "抄  寫  法  術"; */
+	"\xa5\x5c\x20\x20\xaf\xe0\x20\x20\xb3\x5d\x20\x20\xa9\x77", /* "功  能  設  定"; */
+	"\xb9\x43\x20\x20\xc0\xb8\x20\x20\xbf\xef\x20\x20\xb6\xb5", /* "遊  戲  選  項"; */
+	"\xc2\xf7\xb6\x7d", /* "離開"; */
 };
 
-static const StringListProvider kEoB2MenuStringsMainDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsMainDOSChinese), kEoB2MenuStringsMainDOSChinese };
+static const StringListProvider kEoB2MenuStringsMainDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsMainDOSChinese), kEoB2MenuStringsMainDOSChinese }; // Likely OK
 
 static const char *const kEoB2MenuStringsSaveLoadDOSChinese[8] = {
-	"Load Game",
-	"Save Game",
-	"Drop Character",
-	"Quit Game",
-	"Game Options:",
-	"\r   Game saved.",
-	"Attempts to save your\rgame have failed!",
-	"Cannot load your\rsave game.  The\rfile may be corrupt!"
+	"\xb8\xfc\xa4\x4a\xb9\x43\xc0\xb8\xb6\x69\xab\xd7", /* "載入遊戲進度"; "Load Game" */
+	"\xc0\x78\xa6\x73\xb9\x43\xc0\xb8\xb6\x69\xab\xd7", /* "儲存遊戲進度"; "Save Game" */
+	"\xbb\xba\x20\xb4\xb2\x20\xb6\xa4\x20\xad\xfb", /* "遣 散 隊 員"; "Drop Character" */
+	"\xb5\xb2\x20\xa7\xf4\x20\xb9\x43\x20\xc0\xb8", /* "結 束 遊 戲"; "Quit Game" */
+	"\xb9\x43\x20\x20\xc0\xb8\x20\x20\xbf\xef\x20\x20\xb6\xb5\x3a", /* "遊  戲  選  項:"; "Game Options:" */
+	"\x0d\x20\x20\x20\xa6\x73\x20\xc0\xc9\x20\xa7\xb9\x20\xb2\xa6\x2e", /* "\r   存 檔 完 畢."; "\r   Game saved." */
+	"\x0d\x20\x20\x20\xa6\x73\x20\xc0\xc9\x20\xa5\xa2\x20\xb1\xd1\x2e", /* "\r   存 檔 失 敗."; "Attempts to save your\rgame have failed!", */
+	"\xb5\x4c\xaa\x6b\xb8\xfc\xa4\x4a\xc0\xc9\xae\xd7\x2c\xa5\x69\xaf\xe0\x0d\xc0\xc9\xae\xd7\xa4\x77\xb8\x67\xb7\x6c\xc3\x61", /* "無法載入檔案,可能\r檔案已經損壞"; "Cannot load your\rsave game.  The\rfile may be corrupt!" */
 };
 
-static const StringListProvider kEoB2MenuStringsSaveLoadDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsSaveLoadDOSChinese), kEoB2MenuStringsSaveLoadDOSChinese };
+static const StringListProvider kEoB2MenuStringsSaveLoadDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsSaveLoadDOSChinese), kEoB2MenuStringsSaveLoadDOSChinese }; // Likely ok
 
 static const char *const kEoB2MenuStringsOnOffDOSChinese[2] = {
 	"ON",
@@ -350,86 +350,86 @@ static const char *const kEoB2MenuStringsOnOffDOSChinese[2] = {
 static const StringListProvider kEoB2MenuStringsOnOffDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsOnOffDOSChinese), kEoB2MenuStringsOnOffDOSChinese };
 
 static const char *const kEoB2MenuStringsSpellsDOSChinese[17] = {
-	"\r\r Select a character\r from your party who\r would like to learn\r spells.",
-	"\r Your Paladin is \r too low a level\r for spells.",
-	"\r\r The Mage has no\r Spell Book!",
-	"\r\r\r Select a character\r from your party\r who would like to\r pray for spells.",
-	"\r No party members\r are capable of\r praying for new\r spells.",
-	"\r No party members\r are capable of\r memorizing new\r spells.",
-	" An unconscious\r or dead Mage\r cannot memorize\r spells.",
-	" An unconscious\r or dead Cleric\r cannot pray for\r spells.",
+	"\x0d\x0d\xb1\x71\xb1\x7a\xaa\xba\xb6\xa4\xa5\xee\xa4\xa4\xbf\xef\xbe\xdc\xa4\x40\x0d\xad\xd3\xbe\x41\xb7\xed\xaa\xba\xb6\xa4\xad\xfb\xa8\xd3\xbe\xc7\xb2\xdf\x0d\xaa\x6b\xb3\x4e\x2e", /* "\r\r從您的隊伍中選擇一\r個適當的隊員來學習\r法術."; */
+	"\x0d\xb1\x7a\xaa\xba\xaa\x5a\xa4\x68\xb5\xa5\xaf\xc5\xa4\xd3\xa7\x43\x2c\x0d\xb5\x4c\xaa\x6b\xa8\xcf\xa5\xce\xaa\x6b\xb3\x4e\x2e", /* "\r您的武士等級太低,\r無法使用法術."; */
+	"\x0d\xa8\x53\xa6\xb3\xaa\x6b\xb3\x4e\xb1\xb2\xb6\x62", /* "\r沒有法術捲軸"; */
+	"\x0d\x0d\xbd\xd0\xb1\x71\xb1\x7a\xaa\xba\xab\x5f\xc0\x49\xb6\xa4\xa5\xee\xa4\xa4\xbf\xef\x0d\xa5\x58\xa4\x40\xad\xd3\xb6\xa4\xad\xfb\xa8\xd3\xac\xe8\xa8\x44\xaa\x6b\xb3\x4e\x2e", /* "\r\r請從您的冒險隊伍中選\r出一個隊員來祈求法術."; */
+	"\x0d\xa8\x53\xa6\xb3\xa5\xf4\xa6\xf3\xa4\x40\xa6\xec\xb6\xa4\xad\xfb\x0d\xa5\x69\xa5\x48\xac\xe8\xa8\x44\xb7\x73\xaa\xba\xaa\x6b\xb3\x4e\x2e", /* "\r沒有任何一位隊員\r可以祈求新的法術."; */
+	"\x0d\xa8\x53\xa6\xb3\xa5\xf4\xa6\xf3\xa4\x40\xa6\xec\xb6\xa4\xad\xfb\x0d\xa5\x69\xa5\x48\xbe\xc7\xb2\xdf\xb7\x73\xaa\xba\xaa\x6b\xb3\x4e\x2e", /* "\r沒有任何一位隊員\r可以學習新的法術."; */
+	"\xa5\xa2\xa5\x68\xaa\xbe\xc4\xb1\xa9\xce\xa4\x77\xa6\xba\xa4\x60\xaa\xba\x0d\xa7\xc5\xae\x76\xa4\xa3\xaf\xe0\xbe\xc7\xb2\xdf\xaa\x6b\xb3\x4e\x2e", /* "失去知覺或已死亡的\r巫師不能學習法術."; */
+	"\xa5\xa2\xa5\x68\xaa\xbe\xc4\xb1\xa9\xce\xa4\x77\xa6\xba\xa4\x60\xaa\xba\x0d\xaa\xaa\xae\x76\xa4\xa3\xaf\xe0\xac\xe8\xa8\x44\xaa\x6b\xb3\x4e\x2e", /* "失去知覺或已死亡的\r牧師不能祈求法術."; */
 	"1",
 	"2",
 	"3",
 	"4",
 	"5",
-	"Clear",
-	"Spells Available:",
-	"Yes",
-	"No"
+	"\xb2\x4d\xb0\xa3", /* "清除"; */
+	"\xa5\x69\xa5\xce\xaa\xba\xaa\x6b\xb3\x4e\x3a", /* "可用的法術:"; */
+	"\xac\x4f", /* "是"; */
+	"\xa4\xa3", /* "不"; */
 };
 
-static const StringListProvider kEoB2MenuStringsSpellsDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsSpellsDOSChinese), kEoB2MenuStringsSpellsDOSChinese };
+static const StringListProvider kEoB2MenuStringsSpellsDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsSpellsDOSChinese), kEoB2MenuStringsSpellsDOSChinese }; // Likely OK
 
 static const char *const kEoB2MenuStringsRestDOSChinese[5] = {
-	"\rWill your healers\rheal the party?",
-	" Someone is still\r injured. Rest\r until healed?",
-	"Resting party.",
-	"\r All characters\r are fully\r rested.",
-	" Your party needs\r to rest to gain\r spells."
+	"\xa7\x41\xaa\xba\xaa\x76\xc0\xf8\xaa\xcc\xad\x6e\xc2\xe5\xaa\x76\x0d\xb6\xa4\xad\xfb\xb6\xdc\x3f\x20\x20\x20\x20\x20\x20\x20\x20", /* "你的治療者要醫治\r隊員嗎?        "; */
+	"\xa6\xb9\xb3\x42\xa6\xfc\xa5\x47\xa6\xb3\xa6\x4d\xc0\x49\xa6\x73\xa6\x62\x21\x0d\xb1\x7a\xad\x6e\xa6\x62\xa6\xb9\xa5\xf0\xae\xa7\xc0\xf8\xbe\x69\xb6\xdc\x3f", /* "此處似乎有危險存在!\r您要在此休息療養嗎?"; */
+	"\x20\x20\xb6\xa4\xa5\xee\xa5\xf0\xae\xa7\xa4\xa4\x2e", /* "  隊伍休息中."; */
+	"\x0d\xa5\xfe\xb3\xa1\xaa\xba\xb6\xa4\xad\xfb\xa4\x77\xb8\x67\xb1\x6f\xa8\xec\x0d\xa4\x46\xa5\x52\xa5\xf7\xaa\xba\xa5\xf0\xae\xa7", /* "\r全部的隊員已經得到\r了充份的休息"; */
+	"\xb1\x7a\xaa\xba\xb6\xa4\xa5\xee\xbb\xdd\xad\x6e\xa5\xf0\xae\xa7\x0d\xae\xc9\xb6\xa1\x2c\xa5\x48\xab\x4b\xbe\xc7\xb2\xdf\xaa\x6b\xb3\x4e", /* "您的隊伍需要休息\r時間,以便學習法術"; */
 };
 
-static const StringListProvider kEoB2MenuStringsRestDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsRestDOSChinese), kEoB2MenuStringsRestDOSChinese };
+static const StringListProvider kEoB2MenuStringsRestDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsRestDOSChinese), kEoB2MenuStringsRestDOSChinese }; // Likely OK
 
 static const char *const kEoB2MenuStringsDropDOSChinese[1] = {
-	" You cannot have\r less than four\r characters."
+	"\xaa\x60\xb7\x4e\x21\xb1\x7a\xaa\xba\xb6\xa4\xad\xfb\xc1\x60\xa6\x40\x0d\xa4\xa3\xb1\x6f\xa4\xd6\xa9\xf3\xa5\x7c\xa4\x48", /* "注意!您的隊員總共\r不得少於四人"; */
 };
 
-static const StringListProvider kEoB2MenuStringsDropDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsDropDOSChinese), kEoB2MenuStringsDropDOSChinese };
+static const StringListProvider kEoB2MenuStringsDropDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsDropDOSChinese), kEoB2MenuStringsDropDOSChinese }; // Likely OK
 
 static const char *const kEoB2MenuStringsExitDOSChinese[1] = {
-	" Are you sure you\r wish to exit the\r game?"
+	"\x0d\xb1\x7a\xbd\x54\xa9\x77\xad\x6e\xb5\xb2\xa7\xf4\xb9\x43\xc0\xb8\x3f", /* "\r您確定要結束遊戲?"; */
 };
 
-static const StringListProvider kEoB2MenuStringsExitDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsExitDOSChinese), kEoB2MenuStringsExitDOSChinese };
+static const StringListProvider kEoB2MenuStringsExitDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsExitDOSChinese), kEoB2MenuStringsExitDOSChinese }; // Likely OK
 
 static const char *const kEoB2MenuStringsStarveDOSChinese[1] = {
-	" Your party is\r starving. Do you\r wish to continue\r resting?"
+	"\xb1\x7a\xaa\xba\xb6\xa4\xad\xfb\xa5\xbf\xb3\x42\xa9\xf3\xc4\xc8\xbe\x6a\x0d\xa4\xa4\x2e\xb1\x7a\xad\x6e\xc4\x7e\xc4\xf2\xa5\xf0\xae\xa7\xb6\xdc\x3f", /* "您的隊員正處於饑餓\r中.您要繼續休息嗎?"; */
 };
 
-static const StringListProvider kEoB2MenuStringsStarveDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsStarveDOSChinese), kEoB2MenuStringsStarveDOSChinese };
+static const StringListProvider kEoB2MenuStringsStarveDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsStarveDOSChinese), kEoB2MenuStringsStarveDOSChinese }; // Likely OK
 
 static const char *const kEoB2MenuStringsScribeDOSChinese[5] = {
-	"Select the scroll(s)\ryou wish to scribe.",
-	"\r\r\r Select a Mage\r from your party\r who would like to\r scribe spells.",
-	" You don't have\r any scolls to be\r scribed.",
-	" You don't have\r any scrolls that\r this Mage needs.",
-	"\r You don't have\r any Mage able to\r scribe scrolls."
+	"\xbd\xd0\xbf\xef\xbe\xdc\xb1\x7a\xad\x6e\xa7\xdb\xbc\x67\xaa\xba\xb1\xb2\xb6\x62", /* "請選擇您要抄寫的捲軸"; */
+	"\xbd\xd0\xb1\x71\xb6\xa4\xad\xfb\xa4\xa4\xbf\xef\xa5\x58\xa4\x40\xad\xd3\x0d\xa7\xc5\xae\x76\xa8\xd3\xa7\xdb\xbc\x67\xaa\x6b\xb3\x4e\x2e", /* "請從隊員中選出一個\r巫師來抄寫法術."; */
+	"\xb1\x7a\xa8\x53\xa6\xb3\xa5\xf4\xa6\xf3\xc5\x5d\xaa\x6b\xb1\xb2\xb6\x62\x0d\xa5\x69\xa5\x48\xa5\xce\xa8\xd3\xa7\xdb\xbc\x67\xaa\x6b\xb3\x4e\x2e", /* "您沒有任何魔法捲軸\r可以用來抄寫法術."; */
+	"\xb1\x7a\xa8\xc3\xa8\x53\xa6\xb3\xb3\x6f\xa6\xec\xa7\xc5\xae\x76\x0d\xa5\xbc\xbe\xc7\xb9\x4c\xaa\xba\xc5\x5d\xaa\x6b\xb1\xb2\xb6\x62\x2e", /* "您並沒有這位巫師\r未學過的魔法捲軸."; */
+	"\xb1\x7a\xa8\xc3\xa8\x53\xa6\xb3\xa7\xc5\xae\x76\xa5\x69\xa5\x48\x0d\xa7\xdb\xbc\x67\xc5\x5d\xaa\x6b\xb1\xb2\xb6\x62", /* "您並沒有巫師可以\r抄寫魔法捲軸"; */
 };
 
-static const StringListProvider kEoB2MenuStringsScribeDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsScribeDOSChinese), kEoB2MenuStringsScribeDOSChinese };
+static const StringListProvider kEoB2MenuStringsScribeDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsScribeDOSChinese), kEoB2MenuStringsScribeDOSChinese };  // Likely OK
 
 static const char *const kEoB2MenuStringsDrop2DOSChinese[3] = {
-	" Select the\r character you\r wish to drop.",
-	" You must specify\r a name for your\r save game!",
-	" Are you sure you\r wish to replace\r your saved game?"
+	"\x0d\x0d\x0d\xbd\xd0\xbf\xef\xbe\xdc\xb1\x7a\xb7\x51\xbb\xba\xb4\xb2\xaa\xba\xb6\xa4\xad\xfb\x2e", /* "\r\r\r請選擇您想遣散的隊員."; */
+	"\x0d\x20\xb1\x7a\xa5\xb2\xb6\xb7\xbf\xe9\xa4\x4a\xc0\xc9\xae\xd7\xa6\x57\xba\xd9", /* "\r 您必須輸入檔案名稱"; */
+	"\xb1\x7a\xbd\x54\xa9\x77\xb7\x73\xa6\x73\xa9\xf1\xaa\xba\xc0\xc9\xae\xd7\x0d\xad\x6e\xa8\xfa\xa5\x4e\xb3\x6f\xad\xd3\xc2\xc2\xc0\xc9\xae\xd7\x3f", /* "您確定新存放的檔案\r要取代這個舊檔案?"; */
 };
 
-static const StringListProvider kEoB2MenuStringsDrop2DOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsDrop2DOSChinese), kEoB2MenuStringsDrop2DOSChinese };
+static const StringListProvider kEoB2MenuStringsDrop2DOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsDrop2DOSChinese), kEoB2MenuStringsDrop2DOSChinese };  // Likely OK
 
 static const char *const kEoB2MenuStringsHeadDOSChinese[3] = {
-	"Camp:",
-	"Preferences:",
-	"Game Options:"
+	"\xb2\xcf\xc0\xe7\x3a", /* "紮營:"; */
+	"\xa5\x5c\x20\x20\xaf\xe0\x20\x20\xb3\x5d\x20\x20\xa9\x77\x3a", /* "功  能  設  定:"; */
+	"\xb9\x43\x20\x20\xc0\xb8\x20\x20\xbf\xef\x20\x20\xb6\xb5\x3a", /* "遊  戲  選  項:"; */
 };
 
-static const StringListProvider kEoB2MenuStringsHeadDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsHeadDOSChinese), kEoB2MenuStringsHeadDOSChinese };
+static const StringListProvider kEoB2MenuStringsHeadDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsHeadDOSChinese), kEoB2MenuStringsHeadDOSChinese }; // Likely OK
 
 static const char *const kEoB2MenuStringsPoisonDOSChinese[1] = {
-	"Poisoned party\rmembers may die!\rRest anyway?"
+	"\xa6\xb3\xb6\xa4\xad\xfb\xa4\xa4\xac\x72\xa4\x46\xc0\x48\xae\xc9\xa5\x69\x0d\xaf\xe0\xb1\xbe\xb1\xbc\x21\xc1\xd9\xad\x6e\xa5\xf0\xae\xa7\xb6\xdc\x3f", /* "有隊員中毒了隨時可\r能掛掉!還要休息嗎?"; */
 };
 
-static const StringListProvider kEoB2MenuStringsPoisonDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsPoisonDOSChinese), kEoB2MenuStringsPoisonDOSChinese };
+static const StringListProvider kEoB2MenuStringsPoisonDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsPoisonDOSChinese), kEoB2MenuStringsPoisonDOSChinese }; // Likely OK
 
 static const char *const kEoB2MenuStringsMgcDOSChinese[2] = {
 	"%-18s %1d",
@@ -470,24 +470,24 @@ static const char *const kEoB2MenuStringsRest4DOSChinese[1] = {
 static const StringListProvider kEoB2MenuStringsRest4DOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsRest4DOSChinese), kEoB2MenuStringsRest4DOSChinese };
 
 static const char *const kEoB2MenuStringsDefeatDOSChinese[1] = {
-	"\rYour entire party\rhas been defeated!\rWould you like to\rload a previously\rsaved game?"
+	"\xb1\x7a\xaa\xba\xbe\xe3\xad\xd3\xab\x5f\xc0\x49\xb6\xa4\xa5\xee\xa4\x77\x0d\xa5\xfe\xad\x78\xb0\x7d\xa4\x60\x21\xb1\x7a\xad\x6e\xb8\xfc\xa4\x4a\xa5\x48\x0d\xab\x65\xa9\xd2\xc0\x78\xa6\x73\xaa\xba\xb6\x69\xab\xd7\xc0\xc9\xb6\xdc\x3f", /* "您的整個冒險隊伍已\r全軍陣亡!您要載入以\r前所儲存的進度檔嗎?"; */
 };
 
-static const StringListProvider kEoB2MenuStringsDefeatDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsDefeatDOSChinese), kEoB2MenuStringsDefeatDOSChinese };
+static const StringListProvider kEoB2MenuStringsDefeatDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsDefeatDOSChinese), kEoB2MenuStringsDefeatDOSChinese }; // Likely OK
 
 static const char *const kEoB2MenuStringsTransferDOSChinese[5] = {
-	"You must transfer\rfour party members\rbefore you may play!",
-	"You may only transfer\rfour party members to\rEOB II!",
-	"Items which are not\ruseful or unbalance\rthe game will be\rdeleted.",
-	" \r You do not have\r a mage in your\r party.",
-	" \r You do not have\r a cleric or\r paladin in your\r party."
+	"\xa6\x62\xb6\x7d\xa9\x6c\xb9\x43\xc0\xb8\xa5\x48\xab\x65\x2c\xb1\x7a\xa5\xb2\xb6\xb7\x0d\xa5\xfd\xb3\x5d\xa9\x77\xa6\x6e\xa5\x7c\xa6\xec\xb6\xa4\xad\xfb\x21", /* "在開始遊戲以前,您必須\r先設定好四位隊員!"; */
+	"\xa6\x62\xc1\xf4\xa4\xeb\xb6\xc7\xa9\x5f\xa4\xa4\x2c\xb1\x7a\xb3\xcc\xa6\x68\x0d\xa5\x75\xaf\xe0\xb6\xc7\xb0\x65\xa5\x7c\xa6\xec\xb6\xa4\xad\xfb\x21", /* "在隱月傳奇中,您最多\r只能傳送四位隊員!"; */
+	"\xa6\x62\xa5\xbb\xb9\x43\xc0\xb8\xa4\xa4\xb5\x4c\xa5\xce\xa9\xce\xa4\xa3\xaf\xe0\x0d\xa8\xcf\xa5\xce\xaa\xba\xaa\xab\xab\x7e\x2c\xb3\xa3\xb7\x7c\xb3\x51\x0d\xb2\x4d\xb0\xa3\xb1\xbc\x2e", /* "在本遊戲中無用或不能\r使用的物品,都會被\r清除掉."; */
+	"\x20\x0d\x20\xb1\x7a\xaa\xba\xab\x5f\xc0\x49\xb6\xa4\xa5\xee\xb8\xcc\x20\x0d\x20\xa8\x53\xa6\xb3\xa7\xc5\xae\x76\x2e", /* " \r 您的冒險隊伍裡 \r 沒有巫師."; */
+	"\x20\x0d\xa6\x62\xb1\x7a\xaa\xba\xb6\xa4\xa5\xee\xa4\xa4\xa8\xc3\xa8\x53\xa6\xb3\x0d\xaa\xaa\xae\x76\xa9\xce\xaa\x5a\xa4\x68", /* " \r在您的隊伍中並沒有\r牧師或武士"; */
 };
 
-static const StringListProvider kEoB2MenuStringsTransferDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsTransferDOSChinese), kEoB2MenuStringsTransferDOSChinese };
+static const StringListProvider kEoB2MenuStringsTransferDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsTransferDOSChinese), kEoB2MenuStringsTransferDOSChinese }; // Likely ok
 
 static const char *const kEoB2MenuStringsSpecDOSChinese[2] = {
-	"As you awaken, you\rdiscover that Insal\rthe thief is gone!",
-	"A quick inventory\rreveals equipment\rhas been stolen!"
+	"\xb7\xed\xb1\x7a\xa4\x40\xc4\xb1\xbf\xf4\xa8\xd3\x2c\xb1\x7a\xb5\x6f\xb2\x7b\x0d\xad\x5e\xc2\xc4\xba\xb8\xa8\xba\xad\xd3\xa4\x70\xb8\xe9\xa4\x77\xb8\x67\x0d\xc2\xf7\xb6\x7d\xa4\x46\x21", /* "當您一覺醒來,您發現\r英薩爾那個小賊已經\r離開了!"; */
+	"\xb1\x7a\xa8\xb3\xb3\x74\xa6\x61\xc0\xcb\xb5\xf8\xa4\x46\xa4\x40\xa4\x55\x0d\xa9\xd2\xa6\xb3\xaa\xab\xab\x7e\x2c\xb5\x6f\xb2\x7b\xb8\xcb\xb3\xc6\xb3\xa3\x0d\xa4\xa3\xa8\xa3\xa4\x46\x21", /* "您迅速地檢視了一下\r所有物品,發現裝備都\r不見了!"; */
 };
 
 static const StringListProvider kEoB2MenuStringsSpecDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsSpecDOSChinese), kEoB2MenuStringsSpecDOSChinese };
@@ -581,152 +581,152 @@ static const char *const kEoB2LevelGainStringsDOSChinese[1] = {
 static const StringListProvider kEoB2LevelGainStringsDOSChineseProvider = { ARRAYSIZE(kEoB2LevelGainStringsDOSChinese), kEoB2LevelGainStringsDOSChinese };
 
 static const char *const kEoB2BookNumbersDOSChinese[5] = {
-	"First",
-	"Second",
-	"Third",
-	"Fourth",
-	"Fifth"
+	"\xb2\xc4\xa4\x40\xaf\xc5", /* "第一級"; */
+	"\xb2\xc4\xa4\x47\xaf\xc5", /* "第二級"; */
+	"\xb2\xc4\xa4\x54\xaf\xc5", /* "第三級"; */
+	"\xb2\xc4\xa5\x7c\xaf\xc5", /* "第四級"; */
+	"\xb2\xc4\xa4\xad\xaf\xc5", /* "第五級"; */
 };
 
 static const StringListProvider kEoB2BookNumbersDOSChineseProvider = { ARRAYSIZE(kEoB2BookNumbersDOSChinese), kEoB2BookNumbersDOSChinese };
 
 static const char *const kEoB2MageSpellsListDOSChinese[33] = {
 	"",
-	"Armor",
-	"Burning Hands",
-	"Detect Magic",
-	"Magic Missile",
-	"Shield",
-	"Shocking Grasp",
-	"Blur",
-	"Detect Invisible",
-	"Imp Identify",
-	"Invisibility",
-	"M's Acid Arrow",
-	"Dispel Magic",
-	"Fireball",
-	"Haste",
-	"Hold Person",
-	"Invisibility 10'",
-	"Lightning Bolt",
-	"Vampiric Touch",
-	"Fear",
-	"Ice Storm",
-	"Imp Invisibility",
-	"Remove Curse",
-	"Cone of Cold",
-	"Hold Monster",
-	"Wall of Force",
-	"Disintegrate",
-	"Flesh to Stone",
-	"Stone to Flesh",
-	"True Seeing",
-	"Finger of Death",
-	"Power Word Stun",
-	"Bigby's Fist"
+	"\xc5\x5d\xab\x60\xb3\x4e", /* "魔冑術"; */
+	"\xbf\x55\xbf\x4e\xa4\xa7\xa4\xe2", /* "燃燒之手"; */
+	"\xb0\xbb\xb4\xfa\xc5\x5d\xaa\x6b", /* "偵測魔法"; */
+	"\xc5\x5d\xaa\x6b\xad\xb8\xbc\x75", /* "魔法飛彈"; */
+	"\xc5\x5d\xac\xde\xb3\x4e", /* "魔盾術"; */
+	"\xb9\x71\xc0\xbb\xa4\xe2\xa4\x4d", /* "電擊手刀"; */
+	"\xc2\x61\xc4\x67\xa4\xc6\xa8\xad", /* "朦朧化身"; */
+	"\xb0\xbb\xb4\xfa\xc1\xf4\xa7\xce", /* "偵測隱形"; */
+	"\xbf\xeb\xc3\xd1\xaa\xab\xab\x7e", /* "辨識物品"; */
+	"\xc1\xf4\xa7\xce\xb3\x4e", /* "隱形術"; */
+	"\xbb\xc4\xb2\x47\xa4\xa7\xbd\x62", /* "酸液之箭"; */
+	"\xb8\xd1\xa9\x47\xb3\x4e", /* "解咒術"; */
+	"\xa4\xf5\xb2\x79\xb3\x4e", /* "火球術"; */
+	"\xa8\xb3\xb1\xb6\xb3\x4e", /* "迅捷術"; */
+	"\xa9\x77\xa8\xad\xb3\x4e", /* "定身術"; */
+	"\xa4\x51\xa7\x60\xc1\xf4\xa7\xce", /* "十呎隱形"; */
+	"\xb9\x70\xb9\x71\xb3\x4e", /* "雷電術"; */
+	"\xa7\x6c\xa6\xe5\xb0\xad\xa4\xf6", /* "吸血鬼爪"; */
+	"\xae\xa3\xc4\xdf\xb3\x4e", /* "恐懼術"; */
+	"\xb4\x48\xa6\x42\xad\xb7\xbc\xc9", /* "寒冰風暴"; */
+	"\xb1\x6a\xa4\x4f\xc1\xf4\xa7\xce", /* "強力隱形"; */
+	"\xb8\xd1\xb0\xa3\xb6\x41\xa9\x47", /* "解除詛咒"; */
+	"\xa7\x4e\xc0\x40\xb3\x4e", /* "冷錐術"; */
+	"\xa9\xc7\xaa\xab\xa9\x77\xa8\xad", /* "怪物定身"; */
+	"\xa4\x4f\xc0\xf0\xb3\x4e", /* "力牆術"; */
+	"\xa4\xc0\xb8\xd1\xb3\x4e", /* "分解術"; */
+	"\xa5\xdb\xa4\xc6\xb3\x4e", /* "石化術"; */
+	"\xb8\xd1\xb0\xa3\xa5\xdb\xa4\xc6", /* "解除石化"; */
+	"\xb3\x7a\xb5\xf8\xb3\x4e", /* "透視術"; */
+	"\xa6\xba\xa4\x60\xa4\xa7\xab\xfc", /* "死亡之指"; */
+	"\xb1\x6a\xa4\x4f\xc5\x5d\xa9\x47", /* "強力魔咒"; */
+	"\xb6\x57\xaf\xc5\xae\xb1\xc0\x59", /* "超級拳頭"; */
 };
 
 static const StringListProvider kEoB2MageSpellsListDOSChineseProvider = { ARRAYSIZE(kEoB2MageSpellsListDOSChinese), kEoB2MageSpellsListDOSChinese };
 
 static const char *const kEoB2ClericSpellsListDOSChinese[30] = {
 	"",
-	"Bless",
-	"Cause Light Wnds",
-	"Cure Light Wnds",
-	"Detect Magic",
-	"Protect-Evil",
-	"Aid",
-	"Flame Blade",
-	"Hold Person",
-	"Slow Poison",
-	"Create Food",
-	"Dispel Magic",
-	"Magical Vestment",
-	"Prayer",
-	"Remove Paralysis",
-	"Cause Serious",
-	"Cure Serious",
-	"Neutral-Poison",
-	"Protect-Evil 10'",
-	"Cause Critical",
-	"Cure Critical",
-	"Flame Strike",
-	"Raise Dead",
-	"Slay Living",
-	"True Seeing",
-	"Harm",
-	"Heal",
-	"Ressurection",
-	"Lay on Hands",
-	"Turn undead"
+	"\xaf\xac\xba\xd6\xb3\x4e", /* "祝福術"; */
+	"\xbb\xb4\xab\xd7\xb6\xcb\xae\x60", /* "輕度傷害"; */
+	"\xaa\x76\xc0\xf8\xbb\xb4\xb6\xcb", /* "治療輕傷"; */
+	"\xb0\xbb\xb4\xfa\xc5\x5d\xaa\x6b", /* "偵測魔法"; */
+	"\xa6\xca\xa8\xb8\xa4\xa3\xab\x49", /* "百邪不侵"; */
+	"\xb1\x6a\xa4\xc6\xa5\xcd\xa9\x52", /* "強化生命"; */
+	"\xa4\xf5\xb5\x4b\xa4\xa7\xa4\x62", /* "火焰之刃"; */
+	"\xa9\x77\xa8\xad\xb3\x4e", /* "定身術"; */
+	"\xb4\xee\xbd\x77\xac\x72\xa9\xca", /* "減緩毒性"; */
+	"\xbb\x73\xb3\x79\xad\xb9\xaa\xab", /* "製造食物"; */
+	"\xb8\xd1\xa9\x47\xb3\x4e", /* "解咒術"; */
+	"\xc5\x5d\xaa\x6b\xa4\xa7\xb3\x54", /* "魔法之袍"; */
+	"\xac\xe8\xc3\xab\xb3\x4e", /* "祈禱術"; */
+	"\xb8\xd1\xb0\xa3\xb7\xf2\xde\xcd", /* "解除痲痹"; */
+	"\xad\xab\xab\xd7\xb6\xcb\xae\x60", /* "重度傷害"; */
+	"\xaa\x76\xc0\xf8\xad\xab\xb6\xcb", /* "治療重傷"; */
+	"\xa4\xa4\xa9\x4d\xac\x72\xaf\xc0", /* "中和毒素"; */
+	"\xb9\x40\xa8\xb8\xa4\x51\xa7\x60", /* "辟邪十呎"; */
+	"\xad\x50\xa9\x52\xb6\xcb\xae\x60", /* "致命傷害"; */
+	"\xaa\x76\xc0\xf8\xad\x50\xa9\x52", /* "治療致命"; */
+	"\xa4\xd1\xa4\xf5\xb5\x49\xa8\xad", /* "天火焚身"; */
+	"\xb4\x5f\xac\xa1\xb3\x4e", /* "復活術"; */
+	"\xb9\xdc\xa9\x52\xb3\x4e", /* "奪命術"; */
+	"\xb3\x7a\xb5\xf8\xb3\x4e", /* "透視術"; */
+	"\xb6\xcb\xae\x60\xb3\x4e", /* "傷害術"; */
+	"\xa7\xb9\xa5\xfe\xc2\xe5\xc0\xf8", /* "完全醫療"; */
+	"\xa6\x41\xb3\x79\xa5\xcd\xa9\x52", /* "再造生命"; */
+	"\xb6\xc7\xa5\x5c\xa4\x6a\xaa\x6b", /* "傳功大法"; */
+	"\xb6\x57\xb4\xe7\xa4\x60\xbb\xee", /* "超渡亡魂"; */
 };
 
 static const StringListProvider kEoB2ClericSpellsListDOSChineseProvider = { ARRAYSIZE(kEoB2ClericSpellsListDOSChinese), kEoB2ClericSpellsListDOSChinese };
 
 static const char *const kEoB2SpellNamesDOSChinese[68] = {
-	"armor",
-	"burning hands",
-	"detect magic",
-	"magic missile",
-	"shield",
-	"shocking grasp",
-	"blur",
-	"detect invisibility",
-	"improved identify",
-	"invisibility",
-	"melf's acid arrow",
-	"dispel magic",
-	"fireball",
-	"haste",
-	"Hold Person",
-	"invisibility 10' radius",
-	"lightning bolt",
-	"vampiric touch",
-	"fear",
-	"ice storm",
-	"improved invisibility",
-	"remove curse",
-	"cone of cold",
-	"hold monster",
-	"wall of force",
-	"disintegrate",
-	"flesh to stone",
-	"stone to flesh",
-	"true seeing",
-	"finger of death",
-	"power word stun",
-	"bigby's clenched fist",
-	"bless",
-	"cause light wounds",
-	"cure light wounds",
-	"detect magic",
-	"protection from evil",
-	"aid",
-	"flame blade",
-	"hold person",
-	"slow poison",
-	"create food",
-	"dispel magic",
-	"magical vestment",
-	"prayer",
-	"remove paralysis",
-	"cause serious wounds",
-	"cure serious wounds",
-	"neutralize poison",
-	"protection from evil 10' radius",
-	"cause critical wounds",
-	"cure critical wounds",
-	"flame strike",
-	"raise dead",
-	"slay living",
-	"true seeing",
-	"harm",
-	"heal",
-	"ressurection",
-	"lay on hands",
-	"turn undead",
+	"\xc5\x5d\xab\x60\xb3\x4e", /* "魔冑術"; "armor" */
+	"\xbf\x55\xbf\x4e\xa4\xa7\xa4\xe2", /* "燃燒之手"; "burning hands" */
+	"\xb0\xbb\xb4\xfa\xc5\x5d\xaa\x6b", /* "偵測魔法"; "detect magic" */
+	"\xc5\x5d\xaa\x6b\xad\xb8\xbc\x75", /* "魔法飛彈"; "magic missile" */
+	"\xc5\x5d\xac\xde\xb3\x4e", /* "魔盾術"; "shield" */
+	"\xb9\x71\xc0\xbb\xa4\xe2\xa4\x4d", /* "電擊手刀"; "shocking grasp" */
+	"\xc2\x61\xc4\x67\xa4\xc6\xa8\xad", /* "朦朧化身"; "blur" */
+	"\xb0\xbb\xb4\xfa\xc1\xf4\xa7\xce", /* "偵測隱形"; "detect invisibility" */
+	"\xbf\xeb\xc3\xd1\xaa\xab\xab\x7e", /* "辨識物品"; "improved identify" */
+	"\xc1\xf4\xa7\xce\xb3\x4e", /* "隱形術"; "invisibility" */
+	"\xbb\xc4\xb2\x47\xa4\xa7\xbd\x62", /* "酸液之箭"; "melf's acid arrow" */
+	"\xb8\xd1\xa9\x47\xb3\x4e", /* "解咒術"; "dispel magic" */
+	"\xa4\xf5\xb2\x79\xb3\x4e", /* "火球術"; "fireball" */
+	"\xa8\xb3\xb1\xb6\xb3\x4e", /* "迅捷術"; "haste" */
+	"\xa9\x77\xa8\xad\xb3\x4e", /* "定身術"; "Hold Person" */
+	"\x31\x30\xa7\x60\xc1\xf4\xa7\xce", /* "10呎隱形"; "invisibility 10' radius" */
+	"\xb9\x70\xb9\x71\xb3\x4e", /* "雷電術"; "lightning bolt" */
+	"\xa7\x6c\xa6\xe5\xb0\xad\xa4\xf6", /* "吸血鬼爪"; "vampiric touch" */
+	"\xae\xa3\xc4\xdf\xb3\x4e", /* "恐懼術"; "fear" */
+	"\xb4\x48\xa6\x42\xad\xb7\xbc\xc9", /* "寒冰風暴"; "ice storm" */
+	"\xb1\x6a\xa4\x4f\xc1\xf4\xa7\xce", /* "強力隱形"; "improved invisibility" */
+	"\xb8\xd1\xb0\xa3\xb6\x41\xa9\x47", /* "解除詛咒"; "remove curse" */
+	"\xa7\x4e\xc0\x40\xb3\x4e", /* "冷錐術"; "cone of cold" */
+	"\xa9\xc7\xaa\xab\xa9\x77\xa8\xad", /* "怪物定身"; "hold monster" */
+	"\xa4\x4f\xc0\xf0\xb3\x4e", /* "力牆術"; "wall of force" */
+	"\xa4\xc0\xb8\xd1\xb3\x4e", /* "分解術"; "disintegrate" */
+	"\xa5\xdb\xa4\xc6\xb3\x4e", /* "石化術"; "flesh to stone" */
+	"\xb8\xd1\xb0\xa3\xa5\xdb\xa4\xc6", /* "解除石化"; "stone to flesh" */
+	"\xb3\x7a\xb5\xf8\xb3\x4e", /* "透視術"; "true seeing" */
+	"\xa6\xba\xa4\x60\xa4\xa7\xab\xfc", /* "死亡之指"; "finger of death" */
+	"\xb1\x6a\xa4\x4f\xc5\x5d\xa9\x47", /* "強力魔咒"; "power word stun" */
+	"\xb6\x57\xaf\xc5\xad\xab\xae\xb1", /* "超級重拳"; "bigby's clenched fist" */
+	"\xaf\xac\xba\xd6\xb3\x4e", /* "祝福術";  "bless"*/
+	"\xbb\xb4\xab\xd7\xb6\xcb\xae\x60", /* "輕度傷害"; "cause light wounds" */
+	"\xaa\x76\xc0\xf8\xbb\xb4\xb6\xcb", /* "治療輕傷"; "cure light wounds" */
+	"\xb0\xbb\xb4\xfa\xc5\x5d\xaa\x6b", /* "偵測魔法"; "detect magic" */
+	"\xa6\xca\xa8\xb8\xa4\xa3\xab\x49", /* "百邪不侵"; "protection from evil" */
+	"\xb1\x6a\xa4\xc6\xa5\xcd\xa9\x52", /* "強化生命"; "aid" */
+	"\xa4\xf5\xb5\x4b\xa4\xa7\xa4\x62", /* "火焰之刃"; "flame blade" */
+	"\xa9\x77\xa8\xad\xb3\x4e", /* "定身術"; "hold person" */
+	"\xb4\xee\xbd\x77\xac\x72\xa9\xca", /* "減緩毒性"; "slow poison" */
+	"\xb3\x79\xad\xb9\xaa\xab\xa9\x4d\xa4\xf4", /* "造食物和水"; "create food" */
+	"\xb8\xd1\xa9\x47\xb3\x4e", /* "解咒術"; "dispel magic" */
+	"\xc5\x5d\xaa\x6b\xa4\xa7\xb3\x54", /* "魔法之袍"; "magical vestment" */
+	"\xac\xe8\xc3\xab\xb3\x4e", /* "祈禱術"; "prayer" */
+	"\xb8\xd1\xb0\xa3\xb7\xf2\xde\xcd", /* "解除痲痹"; "remove paralysis" */
+	"\xad\xab\xab\xd7\xb6\xcb\xae\x60", /* "重度傷害"; "cause serious wounds" */
+	"\xaa\x76\xc0\xf8\xad\xab\xb6\xcb", /* "治療重傷"; "cure serious wounds" */
+	"\xa4\xa4\xa9\x4d\xac\x72\xaf\xc0", /* "中和毒素"; "neutralize poison" */
+	"\xb9\x40\xa8\xb8\xa4\x51\xa7\x60", /* "辟邪十呎"; "protection from evil 10' radius" */
+	"\xad\x50\xa9\x52\xb6\xcb\xae\x60", /* "致命傷害"; "cause critical wounds" */
+	"\xaa\x76\xc0\xf8\xad\x50\xa9\x52", /* "治療致命"; "cure critical wounds" */
+	"\xa4\xd1\xa4\xf5\xb5\x49\xa8\xad", /* "天火焚身"; "flame strike" */
+	"\xb4\x5f\xac\xa1\xb3\x4e", /* "復活術"; "raise dead" */
+	"\xb9\xdc\xa9\x52\xb3\x4e", /* "奪命術"; "slay living" */
+	"\xb3\x7a\xb5\xf8\xb3\x4e", /* "透視術"; "true seeing" */
+	"\xb6\xcb\xae\x60\xb3\x4e", /* "傷害術"; "harm" */
+	"\xa7\xb9\xa5\xfe\xc2\xe5\xc0\xf8", /* "完全醫療"; "heal" */
+	"\xa6\x41\xb3\x79\xa5\xcd\xa9\x52", /* "再造生命"; "ressurection" */
+	"\xb6\xc7\xa5\xa4\x6a\xaa\x6b", /* "傳奶j法"; "lay on hands" */
+	"\xb6\x57\xb4\xe7\xa4\x60\xbb\xee", /* "超渡亡魂"; "turn undead" */
 	"",
-	"mystic defense",
+	"\xc0\x73\xae\xf0\xc5\x40\xb8\x6e", /* "龍氣護罩"; "mystic defense" */
 	"",
 	"",
 	"",
@@ -890,17 +890,17 @@ static const char *const kEoB2ManPromptDOSChinese[1] = {
 static const StringListProvider kEoB2ManPromptDOSChineseProvider = { ARRAYSIZE(kEoB2ManPromptDOSChinese), kEoB2ManPromptDOSChinese };
 
 static const char *const kEoB2MainMenuStringsDOSChinese[5] = {
-	"LOAD GAME IN PROGRESS\r",
-	"START A NEW PARTY\r",
-	"TRANSFER EOB I PARTY\r",
-	"RUN INTRODUCTION\r",
-	"EXIT TO DOS\r"
+	"\xb8\xfc\x20\xa4\x4a\x20\xc2\xc2\x20\xc0\xc9", /* "載 入 舊 檔"; */
+	"\xad\xab\xb7\x73\xab\xd8\xa5\xdf\xb7\x73\xb6\xa4\xad\xfb", /* "重新建立新隊員"; */
+	"\xc2\xe0\xb4\xab\xb2\xc4\xa4\x40\xa5\x4e\xaa\xba\xa4\x48\xaa\xab\xb8\xea\xae\xc6", /* "轉換第一代的人物資料"; */
+	"\xc6\x5b\xac\xdd\xa4\xf9\xc0\x59\xac\x47\xa8\xc6\xa4\xb6\xb2\xd0", /* "觀看片頭故事介紹"; */
+	"\xb5\xb2\x20\xa7\xf4\x20\xb9\x43\x20\xc0\xb8", /* "結 束 遊 戲"; */
 };
 
 static const StringListProvider kEoB2MainMenuStringsDOSChineseProvider = { ARRAYSIZE(kEoB2MainMenuStringsDOSChinese), kEoB2MainMenuStringsDOSChinese };
 
 static const char *const kEoB2TransferStrings1DOSChinese[2] = {
-	"Level: %d",
+	"\xb5\xa5\xaf\xc5\x3a\x25\x64", /* "等級:%d"; */
 	" / %d"
 };
 
@@ -964,29 +964,29 @@ static const char *const kEoB2IntroCPSFilesDOSChinese[13] = {
 static const StringListProvider kEoB2IntroCPSFilesDOSChineseProvider = { ARRAYSIZE(kEoB2IntroCPSFilesDOSChinese), kEoB2IntroCPSFilesDOSChinese }; // OK
 
 static const char *const kEoB2FinaleStringsDOSChinese[20] = {
-	"Finally, Dran has been defeated.",
-	"Suddenly, your friend Khelben appears.",
-	"Greetings, my victorious friends.",
-	"You have defeated Dran!",
-	"I did not know Dran was a dragon.",
-	"He must have been over 300 years old!",
-	"His power is gone.",
-	"But Darkmoon is still a source\rof great evil.",
-	"And many of his minions remain.",
-	"Now we must leave this place.",
-	"So my forces can destroy it\ronce and for all.",
-	"Follow me.",
-	"Powerful mages stand ready\rfor the final assault\ron Darkmoon.",
-	"The Temple's evil is very strong.",
-	"It must not be allowed to survive!",
-	"The Temple ceases to exist.",
-	"My friends, our work is done.",
-	"Thank you.",
-	"You have earned my deepest respect.",
-	"We will remember you always."
+	"\xb3\xcc\xab\xe1\xb3\xd3\xa7\x51\xaa\xba\xae\xc9\xa8\xe8\xb2\xd7\xa9\xf3\xa8\xd3\xa8\xec\x2c\xb1\x4d\xae\xa6\xb3\x51\xc0\xbb\xb1\xd1\xa4\x46\x2e", /* "最後勝利的時刻終於來到,專恩被擊敗了."; "The moment of final victory has finally come, Boen is defeated." */
+	"\xac\xf0\xb5\x4d\x2c\xb1\x7a\xaa\xba\xa6\x6e\xa4\xcd\xab\xb4\xba\xb8\xaf\x5a\xa5\x58\xb2\x7b\xa4\x46\x2e", /* "突然,您的好友契爾班出現了."; "Suddenly, your friend Khelben appeared." */
+	"\xae\xa5\xb3\xdf\xa7\x41\x2c\xa7\xda\xc0\xf2\xb1\x6f\xb3\xd3\xa7\x51\xaa\xba\xa6\xd1\xa4\xcd\x2e", /* "恭喜你,我獲得勝利的老友."; "Congratulations, my victorious old friend." */
+	"\xa7\x41\xa4\x77\xb8\x67\xc0\xbb\xb1\xd1\xa4\x46\xc5\x5d\xc0\x73\xb1\x4d\xae\xa6\x21", /* "你已經擊敗了魔龍專恩!"; "You have Defeated the dragon Boen!" */
+	"\xa7\xda\xa8\xc3\xa4\xa3\xaa\xbe\xb9\x44\x2c\xb1\x4d\xae\xa6\xad\xec\xa8\xd3\xac\x4f\xa4\x40\xb1\xf8\xb4\x63\xc0\x73\x2e", /* "我並不知道,專恩原來是一條惡龍."; "I don't know, Zhuanen turned out to be a dragon." */
+	"\xa8\x65\xa4\x77\xb8\x67\xa5\xcd\xa6\x73\xa6\xb3\xb6\x57\xb9\x4c\x33\x30\x30\xa6\x7e\xa4\x46\x21", /* "牠已經生存有超過300年了!"; "It's been around for over 300 years!" */
+	"\xa8\x65\xaa\xba\xa4\x4f\xb6\x71\xa4\x77\xc0\x48\xad\xb7\xa6\xd3\xa5\x68\x2e", /* "牠的力量已隨風而去."; "Its power has gone with the wind."; */
+	"\xa6\xfd\xc1\xf4\xa4\xeb\xaf\xab\xbc\x71\xa8\xcc\xc2\xc2\xac\x4f\xa5\xa8\xa4\x6a\xa8\xb8\xb4\x63\xa4\x4f\xb6\x71\xaa\xba\xb7\xbd\xc0\x59\x2e", /* "但隱月神廟依舊是巨大邪惡力量的源頭."; "But the Darkmoon temple is still the source of great evil power." */
+	"\xa8\xc3\xa5\x42\xa8\x65\xaa\xba\xb3\x5c\xa6\x68\xa4\xf6\xa4\xfa\xa8\xcc\xb5\x4d\xa6\x73\xa6\x62\x2e", /* "並且牠的許多爪牙依然存在."; "And many of its minions still exist." */
+	"\xb2\x7b\xa6\x62\xa7\xda\xad\xcc\xa5\xb2\xb6\xb7\xbb\xb0\xa7\xd6\xc2\xf7\xb6\x7d\xa6\xb9\xb3\x42\x2e", /* "現在我們必須趕快離開此處."; "We must get out of here now." */
+	"\xb3\x6f\xbc\xcb\xa7\xda\xa4\x7e\xaf\xe0\xb1\x4e\xa6\xb9\xbc\x71\xba\x52\xb7\xb4\xa6\x69\xac\xb0\xa5\xad\xa6\x61\x2e", /* "這樣我才能將此廟摧毀夷為平地."; "So I can destroy this temple and raze it to the ground." */
+	"\xb8\xf2\xa7\xda\xa8\xd3\x2e", /* "跟我來."; "Follow me." */
+	"\xb1\x6a\xa4\x6a\xaa\xba\xaa\x6b\xa4\x4f\xa4\x77\xb7\xc7\xb3\xc6\xa6\x6e\xb9\xef\xaf\xab\xbc\x71\xb0\xb5\xb7\xb4\xb7\xc0\xa9\xca\xa7\xf0\xc0\xbb\x2e", /* "強大的法力已準備好對神廟做毀滅性攻擊."; "The powerful mana is ready to do a devastating attack on the temple." */
+	"\xaf\xab\xbc\x71\xaa\xba\xc5\x5d\xa4\x4f\xaf\x75\xac\x4f\xab\x44\xb1\x60\xaa\xba\xb1\x6a\xae\xab\x2e", /* "神廟的魔力真是非常的強悍."; "The magic of the temple is really powerful." */
+	"\xa5\xa6\xb5\xb4\xa4\xa3\xa5\x69\xa5\x48\xc4\x7e\xc4\xf2\xa6\x73\xa6\x62\x21", /* "它絕不可以繼續存在!"; "It must not continue to exist !"; */
+	"\xaf\xab\xbc\x71\xb2\xd7\xa9\xf3\xa4\xc6\xac\xb0\xaf\x51\xa6\xb3\xa4\x46\x2e", /* "神廟終於化為烏有了."; "The temple finally disappeared up." */
+	"\xa7\xda\xaa\xba\xa6\x6e\xaa\x42\xa4\xcd\x2c\xa7\xda\xad\xcc\xaa\xba\xa5\xf4\xb0\xc8\xa4\x77\xa7\xb9\xa6\xa8\xa4\x46\x2e", /* "我的好朋友,我們的任務已完成了."; "My good friend, our task has been completed." */
+	"\xc1\xc2\xc1\xc2\xa7\x41\x2e", /* "謝謝你."; "Thank you." */
+	"\xa7\x41\xb1\x4e\xc0\xf2\xb1\x6f\xa7\xda\xad\xcc\xb3\xcc\xb2\x60\xaa\xba\xb7\x71\xb7\x4e\xa9\x4d\xb4\x4c\xb1\x52\x2e", /* "你將獲得我們最深的敬意和尊崇."; "You will receive our deepest respect and honor." */
+	"\xa7\xda\xad\xcc\xb1\x4e\xa5\xc3\xbb\xb7\xb0\x4f\xb1\x6f\xa7\x41\xad\x5e\xab\x69\xa5\xc7\xc3\xf8\xaa\xba\xa8\xc6\xc2\xdd\x2e", /* "我們將永遠記得你英勇犯難的事蹟."; "We will always remember your heroic deeds." */
 };
 
-static const StringListProvider kEoB2FinaleStringsDOSChineseProvider = { ARRAYSIZE(kEoB2FinaleStringsDOSChinese), kEoB2FinaleStringsDOSChinese };
+static const StringListProvider kEoB2FinaleStringsDOSChineseProvider = { ARRAYSIZE(kEoB2FinaleStringsDOSChinese), kEoB2FinaleStringsDOSChinese }; // Likely ok, play finale to check
 
 static const byte kEoB2CreditsDataDOSChinese[2316] = {
 	0x02, 0x05, 0x0D, 0x0D, 0x0D, 0x0D, 0x0D, 0x0D,
@@ -1299,14 +1299,14 @@ static const char *const kEoB2FinaleCPSFilesDOSChinese[13] = {
 	"THANKS.CPS"
 };
 
-static const StringListProvider kEoB2FinaleCPSFilesDOSChineseProvider = { ARRAYSIZE(kEoB2FinaleCPSFilesDOSChinese), kEoB2FinaleCPSFilesDOSChinese };
+static const StringListProvider kEoB2FinaleCPSFilesDOSChineseProvider = { ARRAYSIZE(kEoB2FinaleCPSFilesDOSChinese), kEoB2FinaleCPSFilesDOSChinese };  // Likely ok, play finale to check
 
 static const char *const kEoB2MonsterDistAttStringsDOSChinese[5] = {
-	"The party is hit with a psychic mind blast!\r",
-	"paralyzed",
-	"poisoned",
-	"paralyzed",
-	"PETRIFIED"
+	"\xb6\xa4\xa5\xee\xb3\x51\xa4\xdf\xc6\x46\xae\xa3\xc4\xdf\xb3\x4e\xa9\xd2\xc0\xbb\xa4\xa4\x21", /* "隊伍被心靈恐懼術所擊中!"; */
+	"\xb3\x51\xb7\xf2\xb7\xf4\xb0\xca\xbc\x75\xa4\xa3\xb1\x6f", /* "被痲痺動彈不得"; */
+	"\xa4\xa4\xac\x72\xa4\x46", /* "中毒了"; */
+	"\xb7\xf2\xb7\xf4\xa4\x46", /* "痲痺了"; */
+	"\xb3\x51\xa5\xdb\xa4\xc6\xa4\x46", /* "被石化了"; */
 };
 
 static const StringListProvider kEoB2MonsterDistAttStringsDOSChineseProvider = { ARRAYSIZE(kEoB2MonsterDistAttStringsDOSChinese), kEoB2MonsterDistAttStringsDOSChinese };
@@ -1347,12 +1347,12 @@ static const char *const kEoB2HornStringsDOSChinese[4] = {
 static const StringListProvider kEoB2HornStringsDOSChineseProvider = { ARRAYSIZE(kEoB2HornStringsDOSChinese), kEoB2HornStringsDOSChinese };
 
 static const char *const kEoB2NpcPresetsNamesDOSChinese[6] = {
-	"Insal",
-	"Calandra",
-	"Shorn",
-	"San-raal",
-	"Tanglor",
-	"Amber"
+	"\xad\x5e\xc2\xc4\xba\xb8", /* "英薩爾"; "Insal" */
+	"\xa5\x64\xc4\xf5\xbc\x77\xdb\x69", /* "卡蘭德菈"; "Calandra" */
+	"\\xa5\xf0\xae\xa6", /* "休恩"; "Shorn" */
+	"\xb8\x74\xb7\xe7\xba\xb8", /* "聖瑞爾"; "San-raal" */
+	"\xc3\xd3\xae\xe6\xa6\xd5", /* "譚格耳"; "Tanglor" */
+	"\xa6\x77\xbb\x5f\xba\xb8", /* "安蓓爾"; "Amber" */
 };
 
 static const StringListProvider kEoB2NpcPresetsNamesDOSChineseProvider = { ARRAYSIZE(kEoB2NpcPresetsNamesDOSChinese), kEoB2NpcPresetsNamesDOSChinese };
