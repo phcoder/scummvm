@@ -2022,11 +2022,11 @@ bool OldDOSFont::loadPCBIOSTall() {
 		_bitmapOffsets[i] = _numGlyphs * sizeof(uint16) + i * bytesPerGlyph;
 		byte *optr = _data + _bitmapOffsets[i];
 		const byte *iptr = Graphics::DosFont::fontData_PCBIOS + i * originalBytesPerGlyph;
-		*optr++ = *iptr++;
-		for (int j = 1; j < originalHeight; j++) {
+		for (int j = 0; j < originalHeight - 1; j++) {
 			*optr++ = *iptr;
 			*optr++ = *iptr++;
 		}
+		*optr++ = *iptr++;
 	}
 
 	return true;
