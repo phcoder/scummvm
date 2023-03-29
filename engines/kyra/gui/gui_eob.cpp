@@ -3332,7 +3332,7 @@ void GUI_EoB::drawSaveSlotDialog(int x, int y, int id) {
 	_screen->setCurPage(2);
 	drawMenuButtonBox(0, 0, 176, 144, false, false);
 	const char* title = (id < 2) ? _vm->_saveLoadStrings[2 + id] : _vm->_transferStringsScummVM[id - 1];
-	_screen->printShadedText(title, 52, 5, (_vm->_configRenderMode == Common::kRenderCGA) ? 1 : _vm->guiSettings()->colors.guiColorWhite, 0, _vm->guiSettings()->colors.guiColorBlack);
+	_screen->printShadedText(title, 52, 3, (_vm->_configRenderMode == Common::kRenderCGA) ? 1 : _vm->guiSettings()->colors.guiColorWhite, 0, _vm->guiSettings()->colors.guiColorBlack);
 	_screen->copyRegion(0, 0, x, y, 176, 144, 2, 0, Screen::CR_NO_P_CHECK);
 	_screen->fillRect(0, 0, 175, 143, 0, 2);
 	_screen->setCurPage(0);
@@ -4331,7 +4331,7 @@ Button *GUI_EoB::initMenu(int id) {
 		if (_vm->gameFlags().platform == Common::kPlatformSegaCD)
 			displayTextBox(m->titleStrId, 0x55, false);
 		else
-			_screen->printShadedText(getMenuString(m->titleStrId), 5, 5, m->titleCol, 0, _vm->guiSettings()->colors.guiColorBlack);
+			_screen->printShadedText(getMenuString(m->titleStrId), 3, 3, m->titleCol, 0, _vm->guiSettings()->colors.guiColorBlack);
 		_screen->setTextMarginRight(Screen::SCREEN_W);
 	}
 
@@ -4389,7 +4389,7 @@ void GUI_EoB::drawMenuButton(Button *b, bool clicked, bool highlight, bool noFil
 		const char *s = getMenuString(d->labelId);
 
 		int xOffs = 4;
-		int yOffs = 3;
+		int yOffs = 2;
 
 		if (d->flags & 4) {
 			xOffs = ((b->width - _screen->getTextWidth(s)) >> 1) + 1;
@@ -4444,7 +4444,7 @@ void GUI_EoB::drawSaveSlotButton(int slot, int redrawBox, bool highlight) {
 		return;
 
 	int x = _saveSlotX + 4;
-	int y = _saveSlotY + slot * 17 + 20;
+	int y = _saveSlotY + slot * 18 + 18;
 	int w = 167;
 	char slotString[26];
 	memset(slotString, 0, 26);
@@ -4452,12 +4452,12 @@ void GUI_EoB::drawSaveSlotButton(int slot, int redrawBox, bool highlight) {
 
 	if (slot >= 6) {
 		x = _saveSlotX + 118;
-		y = _saveSlotY + 126;
+		y = _saveSlotY + 125;
 		w = 53;
 	}
 
 	if (redrawBox)
-		drawMenuButtonBox(x, y, w, 14, (redrawBox - 1) ? true : false, false);
+		drawMenuButtonBox(x, y, w, 18, (redrawBox - 1) ? true : false, false);
 
 	Screen::FontId fnt = _screen->_currentFont;
 	if (_vm->gameFlags().platform == Common::kPlatformFMTowns) {
@@ -4465,7 +4465,7 @@ void GUI_EoB::drawSaveSlotButton(int slot, int redrawBox, bool highlight) {
 		y++;
 	}
 
-	_screen->printShadedText(slotString, x + 4, y + 3, highlight ? _vm->guiSettings()->colors.guiColorLightRed : (_vm->_configRenderMode == Common::kRenderCGA ? 1 : _vm->guiSettings()->colors.guiColorWhite), 0, _vm->guiSettings()->colors.guiColorBlack);
+	_screen->printShadedText(slotString, x + 4, y + 2, highlight ? _vm->guiSettings()->colors.guiColorLightRed : (_vm->_configRenderMode == Common::kRenderCGA ? 1 : _vm->guiSettings()->colors.guiColorWhite), 0, _vm->guiSettings()->colors.guiColorBlack);
 	_vm->screen()->setFont(fnt);
 }
 
