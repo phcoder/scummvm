@@ -181,8 +181,7 @@ Common::SeekableReadStream *KyraEngine_v1::openSaveForReading(const char *filena
 		if (header.version < 2) {
 			warning("Make sure your savefile was from this version! (too old savefile version to detect that)");
 		} else {
-			if ((header.flags & GF_FLOPPY) && (_flags.isTalkie || _flags.platform == Common::kPlatformFMTowns || _flags.platform == Common::kPlatformPC98)
-			    && (_flags.gameID != GI_EOB2)) {
+			if ((header.flags & GF_FLOPPY) && (_flags.isTalkie || _flags.platform == Common::kPlatformFMTowns || _flags.platform == Common::kPlatformPC98)) {
 				warning("Can not load DOS Floppy savefile for this (non DOS Floppy) gameversion");
 				delete in;
 				return nullptr;
