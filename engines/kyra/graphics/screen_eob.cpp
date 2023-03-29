@@ -2259,7 +2259,7 @@ uint16 ChineseTwoByteFontEoB::translateBig5(uint16 in) const {
 
 int ChineseTwoByteFontEoB::getCharWidth(uint16 c) const {
 	uint16 t = translateBig5(c);
-	return (t < 0x80) ? _singleByte->getCharWidth(t) : (_big5->kChineseTraditionalWidth + 1);
+	return (t < 0x80) ? _singleByte->getCharWidth(t) : _big5->kChineseTraditionalWidth;
 }
 
 int ChineseTwoByteFontEoB::getCharHeight(uint16 c) const {
