@@ -205,7 +205,7 @@ int DarkMoonEngine::mainMenuLoop() {
 	int sel = -1;
 
 	if (_flags.lang == Common::Language::ZH_TWN && _flags.gameID == GI_EOB2) {
-		_screen->modifyScreenDim(6, 10, 70, 21, 40);
+		_screen->modifyScreenDim(6, 10, 72, 21, 40);
 		_screen->setFont(Screen::FID_CHINESE_FNT);
 	}
 
