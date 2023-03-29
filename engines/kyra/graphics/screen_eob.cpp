@@ -2009,11 +2009,11 @@ bool OldDOSFont::loadPCBIOSTall() {
 
 	_numGlyphs = 128;
 	_width = 8;
-	const int bytesPerGlyph = 16;
 	const int originalBytesPerGlyph = 8;
 	const int originalHeight = 8;
-	_height = originalHeight * 2;
-	_data = new uint8[_numGlyphs * _height + _numGlyphs * sizeof(uint16)];
+	const int bytesPerGlyph = 15;
+	_height = originalHeight * 2 - 1;
+	_data = new uint8[_numGlyphs * bytesPerGlyph + _numGlyphs * sizeof(uint16)];
 	assert(_data);
 
 	_bitmapOffsets = (uint16 *)_data;
@@ -2022,7 +2022,8 @@ bool OldDOSFont::loadPCBIOSTall() {
 		_bitmapOffsets[i] = _numGlyphs * sizeof(uint16) + i * bytesPerGlyph;
 		byte *optr = _data + _bitmapOffsets[i];
 		const byte *iptr = Graphics::DosFont::fontData_PCBIOS + i * originalBytesPerGlyph;
-		for (int j = 0; j < originalHeight; j++) {
+		*optr++ = *iptr++;
+		for (int j = 1; j < originalHeight; j++) {
 			*optr++ = *iptr;
 			*optr++ = *iptr++;
 		}
