@@ -432,8 +432,8 @@ static const char *const kEoB2MenuStringsPoisonDOSChinese[1] = {
 static const StringListProvider kEoB2MenuStringsPoisonDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsPoisonDOSChinese), kEoB2MenuStringsPoisonDOSChinese }; // Likely OK
 
 static const char *const kEoB2MenuStringsMgcDOSChinese[2] = {
-	"%-18s %1d",
-	"%d of %d Remaining.  "
+	"%-8s %1d",
+	"\xa5\x69\xa5\xce\xc2\x49\xbc\xc6\x3a\x25\x64", /* "可用點數:%d"; */
 };
 
 static const StringListProvider kEoB2MenuStringsMgcDOSChineseProvider = { ARRAYSIZE(kEoB2MenuStringsMgcDOSChinese), kEoB2MenuStringsMgcDOSChinese };
