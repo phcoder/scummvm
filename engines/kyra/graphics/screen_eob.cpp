@@ -2259,10 +2259,8 @@ uint16 ChineseTwoByteFontEoB::translateBig5(uint16 in) const {
 
 int ChineseTwoByteFontEoB::getCharWidth(uint16 c) const {
 	uint16 t = translateBig5(c);
-	if (t == ' ')
-		return _singleByte->getCharWidth(t);
 	if (t < 0x80)
-		return _singleByte->getCharWidth(t) + 2;
+		return _singleByte->getCharWidth(t);
 	return _big5->kChineseTraditionalWidth;
 }
 
@@ -2273,10 +2271,8 @@ int ChineseTwoByteFontEoB::getCharHeight(uint16 c) const {
 
 void ChineseTwoByteFontEoB::drawChar(uint16 c, byte *dst, int pitch, int bpp) const {
 	uint16 t = translateBig5(c);
-	if (t == ' ')
+	if (t < 0x80)
 		_singleByte->drawChar(t, dst, pitch, bpp);
-	else if (t < 0x80)
-		_singleByte->drawChar(t, dst + bpp, pitch, bpp);
 	else
 		_big5->drawBig5Char(dst, t,
 				    _big5->kChineseTraditionalWidth, _big5->getFontHeight(), pitch, _colorMap[1], _colorMap[0], _border, bpp);
