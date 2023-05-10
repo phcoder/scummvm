@@ -48,13 +48,12 @@ FontSJIS *FontSJIS::createFont(const Common::Platform platform) {
 		if (ret->loadData())
 			return ret;
 		delete ret;
-	} // TODO: PC98 font rom support
-	/* else if (platform == Common::kPlatformPC98) {
+	} else if (platform == Common::kPlatformPC98) {
 		ret = new FontPC98();
 		if (ret->loadData())
 			return ret;
 		delete ret;
-	}*/
+	}
 
 	// Try ScummVM's font.
 	ret = new FontSjisSVM(platform);
@@ -444,6 +443,69 @@ const uint8 *FontTowns::getCharData(uint16 ch) const {
 }
 
 bool FontTowns::hasFeature(int feat) const {
+	static const int features = kFeatDefault | kFeatOutline | kFeatShadow | kFeatFMTownsShadow | kFeatFlipped | kFeatFatPrint;
+	return (features & feat) ? true : false;
+}
+
+// PC98 ROM font
+
+bool FontPC98::loadData() {
+	Common::SeekableReadStream *data = SearchMan.createReadStreamForMember("FONT.ROM");
+	if (!data)
+		return false;
+
+	// First comes 8x8 font that we skip
+	data->seek(256 * 8, SEEK_SET);
+	data->read(_fontData8x16, kFont8x16Chars * 16);
+
+	for (uint i = 0; i < kFont16x16Chars; i++) {
+		byte block[32];
+		data->read(block, 32);
+		// PC98 uses 2 8x16 bitmaps to form one 16x16 glyph. Reshuffle to make a single 16x16 glyph
+		for (uint j = 0; j < 16; j++)
+			_fontData16x16[i * 32 + 2 * j] = block[j];
+		for (uint j = 0; j < 16; j++)
+			_fontData16x16[i * 32 + 2 * j + 1] = block[j + 16];
+	}
+
+	bool retValue = !data->err();
+	delete data;
+	return retValue;
+}
+
+const uint8 *FontPC98::getCharData(uint16 ch) const {
+	if (ch < kFont8x16Chars)
+		return _fontData8x16 + ch * 16;
+
+	uint8 lo = ch >> 8, hi = ch & 0xff;
+
+	uint hiblock = 0;
+
+	if (hi >= 0x81 && hi <= 0x9f)
+		hiblock = hi - 0x81;
+	else if (hi >= 0xe0 && hi <= 0xee)
+		hiblock = hi - 0x81 - 0x40;
+	else
+		return nullptr;
+	
+	uint glyph = hiblock * 192;
+
+	if (lo >= 0x3f && lo <= 0x7e)
+		glyph += lo - 0x3f;
+	else if (lo >= 0x80 && lo <= 0x9d)
+		glyph += lo - 0x80 + 64;
+	else if (lo >= 0x9e && lo <= 0xfc)
+		glyph += lo - 0x9e + 96;
+	else
+		return nullptr;
+
+	if (glyph >= kFont16x16Chars)
+		return nullptr;
+	else
+		return _fontData16x16 + glyph * 32;
+}
+
+bool FontPC98::hasFeature(int feat) const {
 	static const int features = kFeatDefault | kFeatOutline | kFeatShadow | kFeatFMTownsShadow | kFeatFlipped | kFeatFatPrint;
 	return (features & feat) ? true : false;
 }
