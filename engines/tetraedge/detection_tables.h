@@ -98,6 +98,17 @@ const ADGameDescription GAME_DESCRIPTIONS[] = {
 		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
 	},
 
+	// iOS release v1.0.0
+	{
+		"syberia2",
+		nullptr,
+		AD_ENTRY1s("Syberia 2", "d:769a1a77042b34745a8b0c8ad2a67600", 15539952),
+		Common::UNK_LANG,
+		Common::kPlatformIOS,
+		ADGF_UNSTABLE,
+		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
+	},
+
 	AD_TABLE_END_MARKER
 };
 
