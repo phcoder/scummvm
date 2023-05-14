@@ -76,6 +76,26 @@ const ADGameDescription GAME_DESCRIPTIONS[] = {
 		GUIO2(GAMEOPTION_CORRECT_MOVIE_ASPECT, GAMEOPTION_RESTORE_SCENES)
 	},
 
+	{
+		"syberia",
+		nullptr,
+		AD_ENTRY1s("Syberia I-ISDFree", "d:0203b414e1b84150ae13488fa6e0b746", 4888784),
+		Common::UNK_LANG,
+		Common::kPlatformIOS,
+		ADGF_UNSUPPORTED,
+		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
+	},
+
+	{
+		"syberia",
+		nullptr,
+		AD_ENTRY1s("Syberia I-IHDFree", "d:3921f9300c86420f11b1edcd44b3c504", 4887824),
+		Common::UNK_LANG,
+		Common::kPlatformIOS,
+		ADGF_UNSUPPORTED,
+		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
+	},
+
 	// GOG release
 	{
 		"syberia2",
