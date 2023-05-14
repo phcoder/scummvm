@@ -96,6 +96,17 @@ const ADGameDescription GAME_DESCRIPTIONS[] = {
 		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
 	},
 
+	// Android v1.0.5
+	{
+		"syberia",
+		"Extracted",
+		AD_ENTRY1s("InGame.lua", "12ee6a8eade070b905136cd4cdfc3726", 4471),
+		Common::UNK_LANG,
+		Common::kPlatformAndroid,
+		ADGF_NO_FLAGS,
+		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
+	},
+
 	// GOG release
 	{
 		"syberia2",
