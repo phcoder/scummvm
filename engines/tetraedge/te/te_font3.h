@@ -55,7 +55,7 @@ public:
 	virtual ~TeFont3();
 
 	bool load(const Common::String &path);
-	bool load(const Common::FSNode &node);
+	bool load(const TetraedgeFSNode &node);
 	void unload();
 
 private:

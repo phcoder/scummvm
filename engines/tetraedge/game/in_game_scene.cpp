@@ -205,7 +205,7 @@ Billboard *InGameScene::billboard(const Common::String &name) {
 }
 
 bool InGameScene::changeBackground(const Common::String &name) {
-	Common::FSNode node = g_engine->getCore()->findFile(name);
+	TetraedgeFSNode node = g_engine->getCore()->findFile(name);
 	if (node.isReadable()) {
 		_bgGui.spriteLayoutChecked("root")->load(node);
 		if (g_engine->gameType() == TetraedgeEngine::kSyberia2)
@@ -665,7 +665,7 @@ TeVector2f32 InGameScene::layerSize() {
 	return TeVector2f32(sz.x(), sz.y());
 }
 
-bool InGameScene::load(const Common::FSNode &sceneNode) {
+bool InGameScene::load(const TetraedgeFSNode &sceneNode) {
 	// Syberia 1 has loadActZones function contents inline.
 	loadActZones();
 
@@ -680,7 +680,7 @@ bool InGameScene::load(const Common::FSNode &sceneNode) {
 
 	const Common::Path lightspath = getLightsFileName();
 	TeCore *core = g_engine->getCore();
-	const Common::FSNode lightsNode(core->findFile(lightspath));
+	const TetraedgeFSNode lightsNode(core->findFile(lightspath));
 	if (lightsNode.isReadable())
 		loadLights(lightsNode);
 
@@ -690,7 +690,7 @@ bool InGameScene::load(const Common::FSNode &sceneNode) {
 	close();
 	_loadedPath = sceneNode.getPath();
 	Common::File scenefile;
-	if (!scenefile.open(sceneNode))
+	if (!sceneNode.openFile(scenefile))
 		return false;
 
 	uint32 ncameras = scenefile.readUint32LE();
@@ -806,7 +806,7 @@ bool InGameScene::loadXml(const Common::String &zone, const Common::String &scen
 
 	Common::Path xmlpath = _sceneFileNameBase(zone, scene).joinInPlace("Scene")
 												.appendInPlace(scene).appendInPlace(".xml");
-	Common::FSNode node = g_engine->getCore()->findFile(xmlpath);
+	TetraedgeFSNode node = g_engine->getCore()->findFile(xmlpath);
 	InGameSceneXmlParser parser(this);
 	parser.setAllowText();
 
@@ -818,7 +818,7 @@ bool InGameScene::loadXml(const Common::String &zone, const Common::String &scen
 		// Patch the contents of the file before loading.
 		//
 		Common::File xmlFile;
-		if (!xmlFile.open(node))
+		if (!node.openFile(xmlFile))
 			error("InGameScene::loadXml: Can't open %s", node.getPath().c_str());
 		const int64 bufsize = xmlFile.size();
 		char *buf = new char[bufsize+1];
@@ -838,7 +838,7 @@ bool InGameScene::loadXml(const Common::String &zone, const Common::String &scen
 		parser.loadBuffer((const byte *)fixedbuf.c_str(), bufsize);
 	} else {
 		// Regular loading.
-		if (!parser.loadFile(node))
+		if (!node.loadXML(parser))
 			error("InGameScene::loadXml: Can't load %s", node.getPath().c_str());
 	}
 
@@ -857,16 +857,16 @@ bool InGameScene::loadXml(const Common::String &zone, const Common::String &scen
 
 	const Common::Path lightspath = getLightsFileName();
 	TeCore *core = g_engine->getCore();
-	const Common::FSNode lightsNode(core->findFile(lightspath));
+	const TetraedgeFSNode lightsNode(core->findFile(lightspath));
 	if (lightsNode.isReadable())
 		loadLights(lightsNode);
 
 	Common::Path pxmlpath = _sceneFileNameBase(zone, scene).joinInPlace("particles.xml");
-	Common::FSNode pnode = g_engine->getCore()->findFile(pxmlpath);
+	TetraedgeFSNode pnode = g_engine->getCore()->findFile(pxmlpath);
 	if (pnode.isReadable()) {
 		ParticleXmlParser pparser;
 		pparser._scene = this;
-		if (!pparser.loadFile(pnode))
+		if (!pnode.loadXML(pparser))
 			error("InGameScene::loadXml: Can't load %s", pnode.getPath().c_str());
 		if (!pparser.parse())
 			error("InGameScene::loadXml: Can't parse %s", pnode.getPath().c_str());
@@ -947,10 +947,10 @@ bool InGameScene::loadFreeMoveZone(const Common::String &name, TeVector2f32 &gri
 	return true;
 }
 
-bool InGameScene::loadLights(const Common::FSNode &node) {
+bool InGameScene::loadLights(const TetraedgeFSNode &node) {
 	SceneLightsXmlParser parser(&_lights);
 
-	if (!parser.loadFile(node))
+	if (!node.loadXML(parser))
 		error("InGameScene::loadLights: Can't load %s", node.getPath().c_str());
 	if (!parser.parse())
 		error("InGameScene::loadLights: Can't parse %s", node.getPath().c_str());
@@ -991,7 +991,7 @@ bool InGameScene::loadLights(const Common::FSNode &node) {
 	return true;
 }
 
-void InGameScene::loadMarkers(const Common::FSNode &node) {
+void InGameScene::loadMarkers(const TetraedgeFSNode &node) {
 	_markerGui.load(node);
 	TeLayout *bg = _bgGui.layoutChecked("background");
 	TeSpriteLayout *root = Game::findSpriteLayoutByName(bg, "root");
@@ -1083,7 +1083,7 @@ bool InGameScene::loadPlayerCharacter(const Common::String &name) {
 bool InGameScene::loadCurve(const Common::String &name) {
 	const Common::Path path = _sceneFileNameBase().joinInPlace(name).appendInPlace(".bin");
 	TeCore *core = g_engine->getCore();
-	Common::FSNode node = core->findFile(path);
+	TetraedgeFSNode node = core->findFile(path);
 	if (!node.isReadable()) {
 		warning("[InGameScene::loadCurve] Can't open file : %s.", path.toString().c_str());
 		return false;
@@ -1097,15 +1097,15 @@ bool InGameScene::loadCurve(const Common::String &name) {
 bool InGameScene::loadDynamicLightBloc(const Common::String &name, const Common::String &texture, const Common::String &zone, const Common::String &scene) {
 	const Common::Path pdat = _sceneFileNameBase(zone, scene).joinInPlace(name).appendInPlace(".bin");
 	const Common::Path ptex = _sceneFileNameBase(zone, scene).joinInPlace(texture);
-	Common::FSNode datnode = g_engine->getCore()->findFile(pdat);
-	Common::FSNode texnode = g_engine->getCore()->findFile(ptex);
+	TetraedgeFSNode datnode = g_engine->getCore()->findFile(pdat);
+	TetraedgeFSNode texnode = g_engine->getCore()->findFile(ptex);
 	if (!datnode.isReadable()) {
 		warning("[InGameScene::loadDynamicLightBloc] Can't open file : %s.", pdat.toString().c_str());
 		return false;
 	}
 
 	Common::File file;
-	file.open(datnode);
+	datnode.openFile(file);
 
 	TeModel *model = new TeModel();
 	model->setMeshCount(1);
@@ -1156,14 +1156,14 @@ bool InGameScene::loadDynamicLightBloc(const Common::String &name, const Common:
 
 bool InGameScene::loadLight(const Common::String &name, const Common::String &zone, const Common::String &scene) {
 	Common::Path datpath = _sceneFileNameBase(zone, scene).joinInPlace(name).appendInPlace(".bin");
-	Common::FSNode datnode = g_engine->getCore()->findFile(datpath);
+	TetraedgeFSNode datnode = g_engine->getCore()->findFile(datpath);
 	if (!datnode.isReadable()) {
 		warning("[InGameScene::loadLight] Can't open file : %s.", datpath.toString().c_str());
 		return false;
 	}
 
 	Common::File file;
-	file.open(datnode);
+	datnode.openFile(file);
 	SceneLight light;
 	light._name = name;
 	TeVector3f32::deserialize(file, light._v1);
@@ -1179,7 +1179,7 @@ bool InGameScene::loadMask(const Common::String &name, const Common::String &tex
 	TeCore *core = g_engine->getCore();
 	Common::Path datpath = _sceneFileNameBase(zone, scene).joinInPlace(name).appendInPlace(".bin");
 	Common::Path texpath = _sceneFileNameBase(zone, scene).joinInPlace(texture);
-	Common::FSNode datnode = core->findFile(datpath);
+	TetraedgeFSNode datnode = core->findFile(datpath);
 	if (!datnode.isReadable()) {
 		warning("[InGameScene::loadMask] Can't open file : %s.", datpath.toString().c_str());
 		return false;
@@ -1189,7 +1189,7 @@ bool InGameScene::loadMask(const Common::String &name, const Common::String &tex
 	model->setName(name);
 
 	Common::File file;
-	file.open(datnode);
+	datnode.openFile(file);
 
 	// Load position, rotation, size.
 	Te3DObject2::deserialize(file, *model, false);
@@ -1227,7 +1227,7 @@ bool InGameScene::loadMask(const Common::String &name, const Common::String &tex
 	}
 
 	file.close();
-	Common::FSNode texnode = core->findFile(texpath);
+	TetraedgeFSNode texnode = core->findFile(texpath);
 	TeIntrusivePtr<Te3DTexture> tex = Te3DTexture::load2(texnode, !_maskAlpha);
 
 	if (tex) {
@@ -1266,7 +1266,7 @@ bool InGameScene::loadShadowMask(const Common::String &name, const Common::Strin
 
 bool InGameScene::loadShadowReceivingObject(const Common::String &name, const Common::String &zone, const Common::String &scene) {
 	Common::Path datpath = _sceneFileNameBase(zone, scene).joinInPlace(name).appendInPlace(".bin");
-	Common::FSNode datnode = g_engine->getCore()->findFile(datpath);
+	TetraedgeFSNode datnode = g_engine->getCore()->findFile(datpath);
 	if (!datnode.isReadable()) {
 		warning("[InGameScene::loadShadowReceivingObject] Can't open file : %s.", datpath.toString().c_str());
 		return false;
@@ -1276,7 +1276,7 @@ bool InGameScene::loadShadowReceivingObject(const Common::String &name, const Co
 	model->setName(name);
 
 	Common::File file;
-	file.open(datnode);
+	datnode.openFile(file);
 
 	// Load position, rotation, size.
 	Te3DObject2::deserialize(file, *model, false);
@@ -1311,7 +1311,7 @@ bool InGameScene::loadShadowReceivingObject(const Common::String &name, const Co
 
 bool InGameScene::loadZBufferObject(const Common::String &name, const Common::String &zone, const Common::String &scene) {
 	Common::Path datpath = _sceneFileNameBase(zone, scene).joinInPlace(name).appendInPlace(".bin");
-	Common::FSNode datnode = g_engine->getCore()->findFile(datpath);
+	TetraedgeFSNode datnode = g_engine->getCore()->findFile(datpath);
 	if (!datnode.isReadable()) {
 		warning("[InGameScene::loadZBufferObject] Can't open file : %s.", datpath.toString().c_str());
 		return false;
@@ -1321,7 +1321,7 @@ bool InGameScene::loadZBufferObject(const Common::String &name, const Common::St
 	model->setName(name);
 
 	Common::File file;
-	file.open(datnode);
+	datnode.openFile(file);
 
 	// Load position, rotation, size.
 	Te3DObject2::deserialize(file, *model, false);
@@ -1405,7 +1405,7 @@ void InGameScene::loadBlockers() {
 	}
 }
 
-void InGameScene::loadBackground(const Common::FSNode &node) {
+void InGameScene::loadBackground(const TetraedgeFSNode &node) {
 	_youkiManager.reset();
 	_bgGui.load(node);
 	TeLayout *bg = _bgGui.layout("background");
@@ -1441,7 +1441,7 @@ bool InGameScene::loadBillboard(const Common::String &name) {
 	}
 }
 
-void InGameScene::loadInteractions(const Common::FSNode &node) {
+void InGameScene::loadInteractions(const TetraedgeFSNode &node) {
 	_hitObjectGui.load(node);
 	TeLayout *bgbackground = _bgGui.layoutChecked("background");
 	Game *game = g_engine->getGame();

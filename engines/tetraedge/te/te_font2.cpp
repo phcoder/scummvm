@@ -42,11 +42,11 @@ bool TeFont2::load(const Common::String &path) {
 		return true; // already open
 
 	TeCore *core = g_engine->getCore();
-	Common::FSNode node = core->findFile(path);
+	TetraedgeFSNode node = core->findFile(path);
 	return load(node);
 }
 
-bool TeFont2::load(const Common::FSNode &node) {
+bool TeFont2::load(const TetraedgeFSNode &node) {
 	const Common::String path = node.getPath();
 
 	unload();
@@ -59,7 +59,7 @@ bool TeFont2::load(const Common::FSNode &node) {
 	}
 
 	Common::File file;
-	file.open(node);
+	node.openFile(file);
 
 	if (!Te3DObject2::loadAndCheckFourCC(file, "TESF")) {
 		warning("TeFont2::load: Invalid magic in %s", path.c_str());

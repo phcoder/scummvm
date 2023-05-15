@@ -182,9 +182,9 @@ void TeFreeMoveZone::buildAStar() {
 }
 
 bool TeFreeMoveZone::loadAStar(const Common::Path &path, const TeVector2s32 &size) {
-	Common::FSNode node = g_engine->getCore()->findFile(path);
+	TetraedgeFSNode node = g_engine->getCore()->findFile(path);
 	Common::File file;
-	if (!node.isReadable() || !file.open(node)) {
+	if (!node.isReadable() || !node.openFile(file)) {
 		warning("[TeFreeMoveZone::loadAStar] Can't open file : %s.", path.toString().c_str());
 		return false;
 	}
@@ -608,14 +608,14 @@ TeActZone *TeFreeMoveZone::isInZone(const TeVector3f32 &pt) {
 bool TeFreeMoveZone::loadBin(const Common::Path &path, const Common::Array<TeBlocker> *blockers,
 		const Common::Array<TeRectBlocker> *rectblockers, const Common::Array<TeActZone> *actzones,
 		const TeVector2f32 &gridSize) {
-	Common::FSNode node = g_engine->getCore()->findFile(path);
+	TetraedgeFSNode node = g_engine->getCore()->findFile(path);
 	if (!node.isReadable()) {
 		warning("[TeFreeMoveZone::loadBin] Can't open file : %s.", node.getName().c_str());
 		return false;
 	}
 	_aszGridPath = path.append(".aszgrid");
 	Common::File file;
-	file.open(node);
+	node.openFile(file);
 	return loadBin(file, blockers, rectblockers, actzones, gridSize);
 }
 

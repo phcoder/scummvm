@@ -254,9 +254,9 @@ void TeLuaThread::applyScriptWorkarounds(char *buf, const Common::String &fileNa
 	}
 }
 
-void TeLuaThread::executeFile(const Common::FSNode &node) {
+void TeLuaThread::executeFile(const TetraedgeFSNode &node) {
 	Common::File scriptFile;
-	if (!scriptFile.open(node)) {
+	if (!node.openFile(scriptFile)) {
 		warning("TeLuaThread::executeFile: File %s can't be opened", node.getName().c_str());
 		return;
 	}

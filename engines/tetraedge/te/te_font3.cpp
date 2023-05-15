@@ -63,11 +63,11 @@ bool TeFont3::load(const Common::String &path) {
 		return true; // already open
 
 	TeCore *core = g_engine->getCore();
-	Common::FSNode node = core->findFile(path);
+	TetraedgeFSNode node = core->findFile(path);
 	return load(node);
 }
 
-bool TeFont3::load(const Common::FSNode &node) {
+bool TeFont3::load(const TetraedgeFSNode &node) {
 	const Common::String path = node.getPath();
 	if (_loadedPath == path && _fontFile.isOpen())
 		return true; // already open
@@ -83,7 +83,7 @@ bool TeFont3::load(const Common::FSNode &node) {
 	if (_fontFile.isOpen())
 		_fontFile.close();
 
-	if (!_fontFile.open(node)) {
+	if (!node.openFile(_fontFile)) {
 		warning("TeFont3::load: can't open %s", path.c_str());
 		return false;
 	}

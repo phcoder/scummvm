@@ -64,7 +64,7 @@ bool TeMusic::play() {
 		return false;
 
 	Common::File *streamfile = new Common::File();
-	if (!streamfile->open(_fileNode)) {
+	if (!_fileNode.openFile(*streamfile)) {
 		delete streamfile;
 		return false;
 	}
