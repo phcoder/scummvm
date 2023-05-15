@@ -65,7 +65,6 @@ public:
 	bool isDirectory() const { return _fsnode.isDirectory(); }
 	Common::String getPath() const { return _fsnode.getPath(); }
 	bool exists() const { return _fsnode.exists(); }
-	bool openFile(Common::File &file) const { return file.open(_fsnode); }
 	bool loadXML(Common::XMLParser &parser) const { return parser.loadFile(_fsnode); }
 	Common::String getName() const { return _fsnode.getName(); }
 	bool getChildren(TetraedgeFSList &fslist, Common::FSNode::ListMode mode = Common::FSNode::kListDirectoriesOnly, bool hidden = true) const;

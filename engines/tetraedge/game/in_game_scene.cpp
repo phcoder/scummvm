@@ -689,29 +689,29 @@ bool InGameScene::load(const TetraedgeFSNode &sceneNode) {
 
 	close();
 	_loadedPath = sceneNode.getPath();
-	Common::File scenefile;
-	if (!sceneNode.openFile(scenefile))
+	Common::ScopedPtr<Common::SeekableReadStream> scenefile(sceneNode.createReadStream());
+	if (!scenefile)
 		return false;
 
-	uint32 ncameras = scenefile.readUint32LE();
+	uint32 ncameras = scenefile->readUint32LE();
 	if (ncameras > 1024)
 		error("Improbable number of cameras %d", ncameras);
 	for (uint i = 0; i < ncameras; i++) {
 		TeIntrusivePtr<TeCamera> cam = new TeCamera();
-		deserializeCam(scenefile, cam);
+		deserializeCam(*scenefile, cam);
 		cameras().push_back(cam);
 	}
 
-	uint32 nobjects = scenefile.readUint32LE();
+	uint32 nobjects = scenefile->readUint32LE();
 	if (nobjects > 1024)
 		error("Improbable number of objects %d", nobjects);
 	for (uint i = 0; i < nobjects; i++) {
 		TeIntrusivePtr<TeModel> model = new TeModel();
-		const Common::String modelname = Te3DObject2::deserializeString(scenefile);
+		const Common::String modelname = Te3DObject2::deserializeString(*scenefile);
 		model->setName(modelname);
-		const Common::String objname = Te3DObject2::deserializeString(scenefile);
+		const Common::String objname = Te3DObject2::deserializeString(*scenefile);
 		TePickMesh2 *pickmesh = new TePickMesh2();
-		deserializeModel(scenefile, model, pickmesh);
+		deserializeModel(*scenefile, model, pickmesh);
 		if (modelname.contains("Clic")) {
 			//debug("Loaded clickMesh %s", modelname.c_str());
 			_hitObjects.push_back(model);
@@ -737,39 +737,39 @@ bool InGameScene::load(const TetraedgeFSNode &sceneNode) {
 		}
 	}
 
-	uint32 nfreemovezones = scenefile.readUint32LE();
+	uint32 nfreemovezones = scenefile->readUint32LE();
 	if (nfreemovezones > 1024)
 		error("Improbable number of free move zones %d", nfreemovezones);
 	for (uint i = 0; i < nfreemovezones; i++) {
 		TeFreeMoveZone *zone = new TeFreeMoveZone();
-		TeFreeMoveZone::deserialize(scenefile, *zone, &_blockers, &_rectBlockers, &_actZones);
+		TeFreeMoveZone::deserialize(*scenefile, *zone, &_blockers, &_rectBlockers, &_actZones);
 		_freeMoveZones.push_back(zone);
 		zone->setVisible(false);
 	}
 
-	uint32 ncurves = scenefile.readUint32LE();
+	uint32 ncurves = scenefile->readUint32LE();
 	if (ncurves > 1024)
 		error("Improbable number of curves %d", ncurves);
 	for (uint i = 0; i < ncurves; i++) {
 		TeIntrusivePtr<TeBezierCurve> curve = new TeBezierCurve();
-		TeBezierCurve::deserialize(scenefile, *curve);
+		TeBezierCurve::deserialize(*scenefile, *curve);
 		curve->setVisible(true);
 		_bezierCurves.push_back(curve);
 	}
 
-	uint32 ndummies = scenefile.readUint32LE();
+	uint32 ndummies = scenefile->readUint32LE();
 	if (ndummies > 1024)
 		error("Improbable number of dummies %d", ndummies);
 	for (uint i = 0; i < ndummies; i++) {
 		InGameScene::Dummy dummy;
 		TeVector3f32 vec;
 		TeQuaternion rot;
-		dummy._name = Te3DObject2::deserializeString(scenefile);
-		TeVector3f32::deserialize(scenefile, vec);
+		dummy._name = Te3DObject2::deserializeString(*scenefile);
+		TeVector3f32::deserialize(*scenefile, vec);
 		dummy._position = vec;
-		TeQuaternion::deserialize(scenefile, rot);
+		TeQuaternion::deserialize(*scenefile, rot);
 		dummy._rotation = rot;
-		TeVector3f32::deserialize(scenefile, vec);
+		TeVector3f32::deserialize(*scenefile, vec);
 		dummy._scale = vec;
 		_dummies.push_back(dummy);
 	}
@@ -817,13 +817,13 @@ bool InGameScene::loadXml(const Common::String &zone, const Common::String &scen
 		// in Syberia 2 has an embedded comment, which is invalid XML.
 		// Patch the contents of the file before loading.
 		//
-		Common::File xmlFile;
-		if (!node.openFile(xmlFile))
+		Common::ScopedPtr<Common::SeekableReadStream> xmlFile(node.createReadStream());
+		if (!xmlFile)
 			error("InGameScene::loadXml: Can't open %s", node.getPath().c_str());
-		const int64 bufsize = xmlFile.size();
+		const int64 bufsize = xmlFile->size();
 		char *buf = new char[bufsize+1];
 		buf[bufsize] = '\0';
-		xmlFile.read(buf, bufsize);
+		xmlFile->read(buf, bufsize);
 		fixedbuf = Common::String(buf);
 		delete [] buf;
 		size_t offset = fixedbuf.find("<!-- <rippleMask");
@@ -1104,18 +1104,17 @@ bool InGameScene::loadDynamicLightBloc(const Common::String &name, const Common:
 		return false;
 	}
 
-	Common::File file;
-	datnode.openFile(file);
+	Common::ScopedPtr<Common::SeekableReadStream> file(datnode.createReadStream());
 
 	TeModel *model = new TeModel();
 	model->setMeshCount(1);
 	model->setName(datnode.getName());
 
 	// Read position/rotation/scale.
-	model->deserialize(file, *model);
+	model->deserialize(*file, *model);
 
-	uint32 verts = file.readUint32LE();
-	uint32 tricount = file.readUint32LE();
+	uint32 verts = file->readUint32LE();
+	uint32 tricount = file->readUint32LE();
 	if (verts > 100000 || tricount > 10000)
 		error("Improbable number of verts (%d) or triangles (%d)", verts, tricount);
 
@@ -1124,21 +1123,21 @@ bool InGameScene::loadDynamicLightBloc(const Common::String &name, const Common:
 
 	for (uint i = 0; i < verts; i++) {
 		TeVector3f32 vec;
-		TeVector3f32::deserialize(file, vec);
+		TeVector3f32::deserialize(*file, vec);
 		mesh->setVertex(i, vec);
 		mesh->setNormal(i, TeVector3f32(0, 0, 1));
 	}
 	for (uint i = 0; i < verts; i++) {
 		TeVector2f32 vec2;
-		TeVector2f32::deserialize(file, vec2);
+		TeVector2f32::deserialize(*file, vec2);
 		vec2.setY(1.0 - vec2.getY());
 		mesh->setTextureUV(i, vec2);
 	}
 
 	for (uint i = 0; i < tricount * 3; i++)
-		mesh->setIndex(i, file.readUint16LE());
+		mesh->setIndex(i, file->readUint16LE());
 
-	file.close();
+	file.reset();
 
 	if (texnode.isReadable()) {
 		TeIntrusivePtr<Te3DTexture> tex = Te3DTexture::makeInstance();
@@ -1162,14 +1161,13 @@ bool InGameScene::loadLight(const Common::String &name, const Common::String &zo
 		return false;
 	}
 
-	Common::File file;
-	datnode.openFile(file);
+	Common::ScopedPtr<Common::SeekableReadStream> file(datnode.createReadStream());
 	SceneLight light;
 	light._name = name;
-	TeVector3f32::deserialize(file, light._v1);
-	TeVector3f32::deserialize(file, light._v2);
-	light._color.deserialize(file);
-	light._f = file.readFloatLE();
+	TeVector3f32::deserialize(*file, light._v1);
+	TeVector3f32::deserialize(*file, light._v2);
+	light._color.deserialize(*file);
+	light._f = file->readFloatLE();
 
 	_sceneLights.push_back(light);
 	return true;
@@ -1188,14 +1186,13 @@ bool InGameScene::loadMask(const Common::String &name, const Common::String &tex
 	model->setMeshCount(1);
 	model->setName(name);
 
-	Common::File file;
-	datnode.openFile(file);
+	Common::ScopedPtr<Common::SeekableReadStream> file(datnode.createReadStream());
 
 	// Load position, rotation, size.
-	Te3DObject2::deserialize(file, *model, false);
+	Te3DObject2::deserialize(*file, *model, false);
 
-	uint32 verts = file.readUint32LE();
-	uint32 tricount = file.readUint32LE();
+	uint32 verts = file->readUint32LE();
+	uint32 tricount = file->readUint32LE();
 	if (verts > 100000 || tricount > 10000)
 		error("Improbable number of verts (%d) or triangles (%d)", verts, tricount);
 
@@ -1204,7 +1201,7 @@ bool InGameScene::loadMask(const Common::String &name, const Common::String &tex
 
 	for (uint i = 0; i < verts; i++) {
 		TeVector3f32 vec;
-		TeVector3f32::deserialize(file, vec);
+		TeVector3f32::deserialize(*file, vec);
 		mesh->setVertex(i, vec);
 		mesh->setNormal(i, TeVector3f32(0, 0, 1));
 		if (_maskAlpha) {
@@ -1214,19 +1211,19 @@ bool InGameScene::loadMask(const Common::String &name, const Common::String &tex
 
 	for (uint i = 0; i < verts; i++) {
 		TeVector2f32 vec2;
-		TeVector2f32::deserialize(file, vec2);
+		TeVector2f32::deserialize(*file, vec2);
 		vec2.setY(1.0 - vec2.getY());
 		mesh->setTextureUV(i, vec2);
 	}
 
 	// For some reason this one has the indexes in reverse order :(
 	for (uint i = 0; i < tricount * 3; i += 3) {
-		mesh->setIndex(i + 2, file.readUint16LE());
-		mesh->setIndex(i + 1, file.readUint16LE());
-		mesh->setIndex(i, file.readUint16LE());
+		mesh->setIndex(i + 2, file->readUint16LE());
+		mesh->setIndex(i + 1, file->readUint16LE());
+		mesh->setIndex(i, file->readUint16LE());
 	}
 
-	file.close();
+	file.reset();
 	TetraedgeFSNode texnode = core->findFile(texpath);
 	TeIntrusivePtr<Te3DTexture> tex = Te3DTexture::load2(texnode, !_maskAlpha);
 
@@ -1275,14 +1272,13 @@ bool InGameScene::loadShadowReceivingObject(const Common::String &name, const Co
 	model->setMeshCount(1);
 	model->setName(name);
 
-	Common::File file;
-	datnode.openFile(file);
+	Common::ScopedPtr<Common::SeekableReadStream> file(datnode.createReadStream());
 
 	// Load position, rotation, size.
-	Te3DObject2::deserialize(file, *model, false);
+	Te3DObject2::deserialize(*file, *model, false);
 
-	uint32 verts = file.readUint32LE();
-	uint32 tricount = file.readUint32LE();
+	uint32 verts = file->readUint32LE();
+	uint32 tricount = file->readUint32LE();
 	if (verts > 100000 || tricount > 10000)
 		error("Improbable number of verts (%d) or triangles (%d)", verts, tricount);
 
@@ -1291,19 +1287,19 @@ bool InGameScene::loadShadowReceivingObject(const Common::String &name, const Co
 
 	for (uint i = 0; i < verts; i++) {
 		TeVector3f32 vec;
-		TeVector3f32::deserialize(file, vec);
+		TeVector3f32::deserialize(*file, vec);
 		mesh->setVertex(i, vec);
 		mesh->setNormal(i, TeVector3f32(0, 0, 1));
 	}
 
 	// Indexes in reverse order :(
 	for (uint i = 0; i < tricount * 3; i += 3) {
-		mesh->setIndex(i + 2, file.readUint16LE());
-		mesh->setIndex(i + 1, file.readUint16LE());
-		mesh->setIndex(i, file.readUint16LE());
+		mesh->setIndex(i + 2, file->readUint16LE());
+		mesh->setIndex(i + 1, file->readUint16LE());
+		mesh->setIndex(i, file->readUint16LE());
 	}
 
-	file.close();
+	file.reset();
 
 	_shadowReceivingObjects.push_back(model);
 	return true;
@@ -1320,14 +1316,13 @@ bool InGameScene::loadZBufferObject(const Common::String &name, const Common::St
 	model->setMeshCount(1);
 	model->setName(name);
 
-	Common::File file;
-	datnode.openFile(file);
+	Common::ScopedPtr<Common::SeekableReadStream> file(datnode.createReadStream());
 
 	// Load position, rotation, size.
-	Te3DObject2::deserialize(file, *model, false);
+	Te3DObject2::deserialize(*file, *model, false);
 
-	uint32 verts = file.readUint32LE();
-	uint32 tricount = file.readUint32LE();
+	uint32 verts = file->readUint32LE();
+	uint32 tricount = file->readUint32LE();
 	if (verts > 100000 || tricount > 10000)
 		error("Improbable number of verts (%d) or triangles (%d)", verts, tricount);
 
@@ -1336,14 +1331,14 @@ bool InGameScene::loadZBufferObject(const Common::String &name, const Common::St
 
 	for (uint i = 0; i < verts; i++) {
 		TeVector3f32 vec;
-		TeVector3f32::deserialize(file, vec);
+		TeVector3f32::deserialize(*file, vec);
 		mesh->setVertex(i, vec);
 		mesh->setNormal(i, TeVector3f32(0, 0, 1));
 		mesh->setColor(i, TeColor(128, 0, 255, 128));
 	}
 
 	for (uint i = 0; i < tricount * 3; i++) {
-		mesh->setIndex(i, file.readUint16LE());
+		mesh->setIndex(i, file->readUint16LE());
 	}
 
 	_zoneModels.push_back(model);

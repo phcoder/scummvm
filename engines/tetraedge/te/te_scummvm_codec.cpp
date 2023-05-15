@@ -39,8 +39,8 @@ TeScummvmCodec::~TeScummvmCodec() {
 }
 
 bool TeScummvmCodec::load(const TetraedgeFSNode &node) {
-	Common::File file;
-	if (node.openFile(file) && load(static_cast<Common::SeekableReadStream&>(file))) {
+	Common::ScopedPtr<Common::SeekableReadStream> file(node.createReadStream());
+	if (file && load(*file)) {
 		_loadedPath = node.getPath();
 		return true;
 	}

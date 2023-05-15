@@ -183,25 +183,30 @@ void TeFreeMoveZone::buildAStar() {
 
 bool TeFreeMoveZone::loadAStar(const Common::Path &path, const TeVector2s32 &size) {
 	TetraedgeFSNode node = g_engine->getCore()->findFile(path);
-	Common::File file;
-	if (!node.isReadable() || !node.openFile(file)) {
+	Common::ScopedPtr<Common::SeekableReadStream> file;
+	if (!node.isReadable()) {
+		warning("[TeFreeMoveZone::loadAStar] Can't open file : %s.", path.toString().c_str());
+		return false;
+	}
+	file.reset(node.createReadStream());
+	if (!file) {
 		warning("[TeFreeMoveZone::loadAStar] Can't open file : %s.", path.toString().c_str());
 		return false;
 	}
 	TeVector2s32 readSize;
-	readSize.deserialize(file, readSize);
+	readSize.deserialize(*file, readSize);
 	if (size != readSize) {
 		warning("[TeFreeMoveZone::loadAStar] Wrong file : %s.", path.toString().c_str());
 		return false;
 	}
-	uint32 bytes = file.readUint32LE();
+	uint32 bytes = file->readUint32LE();
 	if (bytes > 100000)
 		error("Improbable size %d for compressed astar data", bytes);
 
 	unsigned long decompBytes = size._x * size._y;
 	byte *buf = new byte[bytes];
 	byte *outBuf = new byte[decompBytes];
-	file.read(buf, bytes);
+	file->read(buf, bytes);
 	bool result = Common::uncompress(outBuf, &decompBytes, buf, bytes);
 	delete [] buf;
 	if (result) {
@@ -614,9 +619,8 @@ bool TeFreeMoveZone::loadBin(const Common::Path &path, const Common::Array<TeBlo
 		return false;
 	}
 	_aszGridPath = path.append(".aszgrid");
-	Common::File file;
-	node.openFile(file);
-	return loadBin(file, blockers, rectblockers, actzones, gridSize);
+	Common::ScopedPtr<Common::SeekableReadStream> file(node.createReadStream());
+	return loadBin(*file, blockers, rectblockers, actzones, gridSize);
 }
 
 bool TeFreeMoveZone::loadBin(Common::ReadStream &stream, const Common::Array<TeBlocker> *blockers,

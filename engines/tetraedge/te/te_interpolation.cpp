@@ -38,11 +38,11 @@ void TeInterpolation::load(Common::ReadStream &stream) {
 }
 
 void TeInterpolation::load(TetraedgeFSNode &node) {
-	Common::File f;
-	if (!node.openFile(f))
+	Common::ScopedPtr<Common::SeekableReadStream> f(node.createReadStream());
+	if (!f)
 		error("Couldn't open %s", node.getPath().c_str());
 
-	load(f);
+	load(*f);
 }
 
 

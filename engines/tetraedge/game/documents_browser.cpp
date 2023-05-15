@@ -124,15 +124,14 @@ void DocumentsBrowser::loadZoomed() {
 
 void DocumentsBrowser::loadXMLFile(const Common::String &path) {
 	TetraedgeFSNode node = g_engine->getCore()->findFile(path);
-	Common::File xmlfile;
-	node.openFile(xmlfile);
-	int64 fileLen = xmlfile.size();
+	Common::ScopedPtr<Common::SeekableReadStream> xmlfile(node.createReadStream());
+	int64 fileLen = xmlfile->size();
 	char *buf = new char[fileLen + 1];
 	buf[fileLen] = '\0';
-	xmlfile.read(buf, fileLen);
+	xmlfile->read(buf, fileLen);
 	const Common::String xmlContents = Common::String::format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s</document>", buf);
 	delete [] buf;
-	xmlfile.close();
+	xmlfile.reset();
 
 	DocumentsBrowserXmlParser parser;
 	if (!parser.loadBuffer((const byte *)xmlContents.c_str(), xmlContents.size()))
