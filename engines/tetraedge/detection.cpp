@@ -19,6 +19,8 @@
  *
  */
 
+#include "common/config-manager.h"
+
 #include "tetraedge/detection.h"
 #include "tetraedge/metaengine.h"
 #include "tetraedge/detection_tables.h"
@@ -37,35 +39,42 @@ TetraedgeMetaEngineDetection::TetraedgeMetaEngineDetection() : AdvancedMetaEngin
 	_flags = kADFlagMatchFullPaths;
 }
 
-static const Common::Language *getGameLanguages() {
-	static Common::Language languages[] = {
-		Common::EN_ANY,
-		Common::FR_FRA,
-		Common::DE_DEU,
-		Common::IT_ITA,
-		Common::ES_ESP,
-		Common::RU_RUS,
-		Common::HE_ISR,  // This is a Fan-translation, which requires additional patch
-		Common::UNK_LANG
+Common::String TetraedgeMetaEngineDetection::customizeGuiOptionsLanguages(const Common::String &optionsString, const Common::String &domain) const {
+	Common::String result;
+
+	struct {
+		Common::Language id;
+		const char *code;
+	} languages[] = {
+		{ Common::EN_ANY, "en" },
+		{ Common::FR_FRA, "fr" },
+		{ Common::DE_DEU, "de" },
+		{ Common::IT_ITA, "it" },
+		{ Common::ES_ESP, "es" },
+		{ Common::RU_RUS, "ru" },
+		{ Common::HE_ISR, "he" }  // This is a Fan-translation, which requires additional patch
 	};
-	return languages;
+
+	bool hasLang[ARRAYSIZE(languages)];
+
+	memset(hasLang, 0, sizeof(hasLang));
+
+	const Common::Platform platform = Common::parsePlatform(ConfMan.get("platform", domain));
+
+	Common::FSNode dir(ConfMan.get("path", domain));
+
+	if (platform == Common::Platform::kPlatformMacintosh)
+		dir = dir.getChild("Resources");
+
+	for (uint i = 0; i < ARRAYSIZE(languages); i++)
+		if (dir.getChild("texts").getChild(Common::String::format("%s.xml", languages[i].code).c_str()).exists())
+			hasLang[i] = true;
+
+	for (uint i = 0; i < ARRAYSIZE(languages); i++)
+		if(hasLang[i])
+			result += " " + Common::getGameGUIOptionsDescriptionLanguage(languages[i].id);
+
+	return result;
 }
-
-DetectedGame TetraedgeMetaEngineDetection::toDetectedGame(const ADDetectedGame &adGame, ADDetectedGameExtraInfo *extraInfo) const {
-	DetectedGame game = AdvancedMetaEngineDetection::toDetectedGame(adGame);
-
-	// The AdvancedDetector model only allows specifying a single supported
-	// game language. All games support multiple languages.  Only Syberia 1-* and Syberia 2-iOS
-	// supports RU.
-	for (const Common::Language *language = getGameLanguages(); *language != Common::UNK_LANG; language++) {
-		// "ru" only present on syberia 1 and syberia2-ios
-		if (!(game.gameId == "syberia" || (game.gameId == "syberia2" && game.platform == Common::Platform::kPlatformIOS)) && *language == Common::RU_RUS)
-			continue;
-		game.appendGUIOptions(Common::getGameGUIOptionsDescriptionLanguage(*language));
-	}
-
-	return game;
-}
-
 
 REGISTER_PLUGIN_STATIC(TETRAEDGE_DETECTION, PLUGIN_TYPE_ENGINE_DETECTION, TetraedgeMetaEngineDetection);
