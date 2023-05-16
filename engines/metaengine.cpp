@@ -36,6 +36,11 @@
 #include "graphics/managed_surface.h"
 #include "graphics/thumbnail.h"
 
+
+Common::String MetaEngineDetection::customizeGuiOptionsLanguages(const Common::String &optionsString, const Common::String &domain) const {
+	return optionsString;
+}
+
 Common::String MetaEngine::getSavegameFile(int saveGameIdx, const char *target) const {
 	if (!target)
 		target = getName();

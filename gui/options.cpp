@@ -256,9 +256,19 @@ void OptionsDialog::init() {
 
 	// Retrieve game GUI options
 	_guioptions.clear();
+	_guioptionsLanguages.clear();
 	if (ConfMan.hasKey("guioptions", _domain)) {
 		_guioptionsString = ConfMan.get("guioptions", _domain);
 		_guioptions = parseGameGUIOptions(_guioptionsString);
+
+		const Plugin *plugin = nullptr;
+		EngineMan.findTarget(_domain, &plugin);
+		if (plugin) {
+			const MetaEngineDetection &metaEngineDetection = plugin->get<MetaEngineDetection>();
+			_guioptionsLanguages = metaEngineDetection.customizeGuiOptionsLanguages(_guioptionsString, _domain);
+		} else {
+			_guioptionsLanguages = _guioptionsString;
+		}
 	}
 }
 

@@ -242,6 +242,7 @@ protected:
 	// Game GUI options
 	//
 	Common::String _guioptions;
+	Common::String _guioptionsLanguages;
 	Common::String _guioptionsString;
 
 	//
