@@ -30,7 +30,7 @@
 
 namespace Tetraedge {
 
-class ObbArchive : public Common::Archive {
+class ObbArchive : public Common::DefaultListableCaseInsensitiveArchive {
 public:
 	bool hasFile(const Common::Path &path) const override;
 	int listMembers(Common::ArchiveMemberList&) const override;
@@ -53,7 +53,7 @@ private:
     	typedef Common::HashMap<Common::String, FileDescriptor, Common::IgnoreCase_Hash, Common::IgnoreCase_EqualTo> FileMap;
 
 	ObbArchive(const FileMap& files,
-		   const Common::Path& obbName) : _files(files), _obbName(obbName) {}
+		   const Common::Path& obbName) : Common::DefaultListableCaseInsensitiveArchive('/'), _files(files), _obbName(obbName) {}
 
 	FileMap _files;
 	Common::Path _obbName;
