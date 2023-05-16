@@ -131,27 +131,27 @@ bool TeCore::onActivityTrackingAlarm() {
 	error("TODO: Implement TeCore::onActivityTrackingAlarm");
 }
 
-static Common::FSNode getChildCaseInsensitive(const Common::FSNode &parent, const Common::String &child) {
-	Common::FSNode cand = parent.getChild(child);
+static TetraedgeFSNode getChildCaseInsensitive(const TetraedgeFSNode &parent, const Common::String &child) {
+	TetraedgeFSNode cand = parent.getChild(child);
 	if (cand.exists())
 		return cand;
 
-	Common::FSList childList;
+	TetraedgeFSList childList;
 	if (!parent.getChildren(childList, Common::FSNode::kListAll, true))
-		return Common::FSNode();
+		return TetraedgeFSNode();
 
-	for (Common::FSList::iterator it = childList.begin(); it != childList.end(); it++) {
+	for (TetraedgeFSList::iterator it = childList.begin(); it != childList.end(); it++) {
 		if (it->getName().equalsIgnoreCase(child))
 			return *it;
 	}
 
-	return Common::FSNode();
+	return TetraedgeFSNode();
 }
 
-static Common::FSNode _findSubPath(const Common::FSNode &parent, const Common::Path &childPath) {
+static TetraedgeFSNode _findSubPath(const TetraedgeFSNode &parent, const Common::Path &childPath) {
 	if (childPath.empty())
 		return parent;
-	Common::FSNode childNode = parent;
+	TetraedgeFSNode childNode = parent;
 	const Common::StringArray comps = childPath.splitComponents();
 	unsigned int i;
 	for (i = 0; i < comps.size(); i++) {
@@ -163,21 +163,30 @@ static Common::FSNode _findSubPath(const Common::FSNode &parent, const Common::P
 	}
 	if (i == comps.size())
 		return childNode;
-	return Common::FSNode();
+	return TetraedgeFSNode();
 }
 
 TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
-	Common::FSNode node(path);
+	TetraedgeFSNode node = TetraedgeFSNode(Common::FSNode(path));
 	if (node.exists())
-		return TetraedgeFSNode(node);
+		return node;
 
 	const Common::FSNode gameRoot(ConfMan.get("path"));
 	if (!gameRoot.isDirectory())
 		error("Game directory should be a directory");
-	const Common::FSNode resNode = (g_engine->getGamePlatform() == Common::kPlatformMacintosh
-			? gameRoot.getChild("Resources") : gameRoot);
+	TetraedgeFSNode resNode((g_engine->getGamePlatform() == Common::kPlatformMacintosh
+				 ? gameRoot.getChild("Resources") : gameRoot));
+	TetraedgeFSNode archiveNode;
+	Common::AbstractListableArchive *archive = g_engine->getRootArchive();
 	if (!resNode.isDirectory())
 		error("Resources directory should exist in game");
+
+	if (archive) {
+		archiveNode = TetraedgeFSNode::getArchiveRoot();
+		node = archiveNode.getChild(path.toString());
+		if (node.exists())
+			return node;
+	}
 
 	Common::String fname = path.getLastComponent().toString();
 
@@ -271,14 +280,26 @@ TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 			testPath.joinInPlace(fname);
 			node = _findSubPath(resNode, testPath);
 			if (node.exists())
-				return TetraedgeFSNode(node);
+				return node;
+			if (archive) {
+				node = _findSubPath(archiveNode, testPath);
+				if (node.exists()) {
+					return node;
+				}
+			}
 
 			// also try the other way around
 			if (!lang.empty() && suffix) {
 				testPath = dir.join(lang).joinInPlace(suffix).join(fname);
 				node = _findSubPath(resNode, testPath);
-				if (node.exists())
-					return TetraedgeFSNode(node);
+				if (node.exists()) {
+					return node;
+				}
+				if (archive) {
+					node = _findSubPath(archiveNode, testPath);
+					if (node.exists())
+						return node;
+				}
 			}
 		}
 	}

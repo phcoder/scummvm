@@ -57,21 +57,25 @@ class TetraedgeFSNode;
 class TetraedgeFSList : public Common::Array<TetraedgeFSNode> {};
 class TetraedgeFSNode {
 public:
-	TetraedgeFSNode() {}
-	explicit TetraedgeFSNode(const Common::FSNode &fsnode) : _fsnode(fsnode) {}
+	TetraedgeFSNode() : _isArchive(false) {}
+	explicit TetraedgeFSNode(const Common::FSNode &fsnode) : _isArchive(false), _fsnode(fsnode) {}
+	static TetraedgeFSNode getArchiveRoot();
 
-	Common::SeekableReadStream *createReadStream() const { return _fsnode.createReadStream(); }
-	bool isReadable() const { return _fsnode.isReadable(); }
-	bool isDirectory() const { return _fsnode.isDirectory(); }
-	Common::String getPath() const { return _fsnode.getPath(); }
-	bool exists() const { return _fsnode.exists(); }
-	bool loadXML(Common::XMLParser &parser) const { return parser.loadFile(_fsnode); }
-	Common::String getName() const { return _fsnode.getName(); }
+	Common::SeekableReadStream *createReadStream() const;
+	bool isReadable() const;
+	bool isDirectory() const;
+	Common::String getPath() const;
+	bool exists() const;
+	bool loadXML(Common::XMLParser &parser) const;
+	Common::String getName() const;
+	TetraedgeFSNode getChild(const Common::String &name) const;
 	bool getChildren(TetraedgeFSList &fslist, Common::FSNode::ListMode mode = Common::FSNode::kListDirectoriesOnly, bool hidden = true) const;
-	bool operator<(const TetraedgeFSNode& node) const { return _fsnode < node._fsnode; }
+	bool operator<(const TetraedgeFSNode& node) const;
 	void maybeAddToSearchMan() const;
 private:
+	bool _isArchive;
 	Common::FSNode _fsnode;
+	Common::Path _archivePath;
 };
 
 class TetraedgeEngine : public Engine {
@@ -94,6 +98,7 @@ private:
 	TeResourceManager *_resourceManager;
 	TeInputMgr *_inputMgr;
 	enum TetraedgeGameType _gameType;
+	Common::AbstractListableArchive *_archive;
 
 protected:
 	// Engine APIs
@@ -102,6 +107,8 @@ protected:
 public:
 	TetraedgeEngine(OSystem *syst, const ADGameDescription *gameDesc);
 	~TetraedgeEngine() override;
+
+	Common::AbstractListableArchive *getRootArchive() const { return _archive; }
 
 	uint32 getFeatures() const;
 
