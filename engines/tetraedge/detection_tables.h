@@ -107,6 +107,16 @@ const ADGameDescription GAME_DESCRIPTIONS[] = {
 		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
 	},
 
+	{
+		"syberia",
+		nullptr,
+		AD_ENTRY1s("main.12.com.microids.syberia.obb", "b82f9295c4bafe4af58450cbacfd261e", 1000659045),
+		Common::UNK_LANG,
+		Common::kPlatformAndroid,
+		ADGF_NO_FLAGS,
+		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
+	},
+
 	// GOG release
 	{
 		"syberia2",
