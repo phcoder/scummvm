@@ -212,6 +212,35 @@ public:
 	virtual char getPathSeparator() const;
 };
 
+class AbstractListableArchive : public Archive {
+public:
+	enum ListMode {
+		kListFilesOnly = 1,
+		kListDirectoriesOnly = 2,
+		kListAll = 3
+	};
+
+	virtual bool hasDirectory(const Common::Path &path) const = 0;
+	virtual bool getChildren(const Common::Path &path, Common::Array<Common::String> &list, ListMode mode = kListDirectoriesOnly, bool hidden = true) const = 0;
+};
+
+class DefaultListableCaseInsensitiveArchive : public AbstractListableArchive {
+public:
+	DefaultListableCaseInsensitiveArchive(char separator = '/') : _mapsAreReady(false), _separator(separator) {}
+	bool hasDirectory(const Common::Path &path) const override;
+	bool getChildren(const Common::Path &path, Common::Array<Common::String> &list, ListMode mode = kListDirectoriesOnly, bool hidden = true) const override;
+
+protected:
+	void prepareMaps() const;
+
+private:
+	const char _separator;
+	mutable bool _mapsAreReady;
+	typedef HashMap<String, bool, IgnoreCase_Hash, IgnoreCase_EqualTo> SubfileSet;
+	typedef HashMap<String, SubfileSet, IgnoreCase_Hash, IgnoreCase_EqualTo> AllfileMap;
+	mutable AllfileMap _directoryMap, _fileMap;
+};
+
 class MemcachingCaseInsensitiveArchive;
 
 // This is a shareable reference to a file contents stored in memory.
@@ -265,16 +294,15 @@ private:
 /**
  * An archive that caches the resulting contents.
  */
-class MemcachingCaseInsensitiveArchive : public Archive {
+class MemcachingCaseInsensitiveArchive : public DefaultListableCaseInsensitiveArchive {
 public:
-	MemcachingCaseInsensitiveArchive(uint32 maxStronglyCachedSize = 512) : _maxStronglyCachedSize(maxStronglyCachedSize) {}
+	// Most of users of this class implement DOS-like archives.
+	MemcachingCaseInsensitiveArchive(char separator = '\\', uint32 maxStronglyCachedSize = 512) : _separator(separator), _maxStronglyCachedSize(maxStronglyCachedSize) {}
 	SeekableReadStream *createReadStreamForMember(const Path &path) const;
 	SeekableReadStream *createReadStreamForMemberAltStream(const Path &path, Common::AltStreamType altStreamType) const;
 
 	virtual String translatePath(const Path &path) const {
-		// Most of users of this class implement DOS-like archives.
-		// Others override this method.
-		return normalizePath(path.toString('\\'), '\\');
+		return normalizePath(path.toString(_separator), _separator);
 	}
 
 	virtual SharedArchiveContents readContentsForPath(const String &translatedPath) const = 0;
@@ -300,6 +328,7 @@ private:
 
 	mutable HashMap<CacheKey, SharedArchiveContents, CacheKey_Hash, CacheKey_EqualTo> _cache;
 	uint32 _maxStronglyCachedSize;
+	char _separator;
 };
 
 /**

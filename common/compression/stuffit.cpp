@@ -54,7 +54,6 @@ public:
 	const Common::ArchiveMemberPtr getMember(const Common::Path &path) const override;
 	Common::SharedArchiveContents readContentsForPath(const Common::String &name) const override;
 	Common::SharedArchiveContents readContentsForPathAltStream(const String &translatedPath, Common::AltStreamType altStreamType) const override;
-	Common::String translatePath(const Common::Path &path) const override;
 	char getPathSeparator() const override;
 
 private:
@@ -94,7 +93,7 @@ private:
 	Common::SharedArchiveContents readContentsForPathFork(const String &translatedPath, bool isResFork) const;
 };
 
-StuffItArchive::StuffItArchive() : Common::MemcachingCaseInsensitiveArchive(), _flattenTree(false) {
+StuffItArchive::StuffItArchive() : Common::MemcachingCaseInsensitiveArchive('/'), _flattenTree(false) {
 	_stream = nullptr;
 }
 
