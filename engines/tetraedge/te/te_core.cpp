@@ -214,6 +214,7 @@ TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 		"Android-iPhone-iPad/Android",
 		"Android-iPhone-iPad-PC-MacOSX",
 		"Android-MacOSX-iPhone-iPad/padDisabled",
+		"padDisabled",
 		"Full",
 		"Part1-Full",
 		"Part2-Full-Part1",
@@ -258,7 +259,8 @@ TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 		"de-es-fr-it-en",
 		"en-es-fr-de-it",
 		"es-en-fr-de-it",
-		"de-en-es-fr-it"
+		"de-en-es-fr-it",
+		"de-en-es-fr-ru",
 	};
 
 	// Note: the audio files for a few videos have a weird path

@@ -72,6 +72,10 @@ _permanentHelp(true), _musicOn(true) {
 	case Common::Platform::kPlatformIOS:
 		platform = "iPhone";
 		break;
+	case Common::Platform::kPlatformNintendoSwitch:
+		platform = "NX";
+		core->fileFlagSystemSetFlag("pad", "padDisabled");
+		break;
 	default:
 		error("Unsupported platform");
 	}

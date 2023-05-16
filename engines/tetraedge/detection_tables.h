@@ -109,6 +109,16 @@ const ADGameDescription GAME_DESCRIPTIONS[] = {
 
 	{
 		"syberia",
+	        nullptr,
+		AD_ENTRY1s("InGame.lua", "acaf61504a12aebf3862648e04cf29aa", 3920),
+		Common::UNK_LANG,
+		Common::kPlatformNintendoSwitch,
+		ADGF_NO_FLAGS,
+		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
+	},
+
+	{
+		"syberia",
 		nullptr,
 		AD_ENTRY1s("main.12.com.microids.syberia.obb", "b82f9295c4bafe4af58450cbacfd261e", 1000659045),
 		Common::UNK_LANG,
