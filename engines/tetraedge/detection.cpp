@@ -60,7 +60,13 @@ Common::String TetraedgeMetaEngineDetection::customizeGuiOptionsLanguages(const 
 	static const char *obbNames[] = {
 		"main.5.com.microids.syberia.obb",
 		"main.12.com.microids.syberia.obb",
-		"main.2.ru.buka.syberia1.obb"
+		"main.2.ru.buka.syberia1.obb",
+		"main.2.ru.buka.syberia2.obb",
+	};
+
+	static const char *subDirs[] = {
+		nullptr,
+		"PC-MacOSX-Android-iPhone-iPad"
 	};
 
 	bool hasLang[ARRAYSIZE(languages)];
@@ -74,9 +80,14 @@ Common::String TetraedgeMetaEngineDetection::customizeGuiOptionsLanguages(const 
 	if (platform == Common::Platform::kPlatformMacintosh)
 		dir = dir.getChild("Resources");
 
-	for (uint i = 0; i < ARRAYSIZE(languages); i++)
-		if (dir.getChild("texts").getChild(Common::String::format("%s.xml", languages[i].code)).exists())
-			hasLang[i] = true;
+	for (uint i = 0; i < ARRAYSIZE(languages); i++) {
+		Common::FSNode base = dir.getChild("texts");
+		for (uint k = 0; k < ARRAYSIZE(subDirs); k++) {
+			Common::FSNode base2 = subDirs[k] ? base.getChild(subDirs[k]) : base;
+			if (base2.getChild(Common::String::format("%s.xml", languages[i].code)).exists())
+				hasLang[i] = true;
+		}
+	}
 
 	if (platform == Common::Platform::kPlatformAndroid)
 		for (uint j = 0; j < ARRAYSIZE(obbNames); j++) {
@@ -90,8 +101,11 @@ Common::String TetraedgeMetaEngineDetection::customizeGuiOptionsLanguages(const 
 				continue;
 
 			for (uint i = 0; i < ARRAYSIZE(languages); i++)
-				if (fileMap.contains(Common::String::format("texts/%s.xml", languages[i].code)))
-					hasLang[i] = true;
+				for (uint k = 0; k < ARRAYSIZE(subDirs); k++)
+					if (fileMap.contains(Common::String::format("texts/%s%s%s.xml",
+										    subDirs[k], subDirs[k] ? "/" : "",
+										    languages[i].code)))
+						hasLang[i] = true;
 		}
 
 
