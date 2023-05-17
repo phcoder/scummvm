@@ -170,27 +170,13 @@ TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 	Common::Array<TetraedgeFSNode> dirNodes;
 	const Common::Path dir = path.getParent();
 
-	TetraedgeFSNode node = TetraedgeFSNode(Common::FSNode(path));
-	if (node.exists())
-		return node;
+	TetraedgeFSNode node;
 
-	const Common::FSNode gameRoot(ConfMan.get("path"));
-	if (!gameRoot.isDirectory())
-		error("Game directory should be a directory");
-
-	{
-		TetraedgeFSNode resNode((g_engine->getGamePlatform() == Common::kPlatformMacintosh
-					 ? gameRoot.getChild("Resources") : gameRoot));
-		if (!resNode.isDirectory())
-			error("Resources directory should exist in game");
-		dirNodes.push_back(_findSubPath(resNode, dir));
-	}
-	Common::AbstractListableArchive *archive = g_engine->getRootArchive();
-
-	if (archive) {
-		TetraedgeFSNode archiveNode;
-		archiveNode = TetraedgeFSNode::getArchiveRoot();
-		node = archiveNode.getChild(path.toString());
+	const Common::Array<Common::AbstractListableArchive *> &roots = g_engine->getRootArchives();	
+	for (Common::Array<Common::AbstractListableArchive *>::const_iterator it = roots.begin();
+	     it != roots.end(); it++) {
+		TetraedgeFSNode archiveNode(*it);
+		node = archiveNode.getChild(path);
 		if (node.exists())
 			return node;
 		dirNodes.push_back(_findSubPath(archiveNode, dir));
@@ -308,7 +294,7 @@ TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 
 	// Didn't find it at all..
 	debug("TeCore::findFile Searched but didn't find %s", path.toString().c_str());
-	return TetraedgeFSNode(Common::FSNode(path));
+	return TetraedgeFSNode(nullptr, path);
 }
 
 } // end namespace Tetraedge

@@ -57,9 +57,9 @@ class TetraedgeFSNode;
 class TetraedgeFSList : public Common::Array<TetraedgeFSNode> {};
 class TetraedgeFSNode {
 public:
-	TetraedgeFSNode() : _isArchive(false) {}
-	explicit TetraedgeFSNode(const Common::FSNode &fsnode) : _isArchive(false), _fsnode(fsnode) {}
-	static TetraedgeFSNode getArchiveRoot();
+	TetraedgeFSNode() : _archive(nullptr) {}
+	explicit TetraedgeFSNode(Common::AbstractListableArchive *archive) : _archive(archive) {}
+	TetraedgeFSNode(Common::AbstractListableArchive *archive, const Common::Path &archivePath) : _archive(archive), _archivePath(archivePath) {}
 
 	Common::SeekableReadStream *createReadStream() const;
 	bool isReadable() const;
@@ -68,13 +68,12 @@ public:
 	bool exists() const;
 	bool loadXML(Common::XMLParser &parser) const;
 	Common::String getName() const;
-	TetraedgeFSNode getChild(const Common::String &name) const;
+	TetraedgeFSNode getChild(const Common::Path &path) const;
 	bool getChildren(TetraedgeFSList &fslist, Common::FSNode::ListMode mode = Common::FSNode::kListDirectoriesOnly, bool hidden = true) const;
 	bool operator<(const TetraedgeFSNode& node) const;
 	void maybeAddToSearchMan() const;
 private:
-	bool _isArchive;
-	Common::FSNode _fsnode;
+	Common::AbstractListableArchive *_archive;
 	Common::Path _archivePath;
 };
 
@@ -98,7 +97,7 @@ private:
 	TeResourceManager *_resourceManager;
 	TeInputMgr *_inputMgr;
 	enum TetraedgeGameType _gameType;
-	Common::AbstractListableArchive *_archive;
+	Common::Array<Common::AbstractListableArchive *> _rootArchives;
 
 protected:
 	// Engine APIs
@@ -108,7 +107,7 @@ public:
 	TetraedgeEngine(OSystem *syst, const ADGameDescription *gameDesc);
 	~TetraedgeEngine() override;
 
-	Common::AbstractListableArchive *getRootArchive() const { return _archive; }
+	const Common::Array<Common::AbstractListableArchive *>& getRootArchives() const { return _rootArchives; }
 
 	uint32 getFeatures() const;
 

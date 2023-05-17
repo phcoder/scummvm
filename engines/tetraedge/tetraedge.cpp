@@ -51,7 +51,7 @@ TetraedgeEngine *g_engine;
 TetraedgeEngine::TetraedgeEngine(OSystem *syst, const ADGameDescription *gameDesc) : Engine(syst),
 	_gameDescription(gameDesc), _randomSource("Tetraedge"), _resourceManager(nullptr),
 	_core(nullptr),	_application(nullptr), _game(nullptr), _renderer(nullptr),
-	_soundManager(nullptr), _inputMgr(nullptr), _gameType(kNone), _archive(nullptr) {
+	_soundManager(nullptr), _inputMgr(nullptr), _gameType(kNone) {
 	g_engine = this;
 }
 
@@ -64,6 +64,8 @@ TetraedgeEngine::~TetraedgeEngine() {
 	delete _soundManager;
 	delete _resourceManager;
 	delete _inputMgr;
+	for (Common::Array<Common::AbstractListableArchive *>::iterator it = _rootArchives.begin(); it != _rootArchives.end(); it++)
+		delete *it;
 	Object3D::cleanup();
 	Character::cleanup();
 	TeAnimation::cleanup();
@@ -208,17 +210,20 @@ void TetraedgeEngine::closeGameDialogs() {
 }
 
 void TetraedgeEngine::configureSearchPaths() {
+	const Common::FSNode gameDataDir(ConfMan.get("path"));
+	if (_gameDescription->platform == Common::kPlatformMacintosh) {
+		SearchMan.addSubDirectoryMatching(gameDataDir, "Resources", 0, 5);
+		_rootArchives.push_back(new Common::FSDirectory(gameDataDir.getChild("Resources")));
+	} else
+		_rootArchives.push_back(new Common::FSDirectory(gameDataDir));
+
 	if (_gameDescription->platform == Common::Platform::kPlatformAndroid
 	    && strlen(_gameDescription->filesDescriptions[0].fileName) > 4
 	    && scumm_stricmp(_gameDescription->filesDescriptions[0].fileName + strlen(_gameDescription->filesDescriptions[0].fileName) - 4, ".obb") == 0) {
 		ObbArchive *obb = ObbArchive::open(_gameDescription->filesDescriptions[0].fileName);
-		_archive = obb;
+		_rootArchives.push_back(obb);
 		SearchMan.add("obbarchive", obb);
 	}
-
-	const Common::FSNode gameDataDir(ConfMan.get("path"));
-	if (_gameDescription->platform != Common::kPlatformIOS)
-		SearchMan.addSubDirectoryMatching(gameDataDir, "Resources", 0, 5);
 }
 
 int TetraedgeEngine::getDefaultScreenWidth() const {
@@ -372,39 +377,32 @@ void TetraedgeEngine::getSavegameThumbnail(Graphics::Surface &thumb) {
 }
 
 bool TetraedgeFSNode::getChildren(TetraedgeFSList &fslist, Common::FSNode::ListMode mode, bool hidden) const {
-	if (_isArchive) {
-		Common::Array<Common::String> tmpsublist;
-		if(g_engine->getRootArchive()->getChildren(_archivePath, tmpsublist, (Common::AbstractListableArchive::ListMode)  mode, hidden))
-			return false;
-		fslist.clear();
-		for(Common::Array<Common::String>::iterator it = tmpsublist.begin(); it != tmpsublist.end(); it++) {
-			TetraedgeFSNode cur;
-			cur._isArchive = true;
-			cur._archivePath = _archivePath.join(*it);
-			fslist.push_back(cur);
-		}
-		return true;
-	}
-	Common::FSList tmpfslist;
-	if (!_fsnode.getChildren(tmpfslist, mode, hidden))
+	if (!_archive)
+		return false;
+	
+	Common::Array<Common::String> tmpsublist;
+	if(_archive->getChildren(_archivePath, tmpsublist, (Common::AbstractListableArchive::ListMode)  mode, hidden))
 		return false;
 	fslist.clear();
-	for(Common::FSList::iterator it = tmpfslist.begin(); it != tmpfslist.end(); it++)
-		fslist.push_back(TetraedgeFSNode(*it));
+	for(Common::Array<Common::String>::iterator it = tmpsublist.begin(); it != tmpsublist.end(); it++) {
+		fslist.push_back(TetraedgeFSNode(_archive, _archivePath.join(*it)));
+	}
 	return true;
 }
 
 class SubPathArchive : public Common::Archive {
 public:
-	SubPathArchive(const Common::Path &prefix) : _prefix(prefix) {}
+	SubPathArchive(Common::AbstractListableArchive *archive, const Common::Path &prefix) : _archive(archive), _prefix(prefix) {}
 
 	bool hasFile(const Common::Path &path) const override {
-		return g_engine->getRootArchive()->hasFile(_prefix.join(path));
+		return _archive && _archive->hasFile(_prefix.join(path));
 	}
 
 	int listMembers(Common::ArchiveMemberList &list) const override {
 		Common::ArchiveMemberList tmpList;
-		g_engine->getRootArchive()->listMembers(tmpList);
+		if (!_archive)
+			return 0;
+		_archive->listMembers(tmpList);
 		Common::String prefixStr = _prefix.toString();
 		if (!prefixStr.hasSuffix("/"))
 			prefixStr += "/";
@@ -419,14 +417,15 @@ public:
 	}
 
 	const Common::ArchiveMemberPtr getMember(const Common::Path &path) const override {
-		return g_engine->getRootArchive()->getMember(_prefix.join(path));
+		return _archive ? _archive->getMember(_prefix.join(path)) : nullptr;
 	}
 
 	Common::SeekableReadStream *createReadStreamForMember(const Common::Path &path) const override {
-		return g_engine->getRootArchive()->createReadStreamForMember(_prefix.join(path));
+		return _archive ? _archive->createReadStreamForMember(_prefix.join(path)) : nullptr;
 	}
 
 private:
+	Common::AbstractListableArchive *_archive;
 	Common::Path _prefix;
 };
 
@@ -434,64 +433,44 @@ void TetraedgeFSNode::maybeAddToSearchMan() const {
 	const Common::String path = getPath();
 	if (SearchMan.hasArchive(path))
 		return;
-	if (_isArchive) {
-		if (_archivePath.empty())
-			SearchMan.add(path, g_engine->getRootArchive(), 0, false);
-		else
-			SearchMan.add(path, new SubPathArchive(_archivePath));
-	} else
-		SearchMan.addDirectory(path, _fsnode);
+	if (!_archivePath.empty())
+		SearchMan.add(path, new SubPathArchive(_archive, _archivePath));
 }
 
 Common::SeekableReadStream *TetraedgeFSNode::createReadStream() const {
-	return _isArchive ? g_engine->getRootArchive()->createReadStreamForMember(_archivePath) : _fsnode.createReadStream();
+	return _archive ? _archive->createReadStreamForMember(_archivePath) : nullptr;
 }
 
 bool TetraedgeFSNode::isReadable() const {
-	return _isArchive ? g_engine->getRootArchive()->hasFile(_archivePath) : _fsnode.isReadable();
+	return _archive && _archive->hasFile(_archivePath);
 }
 
 bool TetraedgeFSNode::isDirectory() const {
-	return _isArchive ? g_engine->getRootArchive()->hasDirectory(_archivePath) : _fsnode.isDirectory();
+	return _archive && _archive->hasDirectory(_archivePath);
 }
 
 Common::String TetraedgeFSNode::getPath() const {
-	return _isArchive ? _archivePath.toString() : _fsnode.getPath();
+	return _archivePath.toString();
 }
 
-TetraedgeFSNode TetraedgeFSNode::getChild(const Common::String &name) const {
-	if (_isArchive) {
-		TetraedgeFSNode ret;
-		ret._isArchive = true;
-		ret._archivePath = _archivePath.join(name);
-		return ret;
-	}
-	return TetraedgeFSNode(_fsnode.getChild(name));
+TetraedgeFSNode TetraedgeFSNode::getChild(const Common::Path &path) const {
+	return TetraedgeFSNode(_archive, _archivePath.join(path));
 }
 
 bool TetraedgeFSNode::exists() const {
-	return _isArchive ? isDirectory() || isReadable() : _fsnode.exists();
+	return isDirectory() || isReadable();
 }
 
 bool TetraedgeFSNode::loadXML(Common::XMLParser &parser) const {
-	if (_isArchive) {
-		return parser.loadStream(createReadStream(), _archivePath.toString());
-	}
-	return parser.loadFile(_fsnode);
+	return parser.loadStream(createReadStream(), _archivePath.toString());
 }
 
 Common::String TetraedgeFSNode::getName() const {
-	return _isArchive ? _archivePath.getLastComponent().toString() : _fsnode.getName();
+	return _archivePath.getLastComponent().toString();
 }
 
 bool TetraedgeFSNode::operator<(const TetraedgeFSNode& node) const {
 	return getPath() < node.getPath();
 }
 
-TetraedgeFSNode TetraedgeFSNode::getArchiveRoot() {
-	TetraedgeFSNode ret;
-	ret._isArchive = true;
-	ret._archivePath = "";
-	return ret;
-}
 } // namespace Tetraedge
