@@ -67,7 +67,7 @@ Common::String TetraedgeMetaEngineDetection::customizeGuiOptionsLanguages(const 
 		dir = dir.getChild("Resources");
 
 	for (uint i = 0; i < ARRAYSIZE(languages); i++)
-		if (dir.getChild("texts").getChild(Common::String::format("%s.xml", languages[i].code).c_str()).exists())
+		if (dir.getChild("texts").getChild(Common::String::format("%s.xml", languages[i].code)).exists())
 			hasLang[i] = true;
 
 	for (uint i = 0; i < ARRAYSIZE(languages); i++)
