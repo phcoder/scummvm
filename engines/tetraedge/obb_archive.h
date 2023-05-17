@@ -37,9 +37,6 @@ public:
 	const Common::ArchiveMemberPtr getMember(const Common::Path &path) const override;
 	Common::SeekableReadStream *createReadStreamForMember(const Common::Path &path) const override;
 
-	static ObbArchive* open(const Common::Path& obbName);
-
-private:
 	// Similar to FileDescriptionBin but in native-endian and native strings.
 	struct FileDescriptor {
 		FileDescriptor() : _fileOffset(0), _fileSize(0) {}
@@ -52,6 +49,10 @@ private:
 
     	typedef Common::HashMap<Common::String, FileDescriptor, Common::IgnoreCase_Hash, Common::IgnoreCase_EqualTo> FileMap;
 
+	static bool readFileMap(Common::ReadStream &indexFile, FileMap &files);
+	static ObbArchive* open(const Common::Path& obbName);
+
+private:
 	ObbArchive(const FileMap& files,
 		   const Common::Path& obbName) : Common::DefaultListableCaseInsensitiveArchive('/'), _files(files), _obbName(obbName) {}
 

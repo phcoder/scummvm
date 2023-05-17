@@ -30,17 +30,11 @@
 
 namespace Tetraedge {
 
-ObbArchive* ObbArchive::open(const Common::Path& obbName) {
-	Common::File indexFile;
-	FileMap _files;
-
-	if (!indexFile.open(obbName))
-		return nullptr;
-
+bool ObbArchive::readFileMap(Common::ReadStream &indexFile, FileMap &files) {
 	byte ver = indexFile.readByte();
 	if (ver != 1) {
 		warning("Unsupported tetraedge OBB version %d", ver);
-		return nullptr;
+		return false;
 	}
 
 	uint32 filecnt = indexFile.readUint32LE();
@@ -49,7 +43,7 @@ ObbArchive* ObbArchive::open(const Common::Path& obbName) {
 		uint32 namelen = indexFile.readUint32LE();
 
 		if (namelen > 0x8000)
-			return nullptr;
+			return false;
 
 		char *buf = (char *)malloc(namelen + 1);
 		assert(buf);
@@ -57,12 +51,25 @@ ObbArchive* ObbArchive::open(const Common::Path& obbName) {
 		buf[namelen] = 0;
 		uint32 offset = indexFile.readUint32LE();
 		uint32 sz = indexFile.readUint32LE();
-		_files[buf] = FileDescriptor(offset, sz);
+		files[buf] = FileDescriptor(offset, sz);
 
 		free(buf);
 	}
 
-	return new ObbArchive(_files, obbName);
+	return true;
+}
+
+ObbArchive* ObbArchive::open(const Common::Path& obbName) {
+	Common::File indexFile;
+	FileMap files;
+
+	if (!indexFile.open(obbName))
+		return nullptr;
+
+	if (!readFileMap(indexFile, files))
+		return nullptr;
+
+	return new ObbArchive(files, obbName);
 }
 
 bool ObbArchive::hasFile(const Common::Path &path) const {
