@@ -131,41 +131,6 @@ bool TeCore::onActivityTrackingAlarm() {
 	error("TODO: Implement TeCore::onActivityTrackingAlarm");
 }
 
-static TetraedgeFSNode getChildCaseInsensitive(const TetraedgeFSNode &parent, const Common::String &child) {
-	TetraedgeFSNode cand = parent.getChild(child);
-	if (cand.exists())
-		return cand;
-
-	TetraedgeFSList childList;
-	if (!parent.getChildren(childList, Common::FSNode::kListAll, true))
-		return TetraedgeFSNode();
-
-	for (TetraedgeFSList::iterator it = childList.begin(); it != childList.end(); it++) {
-		if (it->getName().equalsIgnoreCase(child))
-			return *it;
-	}
-
-	return TetraedgeFSNode();
-}
-
-static TetraedgeFSNode _findSubPath(const TetraedgeFSNode &parent, const Common::Path &childPath) {
-	if (childPath.empty())
-		return parent;
-	TetraedgeFSNode childNode = parent;
-	const Common::StringArray comps = childPath.splitComponents();
-	unsigned int i;
-	for (i = 0; i < comps.size(); i++) {
-		if (comps[i].empty())
-			continue;
-		childNode = getChildCaseInsensitive(childNode, comps[i]);
-		if (!childNode.exists())
-			break;
-	}
-	if (i == comps.size())
-		return childNode;
-	return TetraedgeFSNode();
-}
-
 TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 	Common::Array<TetraedgeFSNode> dirNodes;
 	const Common::Path dir = path.getParent();
@@ -179,7 +144,7 @@ TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 		node = archiveNode.getChild(path);
 		if (node.exists())
 			return node;
-		dirNodes.push_back(_findSubPath(archiveNode, dir));
+		dirNodes.push_back(archiveNode.getChild(dir));
 	}
 
 	Common::String fname = path.getLastComponent().toString();
@@ -277,14 +242,14 @@ TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 				if (!lang.empty())
 					testPath.joinInPlace(lang);
 				testPath.joinInPlace(fname);
-				node = _findSubPath(dirNodes[dirNode], testPath);
+				node = dirNodes[dirNode].getChild(testPath);
 				if (node.exists())
 					return node;
 
 				// also try the other way around
 				if (!lang.empty() && suffix) {
 					testPath = Common::Path(lang).joinInPlace(suffix).join(fname);
-					node = _findSubPath(dirNodes[dirNode], testPath);
+					node = dirNodes[dirNode].getChild(testPath);
 					if (node.exists()) {
 						return node;
 					}
