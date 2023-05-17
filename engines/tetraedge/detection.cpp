@@ -20,10 +20,12 @@
  */
 
 #include "common/config-manager.h"
+#include "common/file.h"
 
 #include "tetraedge/detection.h"
 #include "tetraedge/metaengine.h"
 #include "tetraedge/detection_tables.h"
+#include "tetraedge/obb_archive.h"
 
 const DebugChannelDef TetraedgeMetaEngineDetection::debugFlagList[] = {
 	{ Tetraedge::kDebugGraphics, "Graphics", "Graphics debug level" },
@@ -55,6 +57,10 @@ Common::String TetraedgeMetaEngineDetection::customizeGuiOptionsLanguages(const 
 		{ Common::HE_ISR, "he" }  // This is a Fan-translation, which requires additional patch
 	};
 
+	static const char *obbNames[] = {
+		"main.12.com.microids.syberia.obb"
+	};
+
 	bool hasLang[ARRAYSIZE(languages)];
 
 	memset(hasLang, 0, sizeof(hasLang));
@@ -69,6 +75,23 @@ Common::String TetraedgeMetaEngineDetection::customizeGuiOptionsLanguages(const 
 	for (uint i = 0; i < ARRAYSIZE(languages); i++)
 		if (dir.getChild("texts").getChild(Common::String::format("%s.xml", languages[i].code)).exists())
 			hasLang[i] = true;
+
+	if (platform == Common::Platform::kPlatformAndroid)
+		for (uint j = 0; j < ARRAYSIZE(obbNames); j++) {
+			Common::FSNode obbPath = dir.getChild(obbNames[j]);
+			Common::File obbFile;
+			if (!obbFile.open(obbPath))
+				continue;
+
+			Tetraedge::ObbArchive::FileMap fileMap;
+			if (!Tetraedge::ObbArchive::readFileMap(obbFile, fileMap))
+				continue;
+
+			for (uint i = 0; i < ARRAYSIZE(languages); i++)
+				if (fileMap.contains(Common::String::format("texts/%s.xml", languages[i].code)))
+					hasLang[i] = true;
+		}
+
 
 	for (uint i = 0; i < ARRAYSIZE(languages); i++)
 		if(hasLang[i])
