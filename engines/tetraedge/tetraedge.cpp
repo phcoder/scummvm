@@ -222,7 +222,7 @@ void TetraedgeEngine::configureSearchPaths() {
 	    && scumm_stricmp(_gameDescription->filesDescriptions[0].fileName + strlen(_gameDescription->filesDescriptions[0].fileName) - 4, ".obb") == 0) {
 		ObbArchive *obb = ObbArchive::open(_gameDescription->filesDescriptions[0].fileName);
 		_rootArchives.push_back(obb);
-		SearchMan.add("obbarchive", obb);
+		SearchMan.add("obbarchive", obb, 0, false);
 	}
 }
 
