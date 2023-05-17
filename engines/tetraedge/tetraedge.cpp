@@ -213,9 +213,9 @@ void TetraedgeEngine::configureSearchPaths() {
 	const Common::FSNode gameDataDir(ConfMan.get("path"));
 	if (_gameDescription->platform == Common::kPlatformMacintosh) {
 		SearchMan.addSubDirectoryMatching(gameDataDir, "Resources", 0, 5);
-		_rootArchives.push_back(new Common::FSDirectory(gameDataDir.getChild("Resources")));
+		_rootArchives.push_back(new Common::FSDirectory(gameDataDir.getChild("Resources"), 10));
 	} else
-		_rootArchives.push_back(new Common::FSDirectory(gameDataDir));
+		_rootArchives.push_back(new Common::FSDirectory(gameDataDir, 10));
 
 	if (_gameDescription->platform == Common::Platform::kPlatformAndroid
 	    && strlen(_gameDescription->filesDescriptions[0].fileName) > 4
