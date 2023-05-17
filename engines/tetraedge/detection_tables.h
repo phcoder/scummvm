@@ -147,6 +147,26 @@ const ADGameDescription GAME_DESCRIPTIONS[] = {
 		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
 	},
 
+	// v1.0.1
+	{
+		"syberia",
+		nullptr,
+		AD_ENTRY1s("main.5.com.microids.syberia.obb", "6a39b40edca885bb9508ec09675c1923", 1389534445),
+		Common::UNK_LANG,
+		Common::kPlatformAndroid,
+		ADGF_NO_FLAGS,
+		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
+	},
+	{
+		"syberia",
+		"Extracted",
+		AD_ENTRY1s("InGame.lua", "8698770015e103725db60a65f3e21657", 2478),
+		Common::UNK_LANG,
+		Common::kPlatformAndroid,
+		ADGF_NO_FLAGS,
+		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
+	},
+
 	// GOG release
 	{
 		"syberia2",
