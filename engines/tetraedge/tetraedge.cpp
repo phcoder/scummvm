@@ -381,7 +381,7 @@ bool TetraedgeFSNode::getChildren(TetraedgeFSList &fslist, Common::FSNode::ListM
 		return false;
 	
 	Common::Array<Common::String> tmpsublist;
-	if(_archive->getChildren(_archivePath, tmpsublist, (Common::AbstractListableArchive::ListMode)  mode, hidden))
+	if(!_archive->getChildren(_archivePath, tmpsublist, (Common::AbstractListableArchive::ListMode)  mode, hidden))
 		return false;
 	fslist.clear();
 	for(Common::Array<Common::String>::iterator it = tmpsublist.begin(); it != tmpsublist.end(); it++) {
