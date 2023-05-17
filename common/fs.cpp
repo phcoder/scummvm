@@ -333,8 +333,8 @@ bool FSDirectory::hasDirectory(const Common::Path &path) const {
 	if (path.toString().empty() || !_node.isDirectory())
 		return false;
 
-	FSNode *node = lookupCache(_fileCache, path);
-	return node && node->exists() && node->isDirectory();
+	FSNode *node = lookupCache(_subDirCache, path);
+	return node && node->exists();
 }
 
 bool FSDirectory::getChildren(const Common::Path &path, Common::Array<Common::String> &list, ListMode mode, bool hidden) const {
