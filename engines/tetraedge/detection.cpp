@@ -82,7 +82,7 @@ Common::String TetraedgeMetaEngineDetection::customizeGuiOptionsLanguages(const 
 		for (uint j = 0; j < ARRAYSIZE(obbNames); j++) {
 			Common::FSNode obbPath = dir.getChild(obbNames[j]);
 			Common::File obbFile;
-			if (!obbFile.open(obbPath))
+			if (!obbPath.exists() || !obbFile.open(obbPath))
 				continue;
 
 			Tetraedge::ObbArchive::FileMap fileMap;
