@@ -167,6 +167,9 @@ static TetraedgeFSNode _findSubPath(const TetraedgeFSNode &parent, const Common:
 }
 
 TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
+	Common::Array<TetraedgeFSNode> dirNodes;
+	const Common::Path dir = path.getParent();
+
 	TetraedgeFSNode node = TetraedgeFSNode(Common::FSNode(path));
 	if (node.exists())
 		return node;
@@ -174,18 +177,23 @@ TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 	const Common::FSNode gameRoot(ConfMan.get("path"));
 	if (!gameRoot.isDirectory())
 		error("Game directory should be a directory");
-	TetraedgeFSNode resNode((g_engine->getGamePlatform() == Common::kPlatformMacintosh
-				 ? gameRoot.getChild("Resources") : gameRoot));
-	TetraedgeFSNode archiveNode;
+
+	{
+		TetraedgeFSNode resNode((g_engine->getGamePlatform() == Common::kPlatformMacintosh
+					 ? gameRoot.getChild("Resources") : gameRoot));
+		if (!resNode.isDirectory())
+			error("Resources directory should exist in game");
+		dirNodes.push_back(_findSubPath(resNode, dir));
+	}
 	Common::AbstractListableArchive *archive = g_engine->getRootArchive();
-	if (!resNode.isDirectory())
-		error("Resources directory should exist in game");
 
 	if (archive) {
+		TetraedgeFSNode archiveNode;
 		archiveNode = TetraedgeFSNode::getArchiveRoot();
 		node = archiveNode.getChild(path.toString());
 		if (node.exists())
 			return node;
+		dirNodes.push_back(_findSubPath(archiveNode, dir));
 	}
 
 	Common::String fname = path.getLastComponent().toString();
@@ -193,7 +201,6 @@ TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 	// Slight HACK: Remove 'comments' used to specify animated pngs
 	if (fname.contains('#'))
 		fname = fname.substr(0, fname.find('#'));
-	const Common::Path dir = path.getParent();
 
 	static const char *pathSuffixes[] = {
 		nullptr, // no suffix
@@ -272,42 +279,32 @@ TetraedgeFSNode TeCore::findFile(const Common::Path &path) const {
 	// Dialogs have part stuff followed by lang, so we have to try
 	// adding language before *and* after the suffix.
 
-	for (int langtype = 0; langtype < ARRAYSIZE(langs); langtype++) {
-		const Common::Path &lang = langs[langtype];
-		for (int i = 0; i < ARRAYSIZE(pathSuffixes); i++) {
-			const char *suffix = pathSuffixes[i];
+	for (uint dirNode = 0; dirNode < dirNodes.size(); dirNode++)
+		for (int langtype = 0; langtype < ARRAYSIZE(langs); langtype++) {
+			const Common::Path &lang = langs[langtype];
+			for (int i = 0; i < ARRAYSIZE(pathSuffixes); i++) {
+				const char *suffix = pathSuffixes[i];
 
-			Common::Path testPath = dir;
-			if (suffix)
-				testPath.joinInPlace(suffix);
-			if (!lang.empty())
-				testPath.joinInPlace(lang);
-			testPath.joinInPlace(fname);
-			node = _findSubPath(resNode, testPath);
-			if (node.exists())
-				return node;
-			if (archive) {
-				node = _findSubPath(archiveNode, testPath);
-				if (node.exists()) {
+				Common::Path testPath = "";
+				if (suffix)
+					testPath.joinInPlace(suffix);
+				if (!lang.empty())
+					testPath.joinInPlace(lang);
+				testPath.joinInPlace(fname);
+				node = _findSubPath(dirNodes[dirNode], testPath);
+				if (node.exists())
 					return node;
-				}
-			}
 
-			// also try the other way around
-			if (!lang.empty() && suffix) {
-				testPath = dir.join(lang).joinInPlace(suffix).join(fname);
-				node = _findSubPath(resNode, testPath);
-				if (node.exists()) {
-					return node;
-				}
-				if (archive) {
-					node = _findSubPath(archiveNode, testPath);
-					if (node.exists())
+				// also try the other way around
+				if (!lang.empty() && suffix) {
+					testPath = Common::Path(lang).joinInPlace(suffix).join(fname);
+					node = _findSubPath(dirNodes[dirNode], testPath);
+					if (node.exists()) {
 						return node;
+					}
 				}
 			}
 		}
-	}
 
 	// Didn't find it at all..
 	debug("TeCore::findFile Searched but didn't find %s", path.toString().c_str());
