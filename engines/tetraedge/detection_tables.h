@@ -127,6 +127,26 @@ const ADGameDescription GAME_DESCRIPTIONS[] = {
 		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
 	},
 
+	// Buka release v1.0.3
+	{
+		"syberia",
+		"Extracted",
+		AD_ENTRY1s("InGame.lua", "6577b0151ca4532e94a63a91c22a17c1", 2646),
+		Common::UNK_LANG,
+		Common::kPlatformAndroid,
+		ADGF_NO_FLAGS,
+		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
+	},
+	{
+		"syberia",
+		nullptr,
+		AD_ENTRY1s("main.2.ru.buka.syberia1.obb", "7af875e74acfceee5d9b78c705da212e", 771058907),
+		Common::UNK_LANG,
+		Common::kPlatformAndroid,
+		ADGF_NO_FLAGS,
+		GUIO1(GAMEOPTION_CORRECT_MOVIE_ASPECT)
+	},
+
 	// GOG release
 	{
 		"syberia2",

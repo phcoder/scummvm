@@ -58,7 +58,8 @@ Common::String TetraedgeMetaEngineDetection::customizeGuiOptionsLanguages(const 
 	};
 
 	static const char *obbNames[] = {
-		"main.12.com.microids.syberia.obb"
+		"main.12.com.microids.syberia.obb",
+		"main.2.ru.buka.syberia1.obb"
 	};
 
 	bool hasLang[ARRAYSIZE(languages)];
