@@ -206,14 +206,6 @@ public:
 	 */
 	Common::Error dumpArchive(String destPath);
 
-	/**
-	 * Returns the separator used by internal paths in the archive
-	 */
-	virtual char getPathSeparator() const;
-};
-
-class AbstractListableArchive : public Archive {
-public:
 	enum ListMode {
 		kListFilesOnly = 1,
 		kListDirectoriesOnly = 2,
@@ -224,7 +216,7 @@ public:
 	virtual bool getChildren(const Common::Path &path, Common::Array<Common::String> &list, ListMode mode = kListDirectoriesOnly, bool hidden = true) const = 0;
 };
 
-class DefaultListableCaseInsensitiveArchive : public AbstractListableArchive {
+class DefaultListableCaseInsensitiveArchive : public Archive {
 public:
 	DefaultListableCaseInsensitiveArchive(char separator = '/') : _mapsAreReady(false), _separator(separator) {}
 	bool hasDirectory(const Common::Path &path) const override;
@@ -479,6 +471,10 @@ public:
 	 * in @ref FSDirectory documentation.
 	 */
 	void setIgnoreClashes(bool ignoreClashes) { _ignoreClashes = ignoreClashes; }
+
+	bool hasDirectory(const Common::Path &path) const override;
+
+	bool getChildren(const Common::Path &path, Common::Array<Common::String> &list, ListMode mode = kListDirectoriesOnly, bool hidden = true) const override;
 };
 
 
