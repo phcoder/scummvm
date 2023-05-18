@@ -83,7 +83,7 @@ bool inflateZlibInstallShield(byte *dst, uint dstLen, const byte *src, uint srcL
 	return true;
 }
 
-class InstallShieldCabinet : public Archive {
+class InstallShieldCabinet : public DefaultListableCaseInsensitiveArchive {
 public:
 	InstallShieldCabinet();
 

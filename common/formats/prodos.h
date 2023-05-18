@@ -112,7 +112,7 @@ private:
  * file operations to work with it.
  */
 
-class ProDOSDisk : public Common::Archive {
+class ProDOSDisk : public Common::DefaultListableCaseInsensitiveArchive {
 public:
 	static const int kBlockSize = 512;		// A ProDOS block is always 512 bytes (should this be an enum?)
 
