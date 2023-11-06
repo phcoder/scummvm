@@ -87,7 +87,7 @@ bool ObbArchive::hasFile(const Common::Path &path) const {
 
 int ObbArchive::listMembers(Common::ArchiveMemberList &list) const {
 	for (FileMap::const_iterator i = _files.begin(), end = _files.end(); i != end; ++i) {
-		list.push_back(Common::ArchiveMemberList::value_type(new Common::GenericArchiveMember(i->_key, this)));
+		list.push_back(Common::ArchiveMemberList::value_type(new Common::GenericArchiveMember(i->_key, *this)));
 	}
 
 	return _files.size();
@@ -98,7 +98,7 @@ const Common::ArchiveMemberPtr ObbArchive::getMember(const Common::Path &path) c
 	if (i == _files.end())
 		return nullptr;
 
-	return Common::ArchiveMemberPtr(new Common::GenericArchiveMember(i->_key, this));
+	return Common::ArchiveMemberPtr(new Common::GenericArchiveMember(i->_key, *this));
 }
 
 Common::SeekableReadStream *ObbArchive::createReadStreamForMember(const Common::Path &path) const {
