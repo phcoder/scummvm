@@ -54,6 +54,7 @@ public:
 	const Common::ArchiveMemberPtr getMember(const Common::Path &path) const override;
 	Common::SharedArchiveContents readContentsForPath(const Common::String &name) const override;
 	Common::SharedArchiveContents readContentsForPathAltStream(const String &translatedPath, Common::AltStreamType altStreamType) const override;
+	Common::String translatePath(const Common::Path &path) const override;
 	char getPathSeparator() const override;
 
 private:
@@ -357,7 +358,7 @@ Common::SharedArchiveContents StuffItArchive::readContentsForPathFork(const Comm
 }
 
 Common::String StuffItArchive::translatePath(const Common::Path &path) const {
-	return _flattenTree ? path.getLastComponent().toString() : path.toString(':');
+	return _flattenTree ? path.getLastComponent().toString() : normalizePath(path.toString(':'), ':');
 }
 
 char StuffItArchive::getPathSeparator() const {
