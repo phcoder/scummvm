@@ -432,6 +432,10 @@ public:
 		return _archive ? _archive->createReadStreamForMember(_prefix.join(path)) : nullptr;
 	}
 
+	char getPathSeparator() const override {
+		return _archive ? _archive->getPathSeparator() : '/';
+	}
+
 private:
 	Common::Archive *_archive;
 	Common::Path _prefix;
