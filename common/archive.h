@@ -206,6 +206,11 @@ public:
 	 */
 	Common::Error dumpArchive(String destPath);
 
+	/**
+	 * Returns the separator used by internal paths in the archive
+	 */
+	virtual char getPathSeparator() const = 0;
+
 	enum ListMode {
 		kListFilesOnly = 1,
 		kListDirectoriesOnly = 2,
@@ -221,6 +226,7 @@ public:
 	DefaultListableCaseInsensitiveArchive(char separator = '/') : _mapsAreReady(false), _separator(separator) {}
 	bool hasDirectory(const Common::Path &path) const override;
 	bool getChildren(const Common::Path &path, Common::Array<Common::String> &list, ListMode mode = kListDirectoriesOnly, bool hidden = true) const override;
+	char getPathSeparator() const override;
 
 protected:
 	void prepareMaps() const;
@@ -354,6 +360,8 @@ class SearchSet : public Archive {
 public:
 	SearchSet() : _ignoreClashes(false) { }
 	virtual ~SearchSet() { clear(); }
+
+	char getPathSeparator() const override { return '/'; }
 
 	/**
 	 * Add a new archive to the searchable set.

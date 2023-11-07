@@ -392,6 +392,8 @@ public:
 
 	virtual ~FSDirectory();
 
+  	char getPathSeparator() const override { return '/'; }
+
 	/**
 	 * Return the underlying FSNode of the FSDirectory.
 	 */

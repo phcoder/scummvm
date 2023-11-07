@@ -168,8 +168,8 @@ Common::Error Archive::dumpArchive(String destPath) {
 	return Common::kNoError;
 }
 
-char Archive::getPathSeparator() const {
-	return '/';
+char DefaultListableCaseInsensitiveArchive::getPathSeparator() const {
+	return _separator;
 }
 
 bool DefaultListableCaseInsensitiveArchive::hasDirectory(const Common::Path &path) const {
