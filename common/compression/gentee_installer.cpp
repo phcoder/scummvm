@@ -635,7 +635,7 @@ const Common::String &ArchiveItem::getPath() const {
 	return _path;
 }
 
-class PackageArchive : public Common::Archive {
+class PackageArchive : public Common::DefaultListableCaseInsensitiveArchive {
 public:
 	explicit PackageArchive(Common::SeekableReadStream *stream);
 	~PackageArchive();

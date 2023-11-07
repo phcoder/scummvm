@@ -161,7 +161,7 @@ protected:
  *
  *******************************************/
 
-class ProjectorArchive : public Common::Archive {
+class ProjectorArchive : public Common::DefaultListableCaseInsensitiveArchive {
 public:
 	ProjectorArchive(Common::Path path);
 	~ProjectorArchive() override;

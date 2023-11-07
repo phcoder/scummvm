@@ -78,7 +78,7 @@ private:
 };
 
 // Container type comprising of multiple CIF files. Contrary to its name it contains no tree structure.
-class CifTree : public Common::Archive {
+class CifTree : public Common::DefaultListableCaseInsensitiveArchive {
 protected:
 friend class ResourceManager;
 	CifTree() : _stream(nullptr) {}

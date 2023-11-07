@@ -31,7 +31,7 @@ namespace Ultima8 {
 #define SAVEGAME_VERSION 6
 #define SAVEGAME_MIN_VERSION 2
 
-class FileEntryArchive : public Common::Archive {
+class FileEntryArchive : public Common::DefaultListableCaseInsensitiveArchive {
 	struct FileEntry {
 		uint _offset;
 		uint _size;
