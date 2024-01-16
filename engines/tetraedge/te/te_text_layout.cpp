@@ -111,7 +111,7 @@ void TeTextLayout::setText(const Common::String &val) {
 		error("TeTextLayout::load: failed to load xml.");
 
 	if (!parser.parse())
-		error("TeTextLayout::load: failed to parse xml.");
+	  error("TeTextLayout::load: failed to parse xml {%s} {%s}.", val.c_str(), xmlDocStr.c_str());
 
 	_base.setText(parser.textContent());
 	_base.setGlobalColor(parser.color());
