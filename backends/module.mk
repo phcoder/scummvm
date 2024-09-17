@@ -322,6 +322,14 @@ MODULE_OBJS += \
 	midi/camd.o
 endif
 
+ifdef DOS
+MODULE_OBJS += \
+	fs/posix/posix-fs.o \
+	fs/posix/posix-fs-factory.o \
+	fs/posix/posix-iostream.o \
+	mixer/null/null-mixer.o
+endif
+
 ifdef MORPHOS
 MODULE_OBJS += \
 	fs/morphos/morphos-fs.o \
