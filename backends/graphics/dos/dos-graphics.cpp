@@ -327,7 +327,7 @@ void DosGraphicsManager::undrawCursor() {
 void DosGraphicsManager::drawCursor() {
 	if (!_mouseVisible)
 		return;
-	drawMaskedNoSave(_overlayVisible ? _cursorBufOverlay : _cursorBuf, _cursorMask,
+	drawMaskedNoSave(_cursorBuf, _cursorMask,
 			 _cursorWidth, _cursorWidth, _mouseX - _cursorHotspotX, _mouseY - _cursorHotspotY,
 			 _cursorWidth, _cursorHeight);
 }
