@@ -69,7 +69,7 @@ private:
 	void applyNormalPalette();
 	void drawWithSave(const void *buf, int pitch, int x, int y, int w, int h);
 	void clearScreen();
-	void drawWithoutSave(const void *buf, int pitch, int x, int y, int w, int h);
+	void redrawRect(int x, int y, int w, int h);
 
 	enum class GraphicsMode : int {
 		Unknown			= -1,

@@ -130,13 +130,14 @@ void DosGraphicsManager::drawWithSave(const void *buf, int pitch, int x, int y, 
 	unscare_mouse();
 }
 
-void DosGraphicsManager::drawWithoutSave(const void *buf, int pitch, int x, int y, int w, int h) {
+void DosGraphicsManager::redrawRect(int x, int y, int w, int h) {
+	Graphics::Surface *saveSurface = _overlayVisible ? &_overlaySurface : &_surface;
 	int bytesPerPixel = _overlayVisible ? 1 : _currentState.format.bytesPerPixel;
 	bmp_select(screen);
 	scare_mouse_area(x, y, w, h);
 	for (int line = 0; line < h; line++) {
 		unsigned long dst = bmp_write_line(screen, line + y) + x;
-		const uint8_t *src = (const uint8_t *) buf + pitch * line;
+		const uint8_t *src = (const uint8_t *) saveSurface->getBasePtr(x, y + line);
 		for (int i = 0; i < w * bytesPerPixel; i++) {
 			bmp_write8(dst++, *src++);
 		}
@@ -197,7 +198,7 @@ void DosGraphicsManager::showOverlay(bool inGUI) {
 	set_palette(rgb332);
 	_overlayVisible = true;
 
-	drawWithoutSave(_overlaySurface.getBasePtr(0, 0), _overlaySurface.pitch, 0, 0, _overlaySurface.w, _overlaySurface.h);
+	redrawRect(0, 0, _overlaySurface.w, _overlaySurface.h);
 }
 
 void DosGraphicsManager::hideOverlay() {
@@ -210,7 +211,7 @@ void DosGraphicsManager::hideOverlay() {
 	applyNormalPalette();
 
 	_overlayVisible = false;
-	drawWithoutSave(_surface.getBasePtr(0, 0), _surface.pitch, 0, 0, _surface.w, _surface.h);
+	redrawRect(0, 0, _surface.w, _surface.h);
 }
 
 Graphics::PixelFormat DosGraphicsManager::getOverlayFormat() const {
