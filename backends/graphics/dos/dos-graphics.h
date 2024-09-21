@@ -113,7 +113,7 @@ private:
 
 	int _cursorWidth, _cursorHeight, _cursorHotspotX, _cursorHotspotY;
 	int _mouseX, _mouseY;
-	byte *_cursorBuf, *_cursorMask;
+	byte *_cursorBuf = nullptr, *_cursorMask = nullptr;
 	bool _mouseVisible = false;
 };
 
