@@ -28,6 +28,7 @@
 
 class DosGraphicsManager : public GraphicsManager/*, Common::EventObserver*/ {
 public:
+	DosGraphicsManager();
 	void setPalette(const byte *colors, uint start, uint num) override;
 	void grabPalette(byte *colors, uint start, uint num) const override;
 	bool hasFeature(OSystem::Feature f) const override;
@@ -55,14 +56,16 @@ public:
 	void clearOverlay() override;
 	void grabOverlay(Graphics::Surface &surface) const override;
 	void copyRectToOverlay(const void *buf, int pitch, int x, int y, int w, int h) override;
-	int16 getOverlayHeight() const override { return 480; }
-	int16 getOverlayWidth() const override { return 640; }
+	int16 getOverlayHeight() const override { return kOverlayHeight; }
+	int16 getOverlayWidth() const override { return kOverlayWidth; }
 	bool showMouse(bool visible) override;
 	void warpMouse(int x, int y) override;
 	void setMouseCursor(const void *buf, uint w, uint h, int hotspotX, int hotspotY, uint32 keycolor, bool dontScale = false, const Graphics::PixelFormat *format = nullptr, const byte *mask = nullptr) override;
 	void setCursorPalette(const byte *colors, uint start, uint num) override;
 
 private:
+	void applyNormalPalette();
+
 	enum class GraphicsMode : int {
 		Unknown			= -1,
 		DirectRendering = 0,
@@ -88,10 +91,15 @@ private:
 		int change = kNone;
 	};
 
+	static constexpr int kOverlayWidth = 640;
+	static constexpr int kOverlayHeight = 480;
+
 	GraphicsState _pendingState;
 	GraphicsState _currentState;
 	bool _overlayVisible = false;
+	byte _overlay[kOverlayHeight * kOverlayWidth];
 	Graphics::Surface _surface;
+	byte _normalPalette[3 * 256];
 };
 
 #endif

@@ -80,9 +80,9 @@ void OSystem_DOS::initBackend() {
 	_startUclock = uclock();
 
 	if (allegro_init() != 0) {
-	  debug("Allegro init failed");
-	  printf("Allegro init failed\n");
-	  exit(1);
+		debug("Allegro init failed");
+		printf("Allegro init failed\n");
+		exit(1);
 	}
 
 	_timerManager = new DefaultTimerManager();

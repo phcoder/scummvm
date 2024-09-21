@@ -23,14 +23,47 @@
 #include "backends/graphics/dos/dos-graphics.h"
 #include <allegro.h>
 
-void DosGraphicsManager::setPalette(const byte *colors, uint start, uint num) { debug(__FILE__ ":%d", __LINE__); }
-void DosGraphicsManager::grabPalette(byte *colors, uint start, uint num) const { debug(__FILE__ ":%d", __LINE__); }
+DosGraphicsManager::DosGraphicsManager() {
+	memset (_overlay, 0, kOverlayHeight * kOverlayWidth);
+	for (int i = 0; i < 256; i++) {
+		_normalPalette[3 * i] = desktop_palette[i].r << 2;
+		_normalPalette[3 * i + 1] = desktop_palette[i].g << 2;
+		_normalPalette[3 * i + 2] = desktop_palette[i].b << 2;
+	}
+}
+
+void DosGraphicsManager::applyNormalPalette() {
+	PALETTE pal;
+	for (int i = 0; i < 256; i++) {
+		pal[i].r = _normalPalette[3 * i] >> 2;
+		pal[i].g = _normalPalette[3 * i + 1] >> 2;
+		pal[i].b = _normalPalette[3 * i + 2] >> 2;
+		pal[i].filler = 0;
+	}
+	set_palette(pal);
+}
+
+void DosGraphicsManager::setPalette(const byte *colors, uint start, uint num) {
+	memcpy(_normalPalette + 3 * start, colors, 3 * num);
+	if (!_overlayVisible) {
+		applyNormalPalette();
+	}
+}
+void DosGraphicsManager::grabPalette(byte *colors, uint start, uint num) const {
+	memcpy(colors, _normalPalette + 3 * start, 3 * num);
+}
+
 bool DosGraphicsManager::hasFeature(OSystem::Feature f) const {
-	debug(__FILE__ ":%d", __LINE__);
 	return false;
 }
-void DosGraphicsManager::setFeatureState(OSystem::Feature f, bool enable) { debug(__FILE__ ":%d", __LINE__); }
-bool DosGraphicsManager::getFeatureState(OSystem::Feature f) const { debug(__FILE__ ":%d", __LINE__); return false; }
+
+void DosGraphicsManager::setFeatureState(OSystem::Feature f, bool enable) {
+}
+
+bool DosGraphicsManager::getFeatureState(OSystem::Feature f) const {
+	return false;
+}
+
 void DosGraphicsManager::initSize(uint width, uint height, const Graphics::PixelFormat *format) {
 	debug("initSize: %d, %d, %d", width, height, format ? format->bytesPerPixel : 1);
 
@@ -64,12 +97,8 @@ OSystem::TransactionError DosGraphicsManager::endGFXTransaction() {
 		set_color_depth(_pendingState.format.bytesPerPixel * 8);
 		if (set_gfx_mode(GFX_AUTODETECT, _pendingState.width, _pendingState.height, 0, 0) == 0) {
 		        _surface.create(_pendingState.width, _pendingState.height, _pendingState.format);
-			set_palette(desktop_palette);
-			clear_to_color(screen, makecol(0xff,0xff,0xff));
-			bmp_select(screen);
-			unsigned long addr = bmp_write_line(screen, 0);
-			bmp_write8(addr, 0xff);
-			bmp_unwrite_line(screen);
+			applyNormalPalette();
+			_overlayVisible = false;
 		} else {
 			debug("Failed to start gfx: %s",  allegro_error);
 			error |= OSystem::TransactionError::kTransactionFormatNotSupported;
@@ -81,7 +110,24 @@ OSystem::TransactionError DosGraphicsManager::endGFXTransaction() {
 	return (OSystem::TransactionError)error;
 }
 
-void DosGraphicsManager::copyRectToScreen(const void *buf, int pitch, int x, int y, int w, int h) { debug(__FILE__ ":%d", __LINE__); }
+void DosGraphicsManager::copyRectToScreen(const void *buf, int pitch, int x, int y, int w, int h) {
+	if (!_overlayVisible) {
+		bmp_select(screen);
+		for (int line = 0; line < h; line++) {
+			unsigned long dst = bmp_write_line(screen, line + y) + x;
+			uint8_t *cleanDst = (uint8_t *) _surface.getBasePtr(x, y + line);
+			const uint8_t *src = (const uint8_t *) buf + pitch * line;
+			for (int i = 0; i < w * _currentState.format.bytesPerPixel; i++) {
+				*cleanDst++ = *src;
+				bmp_write8(dst++, *src++);
+			}
+			bmp_unwrite_line(screen);
+		}
+	} else {
+		_surface.copyRectToSurface(buf, pitch, x, y, w, h);
+	}
+	debug(__FILE__ ":%d", __LINE__);
+}
 Graphics::Surface *DosGraphicsManager::lockScreen() {
 	debug(__FILE__ ":%d", __LINE__);
 	return &_surface;
@@ -94,7 +140,11 @@ void DosGraphicsManager::setShakePos(int shakeXOffset, int shakeYOffset) { debug
 void DosGraphicsManager::setFocusRectangle(const Common::Rect& rect) { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::clearFocusRectangle() { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::showOverlay(bool inGUI) {
+	if (_overlayVisible) {
+		return;
+	}
 	PALETTE rgb332;
+	set_color_depth(8);
 	set_gfx_mode(GFX_AUTODETECT, 640, 480, 0, 0);
 	for (int i = 0; i < 256; i++) {
 		rgb332[i] = desktop_palette[i];
@@ -105,27 +155,41 @@ void DosGraphicsManager::showOverlay(bool inGUI) {
 	set_palette(rgb332);
 	_overlayVisible = true;
 }
-void DosGraphicsManager::hideOverlay() { debug(__FILE__ ":%d", __LINE__); }
+
+void DosGraphicsManager::hideOverlay() {
+	if (!_overlayVisible) {
+		return;
+	}
+
+	set_color_depth(_currentState.format.bytesPerPixel * 8);
+	set_gfx_mode(GFX_AUTODETECT, _currentState.width, _currentState.height, 0, 0);
+	applyNormalPalette();
+
+	_overlayVisible = false;
+}
 Graphics::PixelFormat DosGraphicsManager::getOverlayFormat() const {
 	return Graphics::PixelFormat(1, 3, 3, 2, 0, 5, 2, 0, 0);
 }
 void DosGraphicsManager::clearOverlay() { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::grabOverlay(Graphics::Surface &surface) const { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::copyRectToOverlay(const void *buf, int pitch, int x, int y, int w, int h) {
-	debug("copyRectToOverlay pitch=%d %dx%d + %dx%d", pitch, x, y, w, h);
-	set_color_depth(8);
-	bmp_select(screen);
-	uint32_t sum = 0;
-	for (int line = 0; line < h; line++) {
-		unsigned long dst = bmp_write_line(screen, line + y) + x;
-		const uint8_t *src = (const uint8_t *) buf + pitch * line;
-		for (int i = 0; i < w; i++) {
-			sum += *src;
-			bmp_write8(dst++, *src++);
+	if (_overlayVisible) {
+		bmp_select(screen);
+		for (int line = 0; line < h; line++) {
+			unsigned long dst = bmp_write_line(screen, line + y) + x;
+			uint8_t *cleanDst = _overlay + (line + y) * kOverlayWidth + x;
+			const uint8_t *src = (const uint8_t *) buf + pitch * line;
+			for (int i = 0; i < w; i++) {
+				*cleanDst++ = *src;
+				bmp_write8(dst++, *src++);
+			}
+			bmp_unwrite_line(screen);
 		}
-		bmp_unwrite_line(screen);
+	} else {
+		for (int line = 0; line < h; line++) {
+			memcpy(_overlay + (y + line) * kOverlayWidth + x, (const uint8_t *) buf + pitch * line, w);
+		}
 	}
-	debug("sum=%x", sum);
 }
 bool DosGraphicsManager::showMouse(bool visible) { debug(__FILE__ ":%d", __LINE__); return false; }
 void DosGraphicsManager::warpMouse(int x, int y) { debug(__FILE__ ":%d", __LINE__); }
