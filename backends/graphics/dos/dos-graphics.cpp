@@ -304,7 +304,13 @@ void DosGraphicsManager::copyRectToOverlay(const void *buf, int pitch, int x, in
 	}
 }
 bool DosGraphicsManager::showMouse(bool visible) {
-	show_mouse(visible ? screen : NULL);
+	if (_mouseVisible == visible)
+		return true;
+	_mouseVisible = visible;
+	if (_mouseVisible)
+		drawCursor();
+	else
+		undrawCursor();
 	return true;
 }
 
@@ -319,13 +325,15 @@ void DosGraphicsManager::undrawCursor() {
 }
 
 void DosGraphicsManager::drawCursor() {
-	drawMaskedNoSave(_cursorBuf, _cursorMask,
+	if (!_mouseVisible)
+		return;
+	drawMaskedNoSave(_overlayVisible ? _cursorBufOverlay : _cursorBuf, _cursorMask,
 			 _cursorWidth, _cursorWidth, _mouseX - _cursorHotspotX, _mouseY - _cursorHotspotY,
 			 _cursorWidth, _cursorHeight);
 }
 
 void DosGraphicsManager::moveCursor(int x, int y) {
-	if (_mouseX == x && _mouseY == y)
+	if ((_mouseX == x && _mouseY == y) || !_mouseVisible)
 		return;
 
 	undrawCursor();
