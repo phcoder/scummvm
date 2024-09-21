@@ -111,6 +111,7 @@ void OSystem_DOS::initBackend() {
 bool OSystem_DOS::pollEvent(Common::Event &event) {
 	((DefaultTimerManager *)getTimerManager())->checkTimers();
 	((NullMixerManager *)_mixerManager)->update(1);
+	((DosGraphicsManager *)_graphicsManager)->moveCursor(mouse_x, mouse_y);
 
 	return false;
 }

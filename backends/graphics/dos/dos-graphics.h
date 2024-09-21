@@ -64,6 +64,7 @@ public:
 	void warpMouse(int x, int y) override;
 	void setMouseCursor(const void *buf, uint w, uint h, int hotspotX, int hotspotY, uint32 keycolor, bool dontScale = false, const Graphics::PixelFormat *format = nullptr, const byte *mask = nullptr) override;
 	void setCursorPalette(const byte *colors, uint start, uint num) override;
+	void moveCursor(int x, int y);
 
 private:
 	void applyNormalPalette();
@@ -73,7 +74,6 @@ private:
 	void drawMaskedNoSave(const void *buf, const byte *mask, int pitch, int maskPitch, int x, int y, int w, int h);
 	void undrawCursor();
 	void drawCursor();
-	void moveCursor(int x, int y);
 
 	enum class GraphicsMode : int {
 		Unknown			= -1,
