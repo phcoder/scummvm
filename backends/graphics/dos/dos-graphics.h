@@ -69,7 +69,7 @@ public:
 private:
 	void applyNormalPalette();
 	void drawWithSave(const void *buf, int pitch, int x, int y, int w, int h);
-	void clearScreen();
+	void clearScreen(uint8_t col);
 	void redrawRect(int x, int y, int w, int h);
 	void drawMaskedNoSave(const void *buf, const byte *mask, int pitch, int maskPitch, int x, int y, int w, int h);
 	void undrawCursor();

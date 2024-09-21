@@ -209,7 +209,7 @@ void DosGraphicsManager::redrawRect(int x, int y, int w, int h) {
 	}
 }
 
-void DosGraphicsManager::clearScreen() {
+void DosGraphicsManager::clearScreen(uint8_t col) {
 	int bytesPerPixel = _overlayVisible ? 1 : _currentState.format.bytesPerPixel;
 	int h = _overlayVisible ? kOverlayHeight : _currentState.height;
 	int w = _overlayVisible ? kOverlayWidth : _currentState.width;
@@ -217,7 +217,7 @@ void DosGraphicsManager::clearScreen() {
 	for (int line = 0; line < h; line++) {
 		unsigned long dst = bmp_write_line(screen, line);
 		for (int i = 0; i < w * bytesPerPixel; i++) {
-			bmp_write8(dst++, 0);
+			bmp_write8(dst++, col);
 		}
 		bmp_unwrite_line(screen);
 	}
@@ -237,8 +237,17 @@ Graphics::Surface *DosGraphicsManager::lockScreen() {
 }
 
 void DosGraphicsManager::unlockScreen() { debug(__FILE__ ":%d", __LINE__); }
-void DosGraphicsManager::fillScreen(uint32 col) { debug(__FILE__ ":%d", __LINE__); }
-void DosGraphicsManager::fillScreen(const Common::Rect &r, uint32 col) { debug(__FILE__ ":%d", __LINE__); }
+void DosGraphicsManager::fillScreen(uint32 col) {
+	if (!_overlayVisible)
+		clearScreen(col);
+	_surface.fillRect(Common::Rect (0, 0, _surface.w, _surface.h), col);	
+}
+
+void DosGraphicsManager::fillScreen(const Common::Rect &r, uint32 col) {
+	_surface.fillRect(r, col);
+	redrawRect(r.left, r.top, r.width(), r.height());
+}
+
 void DosGraphicsManager::updateScreen() { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::setShakePos(int shakeXOffset, int shakeYOffset) { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::setFocusRectangle(const Common::Rect& rect) { debug(__FILE__ ":%d", __LINE__); }
@@ -283,7 +292,8 @@ Graphics::PixelFormat DosGraphicsManager::getOverlayFormat() const {
 
 void DosGraphicsManager::clearOverlay() {
 	_overlaySurface.fillRect(Common::Rect (0, 0, kOverlayWidth, kOverlayHeight), 0);
-	if (!_overlayVisible) {
+	if (_overlayVisible) {
+		clearScreen(0);
 	}
 }
 
