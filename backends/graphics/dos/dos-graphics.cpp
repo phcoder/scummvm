@@ -113,6 +113,7 @@ OSystem::TransactionError DosGraphicsManager::endGFXTransaction() {
 void DosGraphicsManager::copyRectToScreen(const void *buf, int pitch, int x, int y, int w, int h) {
 	if (!_overlayVisible) {
 		bmp_select(screen);
+		scare_mouse();
 		for (int line = 0; line < h; line++) {
 			unsigned long dst = bmp_write_line(screen, line + y) + x;
 			uint8_t *cleanDst = (uint8_t *) _surface.getBasePtr(x, y + line);
@@ -123,6 +124,7 @@ void DosGraphicsManager::copyRectToScreen(const void *buf, int pitch, int x, int
 			}
 			bmp_unwrite_line(screen);
 		}
+		unscare_mouse();
 	} else {
 		_surface.copyRectToSurface(buf, pitch, x, y, w, h);
 	}
@@ -175,6 +177,7 @@ void DosGraphicsManager::grabOverlay(Graphics::Surface &surface) const { debug(_
 void DosGraphicsManager::copyRectToOverlay(const void *buf, int pitch, int x, int y, int w, int h) {
 	if (_overlayVisible) {
 		bmp_select(screen);
+		scare_mouse();
 		for (int line = 0; line < h; line++) {
 			unsigned long dst = bmp_write_line(screen, line + y) + x;
 			uint8_t *cleanDst = _overlay + (line + y) * kOverlayWidth + x;
@@ -185,6 +188,7 @@ void DosGraphicsManager::copyRectToOverlay(const void *buf, int pitch, int x, in
 			}
 			bmp_unwrite_line(screen);
 		}
+		unscare_mouse();
 	} else {
 		for (int line = 0; line < h; line++) {
 			memcpy(_overlay + (y + line) * kOverlayWidth + x, (const uint8_t *) buf + pitch * line, w);
