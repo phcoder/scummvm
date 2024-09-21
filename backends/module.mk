@@ -327,7 +327,8 @@ MODULE_OBJS += \
 	fs/posix/posix-fs.o \
 	fs/posix/posix-fs-factory.o \
 	fs/posix/posix-iostream.o \
-	mixer/null/null-mixer.o
+	mixer/null/null-mixer.o \
+	graphics/dos/dos-graphics.o
 endif
 
 ifdef MORPHOS

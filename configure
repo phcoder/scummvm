@@ -1083,6 +1083,8 @@ Optional Libraries:
   --disable-osx-dock-plugin    disable the NSDockTilePlugin support
                                [macOS only - autodetect]
 
+  --with-allegro-prefix=DIR    prefix where the ALLEGRO package is located (mandatory for DOS)
+
   --with-sdl-prefix=DIR    prefix where the SDL package is installed (optional)
                            e.g., if sdl-config script is at:
                            /opt/mxe/usr/i686-w64-mingw32.static/bin/sdl2-config
@@ -1538,6 +1540,10 @@ for ac_option in $@; do
 	--with-sdl-prefix=*)
 		arg=`echo $ac_option | cut -d '=' -f 2`
 		_sdlpath="$arg:$arg/bin"
+		;;
+	--with-allegro-prefix=*)
+		arg=`echo $ac_option | cut -d '=' -f 2`
+		_allegropath="$arg"
 		;;
 	--with-freetype2-prefix=*)
 		arg=`echo $ac_option | cut -d '=' -f 2`
@@ -3949,6 +3955,13 @@ if test -n "$_host"; then
 		i[3456]86-pc-msdosdjgpp)
 		        _backend=dos
 			add_line_to_config_mk 'DOS = 1'
+			if [ x"$_allegropath" = x ]; then
+			    echo "Please specify Allegro path"
+			    exit 1
+			fi
+			append_var CXXFLAGS "-I$_allegropath/include"
+			append_var LDFLAGS  "-L$_allegropath/lib/djgpp"
+			append_var LIBS  "-lalleg"
 			;;
 		*)
 			echo "WARNING: Unknown target, continuing with auto-detected values"

@@ -97,10 +97,10 @@ void DosGraphicsManager::showOverlay(bool inGUI) {
 	PALETTE rgb332;
 	set_gfx_mode(GFX_AUTODETECT, 640, 480, 0, 0);
 	for (int i = 0; i < 256; i++) {
-		rgb332[i].r = i & 0xe0;
-		rgb332[i].g = (i & 0x1c) << 3;
-		rgb332[i].b = (i & 3) << 6;
-		rgb332[i].filler = i;
+		rgb332[i] = desktop_palette[i];
+		rgb332[i].r = (i & 0xe0) >> 2;
+		rgb332[i].g = (i & 0x1c) << 1;
+		rgb332[i].b = (i & 3) << 4;
 	}
 	set_palette(rgb332);
 	_overlayVisible = true;

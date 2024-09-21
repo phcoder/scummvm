@@ -19,18 +19,13 @@
  *
  */
 
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+#define LONG_LONG 1
+#define ALLEGRO_HAVE_STDINT_H 1
+
+#include <allegro.h>
 #include <time.h>
 #include <dos.h>
-
-// We use some stdio.h functionality here thus we need to allow some
-// symbols. Alternatively, we could simply allow everything by defining
-// FORBIDDEN_SYMBOL_ALLOW_ALL
-#define FORBIDDEN_SYMBOL_EXCEPTION_FILE
-#define FORBIDDEN_SYMBOL_EXCEPTION_stdout
-#define FORBIDDEN_SYMBOL_EXCEPTION_stderr
-#define FORBIDDEN_SYMBOL_EXCEPTION_fputs
-#define FORBIDDEN_SYMBOL_EXCEPTION_exit
-#define FORBIDDEN_SYMBOL_EXCEPTION_time_h
 
 #include "common/scummsys.h"
 
@@ -42,7 +37,7 @@
 #include "backends/timer/default/default-timer.h"
 #include "backends/events/default/default-events.h"
 #include "backends/mixer/null/null-mixer.h"
-#include "backends/graphics/null/null-graphics.h"
+#include "backends/graphics/dos/dos-graphics.h"
 #include "gui/debugger.h"
 
 #include "backends/fs/posix/posix-fs-factory.h"
@@ -84,10 +79,16 @@ OSystem_DOS::~OSystem_DOS() {
 void OSystem_DOS::initBackend() {
 	_startUclock = uclock();
 
+	if (allegro_init() != 0) {
+	  debug("Allegro init failed");
+	  printf("Allegro init failed\n");
+	  exit(1);
+	}
+
 	_timerManager = new DefaultTimerManager();
 	_eventManager = new DefaultEventManager(this);
 	_savefileManager = new DefaultSaveFileManager();
-	_graphicsManager = new NullGraphicsManager();
+	_graphicsManager = new DosGraphicsManager();
 	_mixerManager = new NullMixerManager();
 	// Setup and start mixer
 	_mixerManager->init();
@@ -134,13 +135,12 @@ void OSystem_DOS::logMessage(LogMessageType::Type type, const char *message) {
 	if (_silenceLogs)
 		return;
 
-	FILE *output = 0;
-
-	if (type == LogMessageType::kInfo || type == LogMessageType::kDebug)
-		output = stdout;
-	else
-		output = stderr;
-
+	static FILE *output = 0;
+	if (!output)
+	  output = fopen ("scummvm.log", "a");
+	
+	if (!output)
+	  return;
 	fputs(message, output);
 	fflush(output);
 }
