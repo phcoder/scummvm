@@ -109,9 +109,50 @@ void OSystem_DOS::initBackend() {
 }
 
 bool OSystem_DOS::pollEvent(Common::Event &event) {
+	static int prev_mouse_b;
+	static int prev_mouse_x;
+	static int prev_mouse_y;
 	((DefaultTimerManager *)getTimerManager())->checkTimers();
 	((NullMixerManager *)_mixerManager)->update(1);
 	((DosGraphicsManager *)_graphicsManager)->moveCursor(mouse_x, mouse_y);
+
+	int cur_mouse_b = mouse_b;
+	int cur_mouse_x = mouse_x;
+	int cur_mouse_y = mouse_y;
+
+	for (int i = 0; i < 3; i++)
+		if (prev_mouse_b & ~cur_mouse_b & (1 << i)) {
+			Common::EventType types[] = {Common::EventType::EVENT_LBUTTONUP, Common::EventType::EVENT_RBUTTONUP, Common::EventType::EVENT_MBUTTONUP};
+			
+			event.type = types[i];
+			event.mouse.x = cur_mouse_x;
+			event.mouse.y = cur_mouse_y;
+			prev_mouse_b &= ~(1 << i);
+			prev_mouse_x = cur_mouse_x;
+			prev_mouse_y = cur_mouse_y;
+			return true;
+		}
+
+	for (int i = 0; i < 3; i++)
+		if (~prev_mouse_b & cur_mouse_b & (1 << i)) {
+			Common::EventType types[] = {Common::EventType::EVENT_LBUTTONDOWN, Common::EventType::EVENT_RBUTTONDOWN, Common::EventType::EVENT_MBUTTONDOWN};
+			event.type = types[i];
+			event.mouse.x = cur_mouse_x;
+			event.mouse.y = cur_mouse_y;
+			prev_mouse_b |= (1 << i);
+			prev_mouse_x = cur_mouse_x;
+			prev_mouse_y = cur_mouse_y;
+			return true;
+		}
+
+	if (prev_mouse_x != cur_mouse_x || prev_mouse_y != cur_mouse_y) {
+		event.type = Common::EventType::EVENT_MOUSEMOVE;
+		event.mouse.x = cur_mouse_x;
+		event.mouse.y = cur_mouse_y;
+		prev_mouse_x = cur_mouse_x;
+		prev_mouse_y = cur_mouse_y;
+		return true;
+	}
 
 	return false;
 }
