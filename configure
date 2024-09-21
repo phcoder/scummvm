@@ -4660,8 +4660,9 @@ int main() { fseeko64(stdin, 0, SEEK_SET); return 0; }
 EOF
 				cc_check_no_clean -D_LARGEFILE64_SOURCE && _has_fseeko64=yes
 				echo $_has_fseeko64
-				if test "$_has_fseeko64" = yes ; then
-					append_var DEFINES "-DHAS_FSEEKO64"
+				# ftello64 is buggy on djgpp
+				if test "$_has_fseeko64" = yes && test "$_host_os" != "msdosdjgpp"; then
+				        append_var DEFINES "-DHAS_FSEEKO64"
 					append_var CXXFLAGS "-D_LARGEFILE64_SOURCE"
 
 					# On some platforms, fopen64 is required in addition to fseeko64/ftello64
