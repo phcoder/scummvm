@@ -99,6 +99,7 @@ OSystem::TransactionError DosGraphicsManager::endGFXTransaction() {
 		set_color_depth(_pendingState.format.bytesPerPixel * 8);
 		if (set_gfx_mode(GFX_AUTODETECT, _pendingState.width, _pendingState.height, 0, 0) == 0) {
 		        _surface.create(_pendingState.width, _pendingState.height, _pendingState.format);
+			// TODO: check RGB vs BGR differences
 			_currentState = _pendingState;
 			applyNormalPalette();
 			_overlayVisible = false;
@@ -168,14 +169,16 @@ void DosGraphicsManager::drawMaskedNoSave(const void *buf, const byte *mask, int
 	}
 	bmp_select(screen);
 	for (int line = 0; line < h; line++) {
-		unsigned long dst = bmp_write_line(screen, line + y) + x;
+		unsigned long dst = bmp_write_line(screen, line + y) + x * bytesPerPixel;
 		const uint8_t *src = (const uint8_t *) buf + pitch * line;
 		const uint8_t *maskPtr = (const uint8_t *) mask + maskPitch * line;		
-		for (int i = 0; i < w * bytesPerPixel; i++) {
+		for (int i = 0; i < w; i++) {
 			// TODO: other masks.
-			if (*maskPtr)
-				bmp_write8(dst, *src);
-			src++; dst++; maskPtr++;
+			if (*maskPtr) {
+				for (int j = 0; j < bytesPerPixel; j++)
+					bmp_write8(dst + j, src[j]);
+			}
+			src+=bytesPerPixel; dst+=bytesPerPixel; maskPtr++;
 		}
 		bmp_unwrite_line(screen);
 	}
@@ -183,7 +186,6 @@ void DosGraphicsManager::drawMaskedNoSave(const void *buf, const byte *mask, int
 
 void DosGraphicsManager::redrawRect(int x, int y, int w, int h) {
 	Graphics::Surface *saveSurface = _overlayVisible ? &_overlaySurface : &_surface;
-	debug("surface=%p, screen=%p", saveSurface, screen);
 	bmp_select(screen);
 	if (x < 0) {
 		w += x;
@@ -200,7 +202,7 @@ void DosGraphicsManager::redrawRect(int x, int y, int w, int h) {
 		h = saveSurface->h - y;
 	}
 	for (int line = 0; line < h; line++) {
-		unsigned long dst = bmp_write_line(screen, line + y) + x;
+		unsigned long dst = bmp_write_line(screen, line + y) + x * saveSurface->format.bytesPerPixel;
 		const uint8_t *src = (const uint8_t *) saveSurface->getBasePtr(x, y + line);
 		for (int i = 0; i < w * saveSurface->format.bytesPerPixel; i++) {
 			bmp_write8(dst++, *src++);
@@ -248,7 +250,7 @@ void DosGraphicsManager::fillScreen(const Common::Rect &r, uint32 col) {
 	redrawRect(r.left, r.top, r.width(), r.height());
 }
 
-void DosGraphicsManager::updateScreen() { debug(__FILE__ ":%d", __LINE__); }
+void DosGraphicsManager::updateScreen() { }
 void DosGraphicsManager::setShakePos(int shakeXOffset, int shakeYOffset) { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::setFocusRectangle(const Common::Rect& rect) { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::clearFocusRectangle() { debug(__FILE__ ":%d", __LINE__); }
@@ -375,3 +377,14 @@ void DosGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, int hot
 }
 
 void DosGraphicsManager::setCursorPalette(const byte *colors, uint start, uint num) { debug(__FILE__ ":%d", __LINE__); }
+
+Graphics::PixelFormat DosGraphicsManager::getScreenFormat() const {
+	return _currentState.format;
+}
+
+Common::List<Graphics::PixelFormat> DosGraphicsManager::getSupportedFormats() const {
+	Common::List<Graphics::PixelFormat> ret;
+	// TODO: Fill this programmatically
+	ret.push_back(Graphics::PixelFormat(2, 5, 6, 5, 0, 11, 5, 0, 0));
+	return ret;
+}

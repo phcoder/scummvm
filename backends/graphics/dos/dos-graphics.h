@@ -64,8 +64,11 @@ public:
 	void warpMouse(int x, int y) override;
 	void setMouseCursor(const void *buf, uint w, uint h, int hotspotX, int hotspotY, uint32 keycolor, bool dontScale = false, const Graphics::PixelFormat *format = nullptr, const byte *mask = nullptr) override;
 	void setCursorPalette(const byte *colors, uint start, uint num) override;
-	void moveCursor(int x, int y);
+	Graphics::PixelFormat getScreenFormat() const override;
+	Common::List<Graphics::PixelFormat> getSupportedFormats() const override;
 
+	void moveCursor(int x, int y);
+	
 private:
 	void applyNormalPalette();
 	void drawWithSave(const void *buf, int pitch, int x, int y, int w, int h);
