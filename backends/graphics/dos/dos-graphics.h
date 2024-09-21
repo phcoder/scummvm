@@ -26,6 +26,8 @@
 #include "common/events.h"
 #include "graphics/surface.h"
 
+struct BITMAP;
+
 class DosGraphicsManager : public GraphicsManager/*, Common::EventObserver*/ {
 public:
 	DosGraphicsManager();
@@ -100,6 +102,7 @@ private:
 	byte _overlay[kOverlayHeight * kOverlayWidth];
 	Graphics::Surface _surface;
 	byte _normalPalette[3 * 256];
+	BITMAP *_mouseCursorBitmap = nullptr;
 };
 
 #endif

@@ -128,12 +128,13 @@ void DosGraphicsManager::copyRectToScreen(const void *buf, int pitch, int x, int
 	} else {
 		_surface.copyRectToSurface(buf, pitch, x, y, w, h);
 	}
-	debug(__FILE__ ":%d", __LINE__);
 }
+
 Graphics::Surface *DosGraphicsManager::lockScreen() {
 	debug(__FILE__ ":%d", __LINE__);
 	return &_surface;
 }
+
 void DosGraphicsManager::unlockScreen() { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::fillScreen(uint32 col) { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::fillScreen(const Common::Rect &r, uint32 col) { debug(__FILE__ ":%d", __LINE__); }
@@ -147,7 +148,7 @@ void DosGraphicsManager::showOverlay(bool inGUI) {
 	}
 	PALETTE rgb332;
 	set_color_depth(8);
-	set_gfx_mode(GFX_AUTODETECT, 640, 480, 0, 0);
+	set_gfx_mode(GFX_AUTODETECT, kOverlayWidth, kOverlayHeight, 0, 0);
 	for (int i = 0; i < 256; i++) {
 		rgb332[i] = desktop_palette[i];
 		rgb332[i].r = (i & 0xe0) >> 2;
@@ -156,6 +157,18 @@ void DosGraphicsManager::showOverlay(bool inGUI) {
 	}
 	set_palette(rgb332);
 	_overlayVisible = true;
+
+	bmp_select(screen);
+	scare_mouse();
+	for (int line = 0; line < kOverlayHeight; line++) {
+		unsigned long dst = bmp_write_line(screen, line);
+		const uint8_t *src = (const uint8_t *) _overlay + line * kOverlayWidth;
+		for (int i = 0; i < kOverlayWidth; i++) {
+			bmp_write8(dst++, *src++);
+		}
+		bmp_unwrite_line(screen);
+	}
+	unscare_mouse();
 }
 
 void DosGraphicsManager::hideOverlay() {
@@ -168,12 +181,33 @@ void DosGraphicsManager::hideOverlay() {
 	applyNormalPalette();
 
 	_overlayVisible = false;
+
+	bmp_select(screen);
+	scare_mouse();
+	for (int line = 0; line < _currentState.height; line++) {
+		unsigned long dst = bmp_write_line(screen, line);
+		const uint8_t *src = (const uint8_t *) _surface.getBasePtr(0, line);
+		for (int i = 0; i < _currentState.width * _currentState.format.bytesPerPixel; i++) {
+			bmp_write8(dst++, *src++);
+		}
+		bmp_unwrite_line(screen);
+	}
+	unscare_mouse();
 }
+
 Graphics::PixelFormat DosGraphicsManager::getOverlayFormat() const {
 	return Graphics::PixelFormat(1, 3, 3, 2, 0, 5, 2, 0, 0);
 }
-void DosGraphicsManager::clearOverlay() { debug(__FILE__ ":%d", __LINE__); }
-void DosGraphicsManager::grabOverlay(Graphics::Surface &surface) const { debug(__FILE__ ":%d", __LINE__); }
+
+void DosGraphicsManager::clearOverlay() {
+	memset(_overlay, 0, kOverlayWidth * kOverlayHeight);
+}
+
+void DosGraphicsManager::grabOverlay(Graphics::Surface &surface) const {
+	surface.create(kOverlayWidth, kOverlayHeight, Graphics::PixelFormat(1, 3, 3, 2, 0, 5, 2, 0, 0));
+	surface.copyRectToSurface(_overlay, kOverlayWidth, 0, 0, kOverlayWidth, kOverlayHeight);
+}
+
 void DosGraphicsManager::copyRectToOverlay(const void *buf, int pitch, int x, int y, int w, int h) {
 	if (_overlayVisible) {
 		bmp_select(screen);
@@ -200,6 +234,24 @@ bool DosGraphicsManager::showMouse(bool visible) {
 	return true;
 }
 
-void DosGraphicsManager::warpMouse(int x, int y) { debug(__FILE__ ":%d", __LINE__); }
-void DosGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, int hotspotX, int hotspotY, uint32 keycolor, bool dontScale, const Graphics::PixelFormat *format, const byte *mask) { debug(__FILE__ ":%d", __LINE__); }
+void DosGraphicsManager::warpMouse(int x, int y) {
+//	position_mouse(x, y);
+}
+void DosGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, int hotspotX, int hotspotY, uint32 keycolor,
+					bool dontScale, const Graphics::PixelFormat *format, const byte *mask) {
+	debug("setMouseCursor hotspot=(%d, %d)", hotspotX, hotspotY);
+	BITMAP *old_mouse_cursor = _mouseCursorBitmap;
+	_mouseCursorBitmap = create_bitmap(w, h);
+	for (int line = 0; line < h; line++) {
+		memcpy(_mouseCursorBitmap->line[line], buf + w * line, w);
+	}
+	scare_mouse();
+	set_mouse_sprite(_mouseCursorBitmap);
+	set_mouse_sprite_focus(hotspotX, hotspotY);
+	unscare_mouse();
+	if (old_mouse_cursor) {
+		destroy_bitmap(old_mouse_cursor);
+	}
+}
+
 void DosGraphicsManager::setCursorPalette(const byte *colors, uint start, uint num) { debug(__FILE__ ":%d", __LINE__); }
