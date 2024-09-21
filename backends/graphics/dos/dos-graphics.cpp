@@ -113,7 +113,7 @@ OSystem::TransactionError DosGraphicsManager::endGFXTransaction() {
 void DosGraphicsManager::copyRectToScreen(const void *buf, int pitch, int x, int y, int w, int h) {
 	if (!_overlayVisible) {
 		bmp_select(screen);
-		scare_mouse();
+		scare_mouse_area(x, y, w, h);
 		for (int line = 0; line < h; line++) {
 			unsigned long dst = bmp_write_line(screen, line + y) + x;
 			uint8_t *cleanDst = (uint8_t *) _surface.getBasePtr(x, y + line);
@@ -177,7 +177,7 @@ void DosGraphicsManager::grabOverlay(Graphics::Surface &surface) const { debug(_
 void DosGraphicsManager::copyRectToOverlay(const void *buf, int pitch, int x, int y, int w, int h) {
 	if (_overlayVisible) {
 		bmp_select(screen);
-		scare_mouse();
+		scare_mouse_area(x, y, w, h);
 		for (int line = 0; line < h; line++) {
 			unsigned long dst = bmp_write_line(screen, line + y) + x;
 			uint8_t *cleanDst = _overlay + (line + y) * kOverlayWidth + x;
