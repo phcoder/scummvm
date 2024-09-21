@@ -109,6 +109,7 @@ extern int HYPNO_MIS_debug;
     PF = 302,                      /* PF  */
     PE = 303,                      /* PE  */
     PP = 304,                      /* PP  */
+#undef PI
     PI = 305,                      /* PI  */
     PL = 306,                      /* PL  */
     PS = 307                       /* PS  */

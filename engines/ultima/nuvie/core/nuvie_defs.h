@@ -57,6 +57,10 @@ typedef uint8 nuvie_game_t; // Game type (1=u6,2=md,4=se)
 #define clamp_max(v, c)  (((v) > (c)) ? (c) : (v))
 #define clamp(v, c1, c2) ( ((v) < (c1)) ? (c1) : (((v) > (c2)) ? (c2) : (v)) )
 
+#ifdef __DJGPP__
+#define nearbyint(x) rint(x)
+#endif
+
 #ifndef INT_MAX
 #define INT_MAX 0x7fffffff
 #endif
