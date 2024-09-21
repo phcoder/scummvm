@@ -85,6 +85,18 @@ void OSystem_DOS::initBackend() {
 		exit(1);
 	}
 
+	if (install_mouse() < 0) {
+		debug("Mouse init failed");
+		printf("Mouse init failed\n");
+		exit(1);
+	}
+
+	if (install_timer() < 0) {
+		debug("Timer init failed");
+		printf("Timer init failed\n");
+		exit(1);
+	}
+
 	_timerManager = new DefaultTimerManager();
 	_eventManager = new DefaultEventManager(this);
 	_savefileManager = new DefaultSaveFileManager();

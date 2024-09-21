@@ -191,7 +191,11 @@ void DosGraphicsManager::copyRectToOverlay(const void *buf, int pitch, int x, in
 		}
 	}
 }
-bool DosGraphicsManager::showMouse(bool visible) { debug(__FILE__ ":%d", __LINE__); return false; }
+bool DosGraphicsManager::showMouse(bool visible) {
+	show_mouse(visible ? screen : NULL);
+	return true;
+}
+
 void DosGraphicsManager::warpMouse(int x, int y) { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, int hotspotX, int hotspotY, uint32 keycolor, bool dontScale, const Graphics::PixelFormat *format, const byte *mask) { debug(__FILE__ ":%d", __LINE__); }
 void DosGraphicsManager::setCursorPalette(const byte *colors, uint start, uint num) { debug(__FILE__ ":%d", __LINE__); }
