@@ -99,6 +99,7 @@ OSystem::TransactionError DosGraphicsManager::endGFXTransaction() {
 		set_color_depth(_pendingState.format.bytesPerPixel * 8);
 		if (set_gfx_mode(GFX_AUTODETECT, _pendingState.width, _pendingState.height, 0, 0) == 0) {
 		        _surface.create(_pendingState.width, _pendingState.height, _pendingState.format);
+			_currentState = _pendingState;
 			applyNormalPalette();
 			_overlayVisible = false;
 		} else {
@@ -186,6 +187,7 @@ void DosGraphicsManager::drawMaskedNoSave(const void *buf, const byte *mask, int
 
 void DosGraphicsManager::redrawRect(int x, int y, int w, int h) {
 	Graphics::Surface *saveSurface = _overlayVisible ? &_overlaySurface : &_surface;
+	debug("surface=%p, screen=%p", saveSurface, screen);
 	bmp_select(screen);
 	if (x < 0) {
 		w += x;
@@ -274,7 +276,9 @@ void DosGraphicsManager::hideOverlay() {
 	}
 
 	set_color_depth(_currentState.format.bytesPerPixel * 8);
-	set_gfx_mode(GFX_AUTODETECT, _currentState.width, _currentState.height, 0, 0);
+	if (set_gfx_mode(GFX_AUTODETECT, _currentState.width, _currentState.height, 0, 0) != 0) {
+		debug("Unexpected mode set failure for mode[%dx%dx%d]: %s", _currentState.width, _currentState.height, _currentState.format.bytesPerPixel * 8, allegro_error);
+	}
 	applyNormalPalette();
 
 	_overlayVisible = false;
