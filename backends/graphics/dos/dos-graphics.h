@@ -70,6 +70,10 @@ private:
 	void drawWithSave(const void *buf, int pitch, int x, int y, int w, int h);
 	void clearScreen();
 	void redrawRect(int x, int y, int w, int h);
+	void drawMaskedNoSave(const void *buf, const byte *mask, int pitch, int maskPitch, int x, int y, int w, int h);
+	void undrawCursor();
+	void drawCursor();
+	void moveCursor(int x, int y);
 
 	enum class GraphicsMode : int {
 		Unknown			= -1,
@@ -106,6 +110,10 @@ private:
 	Graphics::Surface _surface;
 	byte _normalPalette[3 * 256];
 	BITMAP *_mouseCursorBitmap = nullptr;
+
+	int _cursorWidth, _cursorHeight, _cursorHotspotX, _cursorHotspotY;
+	int _mouseX, _mouseY;
+	byte *_cursorBuf, *_cursorMask;
 };
 
 #endif

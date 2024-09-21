@@ -115,6 +115,22 @@ OSystem::TransactionError DosGraphicsManager::endGFXTransaction() {
 void DosGraphicsManager::drawWithSave(const void *buf, int pitch, int x, int y, int w, int h) {
 	Graphics::Surface *saveSurface = _overlayVisible ? &_overlaySurface : &_surface;
 	int bytesPerPixel = _overlayVisible ? 1 : _currentState.format.bytesPerPixel;
+	if (x < 0) {
+		buf = (const char*) buf + (-x) * bytesPerPixel;
+		w += x;
+		x = 0;
+	}
+	if (y < 0) {
+		buf = (const char*) buf + (-y) * pitch;
+		h += y;
+		y = 0;
+	}
+	if (x + w >= saveSurface->w) {
+		w = saveSurface->w - x;
+	}
+	if (y + h >= saveSurface->h) {
+		h = saveSurface->h - y;
+	}
 	bmp_select(screen);
 	scare_mouse_area(x, y, w, h);
 	for (int line = 0; line < h; line++) {
@@ -130,15 +146,66 @@ void DosGraphicsManager::drawWithSave(const void *buf, int pitch, int x, int y, 
 	unscare_mouse();
 }
 
-void DosGraphicsManager::redrawRect(int x, int y, int w, int h) {
+void DosGraphicsManager::drawMaskedNoSave(const void *buf, const byte *mask, int pitch, int maskPitch, int x, int y, int w, int h) {
 	Graphics::Surface *saveSurface = _overlayVisible ? &_overlaySurface : &_surface;
 	int bytesPerPixel = _overlayVisible ? 1 : _currentState.format.bytesPerPixel;
+	if (x < 0) {
+		buf = (const char*) buf + (-x) * bytesPerPixel;
+		mask += (-x);
+		w += x;
+		x = 0;
+	}
+	if (y < 0) {
+		buf = (const char*) buf + (-y) * pitch;
+		mask += (-y) * maskPitch;
+		h += y;
+		y = 0;
+	}
+	if (x + w >= saveSurface->w) {
+		w = saveSurface->w - x;
+	}
+	if (y + h >= saveSurface->h) {
+		h = saveSurface->h - y;
+	}
 	bmp_select(screen);
 	scare_mouse_area(x, y, w, h);
 	for (int line = 0; line < h; line++) {
 		unsigned long dst = bmp_write_line(screen, line + y) + x;
-		const uint8_t *src = (const uint8_t *) saveSurface->getBasePtr(x, y + line);
+		const uint8_t *src = (const uint8_t *) buf + pitch * line;
+		const uint8_t *maskPtr = (const uint8_t *) mask + maskPitch * line;		
 		for (int i = 0; i < w * bytesPerPixel; i++) {
+			// TODO: other masks.
+			if (*maskPtr)
+				bmp_write8(dst, *src);
+			src++; dst++; maskPtr++;
+		}
+		bmp_unwrite_line(screen);
+	}
+	unscare_mouse();
+}
+
+void DosGraphicsManager::redrawRect(int x, int y, int w, int h) {
+	Graphics::Surface *saveSurface = _overlayVisible ? &_overlaySurface : &_surface;
+	bmp_select(screen);
+	if (x < 0) {
+		w += x;
+		x = 0;
+	}
+	if (y < 0) {
+		h += y;
+		y = 0;
+	}
+	if (x + w >= saveSurface->w) {
+		w = saveSurface->w - x;
+	}
+	if (y + h >= saveSurface->h) {
+		h = saveSurface->h - y;
+	}
+	scare_mouse_area(x, y, w, h);
+	for (int line = 0; line < h; line++) {
+		unsigned long dst = bmp_write_line(screen, line + y) + x;
+		const uint8_t *src = (const uint8_t *) saveSurface->getBasePtr(x, y + line);
+		for (int i = 0; i < w * saveSurface->format.bytesPerPixel; i++) {
 			bmp_write8(dst++, *src++);
 		}
 		bmp_unwrite_line(screen);
@@ -242,23 +309,55 @@ bool DosGraphicsManager::showMouse(bool visible) {
 }
 
 void DosGraphicsManager::warpMouse(int x, int y) {
-//	position_mouse(x, y);
+	position_mouse(x, y);
+	moveCursor(x, y);
 }
+
+void DosGraphicsManager::undrawCursor() {
+	redrawRect(_mouseX - _cursorHotspotX, _mouseY - _cursorHotspotY,
+		   _cursorWidth, _cursorHeight);
+}
+
+void DosGraphicsManager::drawCursor() {
+	drawMaskedNoSave(_cursorBuf, _cursorMask,
+			 _cursorWidth, _cursorWidth, _mouseX - _cursorHotspotX, _mouseY - _cursorHotspotY,
+			 _cursorWidth, _cursorHeight);
+}
+
+void DosGraphicsManager::moveCursor(int x, int y) {
+	if (_mouseX == x && _mouseY == y)
+		return;
+
+	undrawCursor();
+	_mouseX = x;
+	_mouseY = y;
+	drawCursor();
+}
+
 void DosGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, int hotspotX, int hotspotY, uint32 keycolor,
 					bool dontScale, const Graphics::PixelFormat *format, const byte *mask) {
 	debug("setMouseCursor hotspot=(%d, %d)", hotspotX, hotspotY);
-	BITMAP *old_mouse_cursor = _mouseCursorBitmap;
-	_mouseCursorBitmap = create_bitmap(w, h);
-	for (int line = 0; line < h; line++) {
-		memcpy(_mouseCursorBitmap->line[line], buf + w * line, w);
-	}
-	scare_mouse();
-	set_mouse_sprite(_mouseCursorBitmap);
-	set_mouse_sprite_focus(hotspotX, hotspotY);
-	unscare_mouse();
-	if (old_mouse_cursor) {
-		destroy_bitmap(old_mouse_cursor);
-	}
+	undrawCursor();
+
+	// TODO: Support non-8bit cursors
+
+	delete[] _cursorBuf;
+	delete[] _cursorMask;
+	_cursorBuf = new byte[w * h];
+	_cursorMask = new byte[w * h];
+	memcpy(_cursorBuf, buf, w * h);
+	if (mask)
+		memcpy(_cursorMask, mask, w * h);
+	else
+		memset(_cursorMask, kCursorMaskOpaque, w * h);
+	for (uint i = 0; i < w * h; i++)
+		if (((const byte *)buf)[i] == keycolor)
+			_cursorMask[i] = kCursorMaskTransparent;
+	_cursorWidth = w;
+	_cursorHeight = h;
+	_cursorHotspotX = hotspotX;
+	_cursorHotspotY = hotspotY;
+	drawCursor();
 }
 
 void DosGraphicsManager::setCursorPalette(const byte *colors, uint start, uint num) { debug(__FILE__ ":%d", __LINE__); }
