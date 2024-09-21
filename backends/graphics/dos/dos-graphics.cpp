@@ -79,7 +79,7 @@ void DosGraphicsManager::initSize(uint width, uint height, const Graphics::Pixel
 	}
 }
 
-int DosGraphicsManager::getScreenChangeID() const { debug(__FILE__ ":%d", __LINE__); return 0; }
+int DosGraphicsManager::getScreenChangeID() const { return 0; }
 
 void DosGraphicsManager::beginGFXTransaction() {
 	debug("beginGFXTransaction");
