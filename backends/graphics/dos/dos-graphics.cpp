@@ -133,7 +133,6 @@ void DosGraphicsManager::drawWithSave(const void *buf, int pitch, int x, int y, 
 		h = saveSurface->h - y;
 	}
 	bmp_select(screen);
-	scare_mouse_area(x, y, w, h);
 	for (int line = 0; line < h; line++) {
 		unsigned long dst = bmp_write_line(screen, line + y) + x;
 		uint8_t *cleanDst = (uint8_t *) saveSurface->getBasePtr(x, y + line);
@@ -144,7 +143,6 @@ void DosGraphicsManager::drawWithSave(const void *buf, int pitch, int x, int y, 
 		}
 		bmp_unwrite_line(screen);
 	}
-	unscare_mouse();
 }
 
 void DosGraphicsManager::drawMaskedNoSave(const void *buf, const byte *mask, int pitch, int maskPitch, int x, int y, int w, int h) {
@@ -169,7 +167,6 @@ void DosGraphicsManager::drawMaskedNoSave(const void *buf, const byte *mask, int
 		h = saveSurface->h - y;
 	}
 	bmp_select(screen);
-	scare_mouse_area(x, y, w, h);
 	for (int line = 0; line < h; line++) {
 		unsigned long dst = bmp_write_line(screen, line + y) + x;
 		const uint8_t *src = (const uint8_t *) buf + pitch * line;
@@ -182,7 +179,6 @@ void DosGraphicsManager::drawMaskedNoSave(const void *buf, const byte *mask, int
 		}
 		bmp_unwrite_line(screen);
 	}
-	unscare_mouse();
 }
 
 void DosGraphicsManager::redrawRect(int x, int y, int w, int h) {
@@ -203,7 +199,6 @@ void DosGraphicsManager::redrawRect(int x, int y, int w, int h) {
 	if (y + h >= saveSurface->h) {
 		h = saveSurface->h - y;
 	}
-	scare_mouse_area(x, y, w, h);
 	for (int line = 0; line < h; line++) {
 		unsigned long dst = bmp_write_line(screen, line + y) + x;
 		const uint8_t *src = (const uint8_t *) saveSurface->getBasePtr(x, y + line);
@@ -212,7 +207,6 @@ void DosGraphicsManager::redrawRect(int x, int y, int w, int h) {
 		}
 		bmp_unwrite_line(screen);
 	}
-	unscare_mouse();
 }
 
 void DosGraphicsManager::clearScreen() {
@@ -220,7 +214,6 @@ void DosGraphicsManager::clearScreen() {
 	int h = _overlayVisible ? kOverlayHeight : _currentState.height;
 	int w = _overlayVisible ? kOverlayWidth : _currentState.width;
 	bmp_select(screen);
-	scare_mouse();
 	for (int line = 0; line < h; line++) {
 		unsigned long dst = bmp_write_line(screen, line);
 		for (int i = 0; i < w * bytesPerPixel; i++) {
@@ -228,7 +221,6 @@ void DosGraphicsManager::clearScreen() {
 		}
 		bmp_unwrite_line(screen);
 	}
-	unscare_mouse();
 }
 
 void DosGraphicsManager::copyRectToScreen(const void *buf, int pitch, int x, int y, int w, int h) {
